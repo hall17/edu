@@ -1,0 +1,31 @@
+{
+  "name": "edusama",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "author": "edusama-it <it@edusama.com>",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "start": "yarn start:web",
+    "start:web": "yarn workspace @edusama/web start",
+    "start:server": "yarn workspace @edusama/server start",
+    "start:all": "concurrently \"yarn workspace @edusama/server start:dev\" \"yarn workspace @edusama/web start\"",
+    "fix:web": "yarn workspace @edusama/web fix:all",
+    "fix:server": "yarn workspace @edusama/server fix:all",
+    "fix:all": "yarn fix:web && yarn fix:server",
+    "check:types": "yarn workspace @edusama/web check:types && yarn workspace @edusama/server check:types",
+    "remove:node_modules": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "prettier": "@edusama/prettier"
+}

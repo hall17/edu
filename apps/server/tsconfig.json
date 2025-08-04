@@ -1,0 +1,37 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "esnext",
+    "moduleResolution": "nodeNext",
+    "typeRoots": ["src/types", "node_modules/@types"],
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true,
+    "sourceMap": true,
+    "declaration": true,
+    "outDir": "dist",
+    "allowJs": true,
+    "noEmit": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "strict": true,
+    "baseUrl": "src",
+    "paths": {
+      "@api/*": ["*"]
+      // "@api/*": ["./src/*"]
+      // "@api/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json",
+    ".env.*",
+    "src/common.d.ts",
+    "src/types/express.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

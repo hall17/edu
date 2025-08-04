@@ -1,0 +1,26 @@
+name: Deploy Web to Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['develop']
+    paths:
+      - 'apps/web/**'
+      - '.github/workflows/deploy-web-render.yml'
+
+jobs:
+  # lint:
+  #   uses: ./.github/workflows/frontend-ci.yml
+
+  deploy:
+    # needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Deploy
+        env:
+          deploy_url: ${{ vars.RENDER_DEPLOY_FRONTEND_HOOK_URL }}
+        run: |
+          curl "$deploy_url"

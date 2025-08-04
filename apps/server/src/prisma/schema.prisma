@@ -1,0 +1,1495 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+// Enums in alphabetical order
+enum AssignmentStatus {
+  ACTIVE
+  RETURNED
+  PENDING_RETURN
+  LOST
+  DAMAGED
+}
+
+enum AttendanceNotificationType {
+  ATTENDANCE_VIOLATION
+  REMINDER
+  WEEKLY_SUMMARY
+  MONTHLY_SUMMARY
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  PARTIAL
+  LATE
+  EXCUSED
+}
+
+enum BranchStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum ClassroomIntegrationStatus {
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+}
+
+enum ClassroomStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum ClassroomTemplateStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum CompanyStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum CurriculumStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum DeviceCondition {
+  NEW
+  EXCELLENT
+  GOOD
+  FAIR
+  POOR
+  DAMAGED
+}
+
+enum DeviceStatus {
+  AVAILABLE
+  ASSIGNED
+  IN_REPAIR
+  RETIRED
+  LOST
+  STOLEN
+}
+
+enum DeviceType {
+  LAPTOP
+  DESKTOP
+  TABLET
+  SMARTPHONE
+  MONITOR
+  KEYBOARD
+  MOUSE
+  HEADSET
+  WEBCAM
+  PRINTER
+  OTHER
+}
+
+enum EnrollmentStatus {
+  ENROLLED
+  WITHDRAWN
+  COMPLETED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Language {
+  EN // English
+  TR // Turkish
+  DE // German
+  ES // Spanish
+  FR // French
+  IT // Italian
+  PT // Portuguese
+  RU // Russian
+  ZH // Chinese
+  JA // Japanese
+}
+
+enum ModuleStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum RoleStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum StudentStatus {
+  ACTIVE
+  SUSPENDED
+  INVITED
+  REQUESTED_APPROVAL
+  REQUESTED_CHANGES
+  REJECTED
+}
+
+enum SubjectStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum Theme {
+  LIGHT
+  DARK
+}
+
+enum TokenType {
+  RESET_PASSWORD
+  INVITATION
+  OTP
+}
+
+enum UserActivity {
+  LOGIN
+  LOGOUT
+  CREATE
+  UPDATE
+  DELETE
+  PASSWORD_CHANGE
+  PROFILE_UPDATE
+  PREFERENCES_UPDATE
+  FAILED_LOGIN_ATTEMPT
+  ACCOUNT_LOCKOUT
+  ACCOUNT_REACTIVATION
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  INVITED
+}
+
+enum WidgetStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+// ============================================================================
+// CORE ENTITY MODELS (Hierarchical Order)
+// ============================================================================
+
+// 1. Top-level entities (no dependencies)
+model Company {
+  id      Int           @id @default(autoincrement())
+  slug    String        @unique @db.VarChar(50)
+  name    String        @db.VarChar(50)
+  status  CompanyStatus @default(ACTIVE)
+  logoUrl String?       @db.VarChar(255)
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  branches Branch[]
+}
+
+model Module {
+  id           Int          @id @default(autoincrement())
+  code         String       @unique @db.VarChar(100)
+  name         String       @unique @db.VarChar(100)
+  description  String?
+  version      String?      @default("1.0.0")
+  status       ModuleStatus @default(ACTIVE)
+  canBeDeleted Boolean      @default(true)
+  isDefault    Boolean      @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  branches BranchModule[]
+
+  requiredModules    ModuleRequiredModule[]    @relation("ModuleRequires")
+  requiredByModules  ModuleRequiredModule[]    @relation("ModuleRequiredBy")
+  moduleManagers     UserRole[]
+  permissions        Permission[]
+  classrooms         ClassroomModule[]
+  classroomTemplates ClassroomTemplateModule[] @relation("IncludedBy")
+}
+
+model User {
+  id                String     @id @default(uuid())
+  userId            String?    @unique
+  status            UserStatus @default(ACTIVE)
+  nationalId        String?    @unique @db.VarChar(250)
+  firstName         String     @db.VarChar(50)
+  lastName          String     @db.VarChar(50)
+  email             String     @unique @db.VarChar(100)
+  password          String     @db.VarChar(255)
+  gender            Gender?
+  dateOfBirth       DateTime?  @db.Date
+  profilePictureUrl String?    @db.VarChar(255)
+  phoneCountryCode  String?    @default("90") @db.VarChar(5)
+  phoneNumber       String?    @db.VarChar(15)
+  countryCode       String?    @default("TR") @db.VarChar(2)
+  city              String?    @db.VarChar(50)
+  state             String?    @db.VarChar(50)
+  address           String?    @db.VarChar(255)
+  zipCode           String?    @db.VarChar(10)
+  about             String?    @db.VarChar(255)
+  facebookLink      String?    @db.VarChar(255)
+  twitterLink       String?    @db.VarChar(255)
+  instagramLink     String?    @db.VarChar(255)
+  linkedinLink      String?    @db.VarChar(255)
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+  deletedBy          String?
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+  statusUpdateReason String?   @db.VarChar(500)
+
+  titleId String?
+
+  title Title? @relation(fields: [titleId], references: [id])
+
+  statusUpdatedByUser                 User?                                   @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser                       User?                                   @relation("DeletedBy", fields: [deletedBy], references: [id])
+  preferences                         UserPreference?
+  activityLogs                        UserActivityLog[]
+  loginAttempts                       LoginAttempt[]
+  branches                            BranchUser[]
+  widgets                             UserWidget[]
+  roles                               UserRole[]
+  createdTokens                       Token[]                                 @relation("TokensCreatedByUser")
+  tokens                              Token[]
+  createdModules                      BranchModule[]                          @relation("ModulesCreatedByUser")
+  devices                             UserDevice[]
+  deletedUsers                        User[]                                  @relation("DeletedBy")
+  statusUpdatedUsers                  User[]                                  @relation("StatusUpdatedBy")
+  deletedStudents                     Student[]                               @relation("DeletedBy")
+  statusUpdatedStudents               Student[]                               @relation("StatusUpdatedBy")
+  deletedParents                      Parent[]                                @relation("ParentsDeletedBy")
+  statusUpdatedParents                Parent[]                                @relation("StatusUpdatedBy")
+  deletedClassroomTemplates           ClassroomTemplate[]                     @relation("DeletedBy")
+  statusUpdatedClassroomTemplates     ClassroomTemplate[]                     @relation("StatusUpdatedBy")
+  deletedClassrooms                   Classroom[]                             @relation("DeletedBy")
+  statusUpdatedClassrooms             Classroom[]                             @relation("StatusUpdatedBy")
+  deletedRoles                        Role[]                                  @relation("DeletedBy")
+  statusUpdatedRoles                  Role[]                                  @relation("StatusUpdatedBy")
+  deletedBranches                     Branch[]                                @relation("DeletedBy")
+  statusUpdatedBranches               Branch[]                                @relation("StatusUpdatedBy")
+  classrooms                          ClassroomIntegration[]
+  createdAttendanceRecords            AttendanceRecord[]                      @relation("CreatedBy")
+  taughtSubjects                      SubjectTeacher[]
+  deletedClassroomIntegrations        ClassroomIntegrationSchedule[]          @relation("DeletedBy")
+  classroomIntegrationSessions        ClassroomIntegrationSession[]           @relation("TaughtBy")
+  deletedClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("DeletedBy")
+  statusUpdatedCompanies              Company[]                               @relation("StatusUpdatedBy")
+  deletedCompanies                    Company[]                               @relation("DeletedBy")
+  createdAssessments                  Assessment[]                            @relation("CreatedBy")
+  deletedAssessments                  Assessment[]                            @relation("DeletedBy")
+  statusUpdatedAssessments            Assessment[]                            @relation("StatusUpdatedBy")
+  performedLogs                       AssessmentLog[]                         @relation("PerformedBy")
+  createdNotifications                AssessmentNotification[]                @relation("AssessmentNotificationCreator")
+  evaluatedAssessments                StudentClassroomIntegrationAssessment[] @relation("EvaluatedBy")
+}
+
+model Title {
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(50)
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model Student {
+  id                String        @id @default(uuid())
+  branchId          Int
+  parentId          String?
+  status            StudentStatus @default(ACTIVE)
+  firstName         String        @db.VarChar(50)
+  lastName          String        @db.VarChar(50)
+  email             String        @unique @db.VarChar(100)
+  password          String        @db.VarChar(255)
+  gender            Gender?
+  dateOfBirth       DateTime?     @db.Date
+  nationalId        String?       @unique @db.VarChar(250)
+  profilePictureUrl String?       @db.VarChar(255)
+  phoneCountryCode  String?       @default("90") @db.VarChar(5)
+  phoneNumber       String?       @db.VarChar(15)
+  countryCode       String?       @default("TR") @db.VarChar(2)
+  state             String?       @db.VarChar(50)
+  city              String?       @db.VarChar(50)
+  address           String?       @db.VarChar(255)
+  zipCode           String?       @db.VarChar(10)
+  about             String?       @db.VarChar(255)
+  facebookLink      String?       @db.VarChar(255)
+  twitterLink       String?       @db.VarChar(255)
+  instagramLink     String?       @db.VarChar(255)
+  linkedinLink      String?       @db.VarChar(255)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+  signUpApprovedAt   DateTime?
+  signUpApprovedBy   String?
+
+  branch                                       Branch                                         @relation(fields: [branchId], references: [id])
+  parent                                       Parent?                                        @relation(fields: [parentId], references: [id])
+  deletedByUser                                User?                                          @relation("DeletedBy", fields: [deletedBy], references: [id])
+  statusUpdatedByUser                          User?                                          @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  tokens                                       Token[]
+  preferences                                  StudentPreference?
+  loginAttempts                                LoginAttempt[]
+  activityLogs                                 StudentActivityLog[]
+  classrooms                                   ClassroomStudent[]
+  attendanceRecords                            AttendanceRecord[]
+  attendanceSummaries                          AttendanceSummary[]
+  attendanceNotifications                      AttendanceNotification[]
+  questionResponses                            QuestionResponse[]
+  notifications                                AssessmentNotification[]
+  StudentClassroomIntegrationAssessment        StudentClassroomIntegrationAssessment[]
+  StudentClassroomIntegrationAssessmentSession StudentClassroomIntegrationAssessmentSession[]
+}
+
+model Parent {
+  id                String     @id @default(uuid())
+  branchId          Int
+  status            UserStatus @default(ACTIVE)
+  nationalId        String?    @unique @db.VarChar(250)
+  firstName         String     @db.VarChar(50)
+  lastName          String     @db.VarChar(50)
+  email             String     @unique @db.VarChar(100)
+  password          String     @db.VarChar(255)
+  gender            Gender?
+  dateOfBirth       DateTime?  @db.Date
+  profilePictureUrl String?    @db.VarChar(255)
+  phoneCountryCode  String?    @default("90") @db.VarChar(5)
+  phoneNumber       String?    @db.VarChar(15)
+  countryCode       String?    @default("TR") @db.VarChar(2)
+  city              String?    @db.VarChar(50)
+  state             String?    @db.VarChar(50)
+  address           String?    @db.VarChar(255)
+  zipCode           String?    @db.VarChar(10)
+  about             String?    @db.VarChar(255)
+  facebookLink      String?    @db.VarChar(255)
+  twitterLink       String?    @db.VarChar(255)
+  instagramLink     String?    @db.VarChar(255)
+  linkedinLink      String?    @db.VarChar(255)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  branch              Branch            @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  deletedByUser       User?             @relation("ParentsDeletedBy", fields: [deletedBy], references: [id])
+  statusUpdatedByUser User?             @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  students            Student[]
+  tokens              Token[]
+  loginAttempts       LoginAttempt[]
+  preferences         ParentPreference?
+}
+
+model Widget {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(50)
+  description String?
+  status      WidgetStatus @default(ACTIVE)
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  users     UserWidget[]
+}
+
+// 2. Direct children of top-level entities
+model Branch {
+  id              Int          @id @default(autoincrement())
+  slug            String       @unique @db.VarChar(50)
+  status          BranchStatus @default(ACTIVE)
+  name            String       @db.VarChar(50)
+  logoUrl         String?      @db.VarChar(255)
+  location        String?      @db.VarChar(255)
+  contact         String?      @db.VarChar(255)
+  canBeDeleted    Boolean      @default(true)
+  maximumStudents Int          @default(250)
+
+  companyId Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  company                 Company                  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  users                   BranchUser[]
+  modules                 BranchModule[]
+  roles                   Role[]
+  devices                 Device[]
+  parents                 Parent[]
+  students                Student[]
+  classrooms              Classroom[]
+  subjects                Subject[]
+  classroomTemplates      ClassroomTemplate[]
+  assessmentNotifications AssessmentNotification[]
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  status      RoleStatus @default(ACTIVE)
+  code        String?
+  name        String     @db.VarChar(50)
+  description String?
+  isSystem    Boolean    @default(false)
+  isVisible   Boolean    @default(true)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  branchId Int
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@unique([branchId, name])
+}
+
+model Classroom {
+  id                       String          @id @default(uuid())
+  status                   ClassroomStatus @default(ACTIVE)
+  name                     String          @db.VarChar(100)
+  description              String?
+  capacity                 Int
+  imageUrl                 String?
+  attendancePassPercentage Int             @default(80)
+  assessmentScorePass      Int             @default(80)
+  assignmentScorePass      Int             @default(80)
+  sendNotifications        Boolean         @default(true)
+  attendanceThreshold      Int?
+  reminderFrequency        Int?
+  accessLink               String?
+
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  branchId            Int
+  classroomTemplateId String?
+
+  branch            Branch                  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  classroomTemplate ClassroomTemplate?      @relation(fields: [classroomTemplateId], references: [id], onDelete: Cascade)
+  modules           ClassroomModule[]
+  announcements     ClassroomAnnouncement[]
+  students          ClassroomStudent[]
+  integrations      ClassroomIntegration[]
+
+  @@unique([branchId, name])
+}
+
+model ClassroomTemplate {
+  id                       String                  @id @default(uuid())
+  status                   ClassroomTemplateStatus @default(ACTIVE)
+  name                     String                  @db.VarChar(100)
+  description              String?
+  capacity                 Int
+  imageUrl                 String?
+  attendancePassPercentage Int                     @default(80)
+  assessmentScorePass      Int                     @default(80)
+  assignmentScorePass      Int                     @default(80)
+  sendNotifications        Boolean                 @default(true)
+  attendanceThreshold      Int?
+  reminderFrequency        Int?
+  startDate                DateTime
+  endDate                  DateTime
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  branchId Int
+
+  branch     Branch                    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  classrooms Classroom[]
+  modules    ClassroomTemplateModule[] @relation("IncludedModule")
+
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  @@unique([branchId, name])
+}
+
+model ClassroomTemplateModule {
+  classroomTemplateId String
+  moduleId            Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classroomTemplate ClassroomTemplate @relation("IncludedModule", fields: [classroomTemplateId], references: [id], onDelete: Cascade)
+  module            Module            @relation("IncludedBy", fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([classroomTemplateId, moduleId])
+  @@unique([classroomTemplateId, moduleId])
+}
+
+model ClassroomAnnouncement {
+  id          String  @id @default(uuid())
+  classroomId String
+  title       String  @db.VarChar(100)
+  content     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classroom Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+
+  @@unique([classroomId, title])
+}
+
+model ClassroomStudent {
+  id          String @id @default(uuid())
+  classroomId String
+  studentId   String
+
+  enrolledAt DateTime         @default(now())
+  status     EnrollmentStatus @default(ENROLLED)
+
+  classroom Classroom @relation(fields: [classroomId], references: [id])
+  student   Student   @relation(fields: [studentId], references: [id])
+
+  @@unique([classroomId, studentId])
+}
+
+model ClassroomIntegrationSchedule {
+  id                     String    @id @default(uuid())
+  classroomIntegrationId String
+  dayOfWeek              DayOfWeek
+  startTime              DateTime  @db.Time
+  endTime                DateTime  @db.Time
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  classroomIntegration ClassroomIntegration @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  deletedByUser        User?                @relation("DeletedBy", fields: [deletedBy], references: [id])
+
+  @@unique([classroomIntegrationId, dayOfWeek, startTime])
+  @@index([classroomIntegrationId, dayOfWeek])
+}
+
+model ClassroomIntegrationSession {
+  id                     String   @id @default(uuid())
+  description            String?
+  classroomIntegrationId String
+  teacherId              String?
+  startDate              DateTime
+  endDate                DateTime
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  classroomIntegration ClassroomIntegration                @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  deletedByUser        User?                               @relation("DeletedBy", fields: [deletedBy], references: [id])
+  attendanceRecords    AttendanceRecord[]
+  teacher              User?                               @relation("TaughtBy", fields: [teacherId], references: [id], onDelete: SetNull)
+  lessons              ClassroomIntegrationSessionLesson[]
+
+  @@unique([classroomIntegrationId, startDate, endDate])
+  @@index([classroomIntegrationId])
+}
+
+model ClassroomIntegrationSessionLesson {
+  classroomIntegrationSessionId String
+  lessonId                      String
+
+  classroomIntegrationSession ClassroomIntegrationSession @relation(fields: [classroomIntegrationSessionId], references: [id], onDelete: Cascade)
+  lesson                      Lesson                      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([classroomIntegrationSessionId, lessonId])
+  @@index([classroomIntegrationSessionId])
+}
+
+model ClassroomModule {
+  classroomId String
+  moduleId    Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classroom Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  module    Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([classroomId, moduleId])
+  @@unique([classroomId, moduleId])
+}
+
+model Subject {
+  id          String        @id @default(uuid())
+  name        String        @db.VarChar(50)
+  description String?       @db.VarChar(500)
+  status      SubjectStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  branchId Int
+
+  branch               Branch                 @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  curriculums          Curriculum[]
+  integratedClassrooms ClassroomIntegration[]
+  teachers             SubjectTeacher[]
+  assessments          Assessment[]
+  questions            Question[]
+
+  @@unique([branchId, name])
+}
+
+model SubjectTeacher {
+  subjectId String
+  teacherId String
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  teacher User    @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@id([subjectId, teacherId])
+  @@unique([subjectId, teacherId])
+}
+
+model Curriculum {
+  id          String           @id @default(uuid())
+  name        String           @db.VarChar(100)
+  description String?          @db.VarChar(500)
+  status      CurriculumStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  statusUpdateReason String?   @db.VarChar(500)
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+
+  subjectId String
+
+  subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  lessons              Lesson[]
+  integratedClassrooms ClassroomIntegration[]
+  assessments          Assessment[]
+  questions            Question[]
+
+  @@unique([subjectId, name])
+}
+
+model ClassroomIntegration {
+  id           String                     @id @default(uuid())
+  status       ClassroomIntegrationStatus @default(ACTIVE)
+  classroomId  String
+  subjectId    String
+  curriculumId String
+  teacherId    String?
+
+  classroom  Classroom                      @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  subject    Subject                        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  curriculum Curriculum                     @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  teacher    User?                          @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  schedules  ClassroomIntegrationSchedule[]
+
+  createdAt                       DateTime                         @default(now())
+  updatedAt                       DateTime                         @updatedAt
+  deletedAt                       DateTime?
+  deletedBy                       String?
+  classroomIntegrationSessions    ClassroomIntegrationSession[]
+  attendanceSummaries             AttendanceSummary[]
+  attendanceNotifications         AttendanceNotification[]
+  classroomIntegrationAssessments ClassroomIntegrationAssessment[]
+
+  @@unique([classroomId, subjectId])
+}
+
+model Lesson {
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(100)
+  description String? @db.VarChar(500)
+  order       Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  curriculumId String
+
+  curriculum                   Curriculum                          @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  classroomIntegrationSessions ClassroomIntegrationSessionLesson[]
+  assessments                  Assessment[]
+  questions                    Question[]
+
+  @@unique([curriculumId, name])
+  @@unique([curriculumId, name, order])
+}
+
+model Permission {
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  moduleId Int
+
+  module Module           @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  roles  RolePermission[]
+
+  @@unique([moduleId, name])
+}
+
+model Token {
+  id     String    @id @default(uuid())
+  token  String    @unique
+  type   TokenType
+  isUsed Boolean   @default(false)
+
+  createdAt DateTime  @default(now())
+  createdBy String?
+  expiresAt DateTime?
+
+  userId    String?
+  studentId String?
+  parentId  String?
+  email     String?
+
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  student       Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  parent        Parent?  @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  createdByUser User?    @relation("TokensCreatedByUser", fields: [createdBy], references: [id], onDelete: SetNull)
+}
+
+model Device {
+  id               String          @id @default(uuid())
+  serialNumber     String          @unique @db.VarChar(100)
+  assetTag         String?         @unique @db.VarChar(50)
+  deviceType       DeviceType
+  brand            String          @db.VarChar(50)
+  model            String          @db.VarChar(100)
+  specifications   String?         @db.VarChar(500)
+  purchaseDate     DateTime?       @db.Date
+  warrantyExpiry   DateTime?       @db.Date
+  purchasePrice    Decimal?        @db.Decimal(10, 2)
+  purchaseCurrency String?         @db.VarChar(10)
+  supplier         String?         @db.VarChar(100)
+  location         String?         @db.VarChar(100)
+  status           DeviceStatus    @default(AVAILABLE)
+  condition        DeviceCondition @default(NEW)
+  notes            String?         @db.VarChar(500)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  branchId Int
+
+  branch Branch       @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  users  UserDevice[]
+
+  @@index([serialNumber])
+  @@index([assetTag])
+  @@index([deviceType])
+  @@index([status])
+}
+
+model UserDevice {
+  id                    String           @id @default(uuid())
+  deviceId              String
+  userId                String
+  assignedAt            DateTime         @default(now())
+  returnedAt            DateTime?
+  expectedReturnAt      DateTime?
+  status                AssignmentStatus @default(ACTIVE)
+  assignmentNotes       String?          @db.VarChar(500)
+  returnNotes           String?          @db.VarChar(500)
+  conditionAtAssignment DeviceCondition?
+  conditionAtReturn     DeviceCondition?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@index([userId])
+  @@index([status])
+}
+
+// ============================================================================
+// JUNCTION/RELATIONSHIP MODELS
+// ============================================================================
+
+// Branch-Module relationships
+model BranchModule {
+  branchId Int
+  moduleId Int
+  status   ModuleStatus @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  createdBy String?
+  expiresAt DateTime?
+
+  branch        Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  module        Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  createdByUser User?  @relation("ModulesCreatedByUser", fields: [createdBy], references: [id])
+
+  @@id([branchId, moduleId])
+  @@unique([branchId, moduleId])
+}
+
+// User relationships
+model BranchUser {
+  branchId Int
+  userId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([branchId, userId])
+  @@unique([branchId, userId])
+}
+
+model UserRole {
+  userId   String
+  roleId   String
+  moduleId Int?
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  module Module? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@unique([userId, roleId, moduleId])
+}
+
+model UserWidget {
+  id           Int     @id @default(autoincrement())
+  userId       String
+  widgetId     Int
+  displayOrder Int     @default(0)
+  visibility   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  widget Widget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, widgetId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@unique([roleId, permissionId])
+}
+
+// Module-Module dependency relationships
+model ModuleRequiredModule {
+  moduleId           Int
+  requiredModuleId   Int
+  minRequiredVersion String? @db.VarChar(20)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  module         Module @relation("ModuleRequires", fields: [moduleId], references: [id], onDelete: Cascade)
+  requiredModule Module @relation("ModuleRequiredBy", fields: [requiredModuleId], references: [id], onDelete: Cascade)
+
+  @@id([moduleId, requiredModuleId])
+  @@unique([moduleId, requiredModuleId])
+  @@index([requiredModuleId])
+}
+
+// ============================================================================
+// USER-RELATED DETAIL/LOGGING MODELS
+// ============================================================================
+
+model UserPreference {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  language             Language @default(EN)
+  theme                Theme    @default(LIGHT)
+  notificationsEnabled Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserActivityLog {
+  id          String       @id @default(uuid())
+  userId      String
+  action      UserActivity
+  ipAddress   String?
+  deviceInfo  String?
+  location    String?
+  browserInfo String?
+  osInfo      String?
+  deviceType  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model LoginAttempt {
+  id          String  @id @default(uuid())
+  userId      String?
+  studentId   String?
+  parentId    String?
+  success     Boolean
+  ipAddress   String?
+  userAgent   String?
+  location    String?
+  deviceInfo  String?
+  browserInfo String?
+  osInfo      String?
+  deviceType  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  student Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  parent  Parent?  @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+
+model StudentPreference {
+  id                   String   @id @default(uuid())
+  studentId            String   @unique
+  language             Language @default(EN)
+  theme                Theme    @default(LIGHT)
+  notificationsEnabled Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model StudentActivityLog {
+  id          String       @id @default(uuid())
+  studentId   String
+  action      UserActivity
+  ipAddress   String?
+  deviceInfo  String?
+  location    String?
+  browserInfo String?
+  osInfo      String?
+  deviceType  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([studentId])
+}
+
+model ParentPreference {
+  id                   String   @id @default(uuid())
+  parentId             String   @unique
+  language             Language @default(EN)
+  theme                Theme    @default(LIGHT)
+  notificationsEnabled Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent Parent @relation(fields: [parentId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================================
+// ATTENDANCE SYSTEM MODELS
+// ============================================================================
+
+model AttendanceRecord {
+  id                            String           @id @default(uuid())
+  studentId                     String
+  classroomIntegrationSessionId String
+  status                        AttendanceStatus @default(PRESENT)
+  remarks                       String?          @db.VarChar(500)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+
+  student                     Student                     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomIntegrationSession ClassroomIntegrationSession @relation(fields: [classroomIntegrationSessionId], references: [id], onDelete: Cascade)
+  createdByUser               User?                       @relation("CreatedBy", fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@unique([studentId, classroomIntegrationSessionId])
+  @@index([studentId])
+  @@index([classroomIntegrationSessionId])
+}
+
+model AttendanceSummary {
+  id           String @id @default(uuid())
+  studentId    String
+  month        Int
+  year         Int
+  totalPresent Int    @default(0)
+  totalAbsent  Int    @default(0)
+  totalPartial Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classroomIntegrationId String
+
+  student              Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomIntegration ClassroomIntegration @relation(fields: [classroomIntegrationId], references: [id])
+
+  @@unique([studentId, classroomIntegrationId, month, year])
+  @@index([studentId, year, month])
+  @@index([classroomIntegrationId, year, month])
+}
+
+model AttendanceNotification {
+  id                     String @id @default(uuid())
+  studentId              String
+  classroomIntegrationId String
+
+  notificationType AttendanceNotificationType
+  notificationDate DateTime                   @default(now())
+  status           NotificationStatus         @default(PENDING)
+  acknowledgedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student              Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomIntegration ClassroomIntegration @relation(fields: [classroomIntegrationId], references: [id])
+
+  @@unique([studentId, classroomIntegrationId, notificationType])
+  @@index([studentId, status])
+  @@index([classroomIntegrationId, notificationDate])
+}
+
+// ASSESSMENT
+
+enum ScheduleType {
+  FLEXIBLE
+  STRICT
+}
+
+enum ScoringType {
+  MANUAL
+  AUTOMATIC
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+  SHORT_ANSWER
+  MATCHING
+  FILL_IN_BLANK
+  ORDERING
+  ESSAY
+}
+
+enum QuestionDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum AssessmentStatus {
+  ACTIVE
+  SUSPENDED
+  TERMINATED
+}
+
+enum StudentClassroomIntegrationAssessmentSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  AUTO_SUBMITTED
+  LATE_SUBMISSION
+}
+
+enum StudentClassroomIntegrationAssessmentStatus {
+  ELIGIBLE
+  COMPLETED
+  PENDING
+  FAILED
+}
+
+enum AssessmentLogAction {
+  CREATED
+  UPDATED
+  DELETED
+  RESTORED
+}
+
+enum AssessmentNotificationType {
+  REMINDER
+  SUBMISSION_CONFIRMATION
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  ACKNOWLEDGED
+  FAILED
+}
+
+// ============================================================================
+// ASSESSMENT MODELS
+// ============================================================================
+
+model Question {
+  id           String             @id @default(uuid())
+  type         QuestionType
+  difficulty   QuestionDifficulty
+  questionText String
+
+  // Polymorphic fields for different question types
+  questionData Json?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  subjectId    String
+  curriculumId String?
+  lessonId     String?
+
+  subject    Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  lesson     Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  curriculum Curriculum? @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+
+  responses           QuestionResponse[]
+  assessmentQuestions AssessmentQuestion[]
+
+  @@index([lessonId])
+  @@index([type])
+}
+
+model Assessment {
+  id                    String           @id @default(uuid())
+  status                AssessmentStatus @default(ACTIVE)
+  title                 String           @db.VarChar(200)
+  description           String?
+  scheduleType          ScheduleType     @default(FLEXIBLE)
+  duration              Int?
+  maxPoints             Int              @default(100)
+  isPublic              Boolean          @default(false)
+  scoringType           ScoringType      @default(MANUAL)
+  coverImageUrl         String?          @db.VarChar(500)
+  sendNotifications     Boolean          @default(false)
+  notificationFrequency Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  createdBy String?
+  deletedBy String?
+
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+  statusUpdateReason String?   @db.VarChar(500)
+
+  subjectId    String
+  curriculumId String?
+  lessonId     String?
+
+  subject    Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  curriculum Curriculum? @relation(fields: [curriculumId], references: [id], onDelete: SetNull)
+  lesson     Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  createdByUser       User? @relation("CreatedBy", fields: [createdBy], references: [id])
+  deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
+  statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+
+  questions                       AssessmentQuestion[]
+  classroomIntegrationAssessments ClassroomIntegrationAssessment[]
+
+  logs          AssessmentLog[]
+  rubrics       AssessmentGradingRubric[]
+  notifications AssessmentNotification[]
+}
+
+model ClassroomIntegrationAssessment {
+  id                     String @id @default(uuid())
+  classroomIntegrationId String
+  assessmentId           String
+
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classroomIntegration                   ClassroomIntegration                    @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  assessment                             Assessment                              @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  studentClassroomIntegrationAssessments StudentClassroomIntegrationAssessment[]
+
+  @@unique([classroomIntegrationId, assessmentId])
+  @@index([classroomIntegrationId])
+  @@index([assessmentId])
+}
+
+model StudentClassroomIntegrationAssessment {
+  id                               String                                      @id @default(uuid())
+  studentId                        String
+  classroomIntegrationAssessmentId String
+  status                           StudentClassroomIntegrationAssessmentStatus @default(ELIGIBLE)
+  pointsEarned                     Int?
+  evaluatedAt                      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  evaluatedBy String?
+
+  student                        Student                                        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classroomIntegrationAssessment ClassroomIntegrationAssessment                 @relation(fields: [classroomIntegrationAssessmentId], references: [id], onDelete: Cascade)
+  sessions                       StudentClassroomIntegrationAssessmentSession[]
+  evaluatedByUser                User?                                          @relation("EvaluatedBy", fields: [evaluatedBy], references: [id])
+
+  @@unique([studentId, classroomIntegrationAssessmentId])
+  @@index([studentId])
+  @@index([classroomIntegrationAssessmentId])
+}
+
+model StudentClassroomIntegrationAssessmentSession {
+  id                                      String @id @default(uuid())
+  studentClassroomIntegrationAssessmentId String
+  studentId                               String
+
+  startTime        DateTime                                           @default(now())
+  endTime          DateTime?
+  status           StudentClassroomIntegrationAssessmentSessionStatus @default(IN_PROGRESS)
+  submissionStatus SubmissionStatus?
+  isStandalone     Boolean                                            @default(false)
+
+  feedbackText   String?
+  feedbackRating Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentClassroomIntegrationAssessment StudentClassroomIntegrationAssessment @relation(fields: [studentClassroomIntegrationAssessmentId], references: [id], onDelete: Cascade)
+  student                               Student                               @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  responses QuestionResponse[]
+
+  @@unique([studentId, studentClassroomIntegrationAssessmentId])
+  @@index([studentId])
+  @@index([studentClassroomIntegrationAssessmentId])
+}
+
+model AssessmentQuestion {
+  id           String @id @default(uuid())
+  assessmentId String
+  questionId   String
+  order        Int
+  points       Int    @default(1)
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  question   Question   @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, assessmentId])
+  @@index([questionId])
+  @@index([assessmentId])
+}
+
+model QuestionResponse {
+  id           String   @id @default(uuid())
+  questionId   String
+  studentId    String
+  sessionId    String
+  responseData Json // JSON field for flexible response storage
+  isCorrect    Boolean?
+  pointsEarned Int?
+  submittedAt  DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  question Question                                     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  student  Student                                      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  session  StudentClassroomIntegrationAssessmentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, sessionId])
+  @@index([sessionId])
+  @@index([studentId])
+}
+
+model AssessmentLog {
+  id     String              @id @default(uuid())
+  action AssessmentLogAction
+  notes  String?
+
+  assessmentId String
+  performedBy  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assessment      Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  performedByUser User       @relation("PerformedBy", fields: [performedBy], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId])
+  @@index([performedBy])
+}
+
+model AssessmentGradingRubric {
+  id        String @id @default(uuid())
+  criterion String @db.VarChar(200)
+  minPoints Int
+  maxPoints Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assessmentId String
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId])
+}
+
+model AssessmentNotification {
+  id      String                     @id @default(uuid())
+  type    AssessmentNotificationType
+  message String
+  status  NotificationStatus         @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assessmentId String
+  studentId    String
+  branchId     Int?
+  createdBy    String
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  branch     Branch?    @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  creator    User       @relation("AssessmentNotificationCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+
+  @@index([assessmentId])
+  @@index([studentId])
+  @@index([status])
+}

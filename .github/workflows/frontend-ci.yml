@@ -1,0 +1,41 @@
+name: Web CI
+
+on:
+  workflow_call:
+  push:
+    branches: ['develop']
+    paths:
+      - 'apps/web'
+      - '.github/workflows/web-ci.yml'
+
+jobs:
+  lint:
+    name: Lint
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          # cache: 'yarn'
+
+      - name: Install packages
+        run: yarn install && yarn workspace server prisma-generate
+
+      - name: Run lint and prettier formatter
+        run: yarn fix-all
+
+      - name: Run type check
+        run: yarn check-types
+
+      - name: Run build
+        run: yarn workspace client build
+        env:
+          CI: false

@@ -1,0 +1,77 @@
+export const assessments = {
+  title: 'Değerlendirme Listesi',
+  description: 'Değerlendirmelerinizi ve bilgilerini burada yönetin.',
+  addAssessment: 'Değerlendirme Ekle',
+  table: {
+    filterPlaceholder: 'Değerlendirmeleri filtrele...',
+    searchPlaceholder: 'Değerlendirmeleri ara...',
+    noResults: 'Sonuç bulunamadı.',
+    actions: {
+      openMenu: 'Menüyü aç',
+      view: 'Görüntüle',
+      edit: 'Düzenle',
+      suspend: 'Askıya Al',
+      activate: 'Etkinleştir',
+      delete: 'Sil',
+    },
+  },
+  actionDialog: {
+    tabs: {
+      basic: 'Temel Bilgiler',
+      questions: 'Sorular',
+    },
+    questionCount: 'Soru Sayısı',
+    questionType: 'Soru Türü',
+    questionDifficulty: 'Soru Zorluğu',
+    fetchRandomQuestions: 'Rastgele Soru Getir',
+    selectedQuestions: 'Seçilen Sorular',
+    errors: {
+      selectSubject: 'Lütfen önce bir konu seçin.',
+      invalidQuestionCount: 'Lütfen geçerli bir soru sayısı girin (1-100).',
+      fetchQuestionsFailed: 'Rastgele sorular getirilemedi.',
+    },
+    success: {
+      create: 'Değerlendirme başarıyla oluşturuldu.',
+      update: 'Değerlendirme başarıyla güncellendi.',
+      delete: 'Değerlendirme başarıyla silindi.',
+      fetchedQuestions: '{{count}} adet rastgele soru başarıyla getirildi.',
+    },
+    addTitle: 'Yeni Değerlendirme Ekle',
+    editTitle: 'Değerlendirme Düzenle',
+    addDescription:
+      "Yeni değerlendirme oluşturun. İşiniz bittiğinde kaydet'e tıklayın.",
+    editDescription:
+      "Değerlendirmeyi güncelleyin. İşiniz bittiğinde kaydet'e tıklayın.",
+  },
+  viewDialog: {
+    title: 'Değerlendirme Görüntüle',
+    description: 'Değerlendirme detaylarını görüntüleyin.',
+  },
+  deleteDialog: {
+    title: 'Değerlendirme Sil',
+    description:
+      '"{{title}}" adlı değerlendirmeyi silmek istediğinizden emin misiniz?',
+    success: 'Değerlendirme başarıyla silindi',
+    error: 'Değerlendirme silinemedi',
+  },
+  maxPoints: 'Maksimum Puan',
+  scheduleType: 'Zamanlama Türü',
+  scoringType: 'Puanlama Türü',
+  duration: 'Süre',
+  isPublic: 'Herkese Açık',
+  sendNotifications: 'Bildirim Gönder',
+  notificationFrequency: 'Bildirim Sıklığı',
+  coverImage: 'Kapak Görseli',
+  fields: {
+    title: 'Başlık',
+    description: 'Açıklama',
+    status: 'Durum',
+    subject: 'Konu',
+    curriculum: 'Müfredat',
+    lesson: 'Ders',
+    noDescription: 'Açıklama yok',
+  },
+  delete: 'Sil',
+  success: 'Başarılı',
+  error: 'Hata',
+};

@@ -1,0 +1,177 @@
+export const settings = {
+  title: 'Ayarlar',
+  description:
+    'Hesap ayarlarınızı yönetin ve e-posta tercihlerinizi ayarlayın.',
+  profile: {
+    title: 'Profil',
+    description: 'Profil bilgilerinizi güncelleyin.',
+    sections: {
+      personalInformation: 'Kişisel Bilgiler',
+      personalInformationDescription:
+        'Kişisel bilgilerinizi ve profil bilgilerinizi güncelleyin.',
+      personalInformationViewDescription:
+        'Kişisel bilgileriniz ve profil bilgileriniz.',
+      contactInformation: 'İletişim Bilgileri',
+      contactInformationDescription:
+        'İletişim bilgilerinizi ve adres bilgilerinizi güncelleyin.',
+      contactInformationViewDescription:
+        'İletişim bilgileriniz ve adres bilgileriniz.',
+      socialLinks: 'Sosyal Medya Bağlantıları',
+      socialLinksDescription:
+        'Sosyal medya profillerinizi ve bağlantılarınızı ekleyin.',
+      socialLinksViewDescription:
+        'Sosyal medya profilleriniz ve bağlantılarınız.',
+    },
+    status: {
+      member: 'Üye',
+      profile: 'Profil',
+      joined: 'Katılım',
+    },
+    form: {
+      firstName: 'Ad',
+      lastName: 'Soyad',
+      email: 'Email',
+      password: 'Şifre',
+      confirmPassword: 'Şifreyi onayla',
+      gender: 'Cinsiyet',
+      selectGender: 'Cinsiyet seçiniz',
+      dateOfBirth: 'Doğum tarihi',
+      dateOfBirthPlaceholder: 'Tarih seçin',
+      nationalId: 'T.C. Kimlik No',
+      userId: 'Kullanıcı ID',
+      phoneNumber: 'Telefon numarası',
+      profilePictureUrl: 'Profil Fotoğrafı',
+      profilePictureUrlHelp: 'Profil fotoğrafınızın URL adresini girin',
+      uploadProfilePicture: 'Profil Fotoğrafı Yükle',
+      changeProfilePicture: 'Profil Fotoğrafını Değiştir',
+      profilePictureHelpText: 'Profil fotoğrafı yükleyin (en fazla 5MB)',
+      profilePicturePreview: 'Profil Fotoğrafı Önizlemesi',
+      branchId: 'Şube ID',
+      country: 'Ülke',
+      city: 'Şehir',
+      state: 'Eyalet',
+      address: 'Adres',
+      zipCode: 'Posta kodu',
+      facebookLink: 'Facebook bağlantısı',
+      xLink: 'X bağlantısı',
+      instagramLink: 'Instagram bağlantısı',
+      linkedinLink: 'LinkedIn bağlantısı',
+      updateProfile: 'Profili güncelle',
+      editProfile: 'Profili Düzenle',
+      editProfileDescription:
+        'Profil bilgilerinizi ve ayarlarınızı güncelleyin.',
+      cancel: 'İptal',
+      updateProfileSuccess: 'Profil başarıyla güncellendi',
+      updateProfileError: 'Profil bilgileri güncellenirken bir hata oluştu',
+      changePassword: 'Şifreyi değiştir',
+      changePasswordSuccess: 'Şifre başarıyla değiştirildi',
+      changePasswordError: 'Şifre değiştirilirken bir hata oluştu',
+    },
+  },
+  inventory: {
+    title: 'Envanter',
+    description: 'Cihaz atamalarınızı ve envanter statüsünuzu görüntüleyin.',
+    deviceAssignments: 'Cihaz Atamaları',
+    deviceAssignmentsDescription:
+      'Cihaz atamalarınızı ve envanter statüsünuzu görüntüleyin ve takip edin.',
+    columns: {
+      device: 'Cihaz',
+      assetTag: 'Varlık Etiketi',
+      serialNumber: 'Seri Numarası',
+      category: 'Kategori',
+      status: 'Statü',
+      assignedDate: 'Atama Tarihi',
+      expectedReturn: 'Beklenen İade',
+      condition: 'Koşul',
+    },
+    filters: {
+      status: 'Statü',
+      deviceType: 'Cihaz Türü',
+      condition: 'Koşul',
+    },
+    noItemsFound: 'Envanter öğesi bulunamadı.',
+  },
+  security: {
+    title: 'Güvenlik',
+    description: 'Güvenlik ayarlarınızı güncelleyin.',
+    changePasswordTitle: 'Şifre Değiştir',
+    changePasswordDescription:
+      'Daha iyi güvenlik için hesap şifrenizi güncelleyin.',
+  },
+  preferences: {
+    title: 'Tercihler',
+    description:
+      'Hesap ayarlarınızı güncelleyin. Tercih ettiğiniz dili ve temayı ayarlayın. Ayrıca bildirimleri aktifleştirebilir veya devre dışı bırakabilirsiniz.',
+    language: 'Dil',
+    selectLanguage: 'Dil seçiniz',
+    theme: 'Tema',
+    themeDescription: 'Kontrol paneli için temayı seçin.',
+    updatePreferences: 'Tercihleri güncelle',
+    preferencesUpdated: 'Tercihler güncellendi',
+    notifications: 'Bildirimler',
+    notificationsDescription: 'Bildirimleri aktifleştir veya devre dışı bırak.',
+    notificationsEnabled: 'Bildirimler etkin',
+    notificationsDisabled: 'Bildirimler devre dışı',
+  },
+  notifications: {
+    title: 'Bildirimler',
+    description: 'Bildirimleri nasıl alacağınızı yapılandırın.',
+    notifyMeAbout: 'Beni şunlar hakkında bilgilendir...',
+    allNewMessages: 'Tüm yeni mesajlar',
+    directMessagesAndMentions: 'Doğrudan mesajlar ve bahsetmeler',
+    nothing: 'Hiçbir şey',
+    emailNotifications: 'E-posta Bildirimleri',
+    communicationEmails: 'İletişim e-postaları',
+    communicationEmailsDescription:
+      'Hesap etkinliğiniz hakkında e-postalar alın.',
+    marketingEmails: 'Pazarlama e-postaları',
+    marketingEmailsDescription:
+      'Yeni ürünler, özellikler ve daha fazlası hakkında e-postalar alın.',
+    socialEmails: 'Sosyal e-postalar',
+    socialEmailsDescription:
+      'Arkadaşlık istekleri, takipler ve daha fazlası için e-postalar alın.',
+    securityEmails: 'Güvenlik e-postaları',
+    securityEmailsDescription:
+      'Hesap etkinliğiniz ve güvenlik hakkında e-postalar alın.',
+    useDifferentSettingsForMobile:
+      'Mobil cihazlarım için farklı ayarlar kullan',
+    mobileSettingsDescription:
+      'Mobil bildirimlerinizi mobil ayarlar sayfasında yönetebilirsiniz.',
+    mobileSettings: 'mobil ayarlar',
+    updateNotifications: 'Bildirimleri güncelle',
+    pleaseSelectNotificationType: 'Lütfen bir bildirim türü seçin.',
+  },
+  notificationBell: {
+    notifications: 'Bildirimler',
+    noNotifications: 'Bildirim yok',
+    loadingNotifications: 'Bildirimler yükleniyor...',
+    reloadNotifications: 'Bildirimleri yeniden yükle',
+    markAllAsRead: 'Tümünü okundu olarak işaretle',
+    attendanceViolation: 'Devamsızlık İhlali',
+    reminder: 'Hatırlatma',
+    sent: 'Gönderildi',
+    acknowledged: 'Onaylandı',
+    acknowledge: 'Onayla',
+    acknowledgedAt: 'Onaylanma tarihi',
+    notificationDate: 'Bildirim tarihi',
+    unreadNotifications: 'okunmamış bildirim',
+  },
+  display: {
+    title: 'Görünüm',
+    description:
+      'Uygulamada neyin görüntüleneceğini kontrol etmek için öğeleri açın veya kapatın.',
+    sidebar: 'Kenar Çubuğu',
+    sidebarDescription:
+      'Kenar çubuğunda görüntülemek istediğiniz öğeleri seçin.',
+    items: {
+      recents: 'Son Kullanılanlar',
+      home: 'Ana Sayfa',
+      applications: 'Uygulamalar',
+      desktop: 'Masaüstü',
+      downloads: 'İndirilenler',
+      documents: 'Belgeler',
+    },
+    updateDisplay: 'Görünümü güncelle',
+    selectAtLeastOneItem: 'En az bir öğe seçmelisiniz.',
+  },
+};

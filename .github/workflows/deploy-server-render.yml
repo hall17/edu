@@ -1,0 +1,26 @@
+name: Deploy API to Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['develop']
+    paths:
+      - 'apps/server/**'
+      - '.github/workflows/deploy-server-render.yml'
+
+jobs:
+  # lint:
+  #   uses: ./.github/workflows/backend-ci.yml
+
+  deploy:
+    # needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Deploy
+        env:
+          deploy_url: ${{ vars.RENDER_DEPLOY_API_HOOK_URL }}
+        run: |
+          curl "$deploy_url"

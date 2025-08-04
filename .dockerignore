@@ -1,0 +1,45 @@
+# Editors / OS
+**/.vscode
+**/.idea
+**/.DS_Store
+**/Thumbs.db
+
+# Dependencies
+**/node_modules
+
+# Builds / caches / coverage
+**/dist
+**/build
+**/.cache
+**/.turbo
+**/coverage
+
+# Scripts (not needed in image)
+**/scripts
+
+# VCS
+**/.git
+**/.gitignore
+
+# Logs and docs
+**/npm-debug.log
+**/*.log
+**/README.md
+
+# Tooling configs
+**/.eslint*
+**/eslint*
+**/.editorconfig
+**/.husky*
+**/.lintstagedrc.json
+**/.prettier*
+!packages/eslint-config-custom/package.json
+!packages/prettier/*
+
+# Docker files
+**/.dockerignore
+**/Dockerfile*
+**/docker-compose*
+
+# Env and dev-only
+**/.env*

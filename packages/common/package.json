@@ -1,0 +1,29 @@
+{
+  "name": "@edusama/common",
+  "private": true,
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "tsup",
+    "build:dev": "tsup --watch",
+    "build:tsc": "tsc",
+    "clean": "rm -rf dist",
+    "check-types": "tsc --noEmit",
+    "check-format": "prettier --check .",
+    "format": "prettier --write .",
+    "lint": "yarn run eslint . --ext .ts,.tsx,.js,.jsx,.json",
+    "lint-fix": "yarn lint --fix",
+    "lint-all": "yarn check-types && yarn check-format && yarn lint",
+    "fix": "yarn format && yarn lint-fix"
+  },
+  "dependencies": {
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "eslint": "^9.26.0",
+    "prettier": "^3.5.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}

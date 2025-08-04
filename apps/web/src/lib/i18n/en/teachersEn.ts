@@ -1,0 +1,83 @@
+export const teachers = {
+  title: 'Teacher List',
+  description: 'Manage your teachers and their information here.',
+  buttons: {
+    inviteTeacher: 'Invite Teacher',
+    addTeacher: 'Add Teacher',
+  },
+  table: {
+    filterPlaceholder: 'Filter teachers...',
+    noResults: 'No results.',
+    statusChangeWarning:
+      "Changing the status will affect the teacher's access to the system and related activities.",
+    columns: {
+      name: 'Name',
+      email: 'Email',
+      phoneNumber: 'Phone Number',
+      status: 'Status',
+      type: 'Type',
+    },
+    filters: {
+      status: 'Status',
+      type: 'Type',
+      reset: 'Reset',
+    },
+    statusOptions: {
+      active: 'Active',
+      inactive: 'Inactive',
+      'on-leave': 'On Leave',
+      retired: 'Retired',
+    },
+    actions: {
+      openMenu: 'Open menu',
+      view: 'View',
+      edit: 'Edit',
+      suspend: 'Suspend',
+      changePassword: 'Change Password',
+      delete: 'Delete',
+    },
+  },
+  updateStatusSuccess: 'Teacher status updated successfully',
+  updateStatusError: 'Failed to update teacher status',
+  actionDialog: {
+    createSuccessMessage: 'Teacher created successfully.',
+    updateSuccessMessage: 'Teacher updated successfully.',
+    errorMessage: 'An error occurred. Please try again.',
+    addTitle: 'Add New Teacher',
+    editTitle: 'Edit Teacher',
+    addDescription: "Create new teacher here. Click save when you're done.",
+    editDescription: "Update the teacher here. Click save when you're done.",
+    tabs: {
+      basic: 'Basic Information',
+      additional: 'Additional Information',
+    },
+    form: {
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      username: 'Username',
+      email: 'Email',
+      phoneNumber: 'Phone Number',
+      type: 'Type',
+      selectType: 'Select a type',
+      gender: 'Gender',
+      selectGender: 'Select gender',
+      dateOfBirth: 'Date of Birth',
+      selectDate: 'Select date',
+      address: 'Address',
+      bio: 'Bio',
+      update: 'Update',
+    },
+  },
+  inviteDialog: {
+    description:
+      'Invite new teacher to join your institution by sending them an email invitation. Assign a type to define their employment status.',
+  },
+  statusDialog: {
+    title: 'Change Teacher Status',
+    description: 'Change the status for {{name}}.',
+    currentStatus: 'Current Status',
+    newStatus: 'New Status',
+    updateButton: 'Update Status',
+    success: 'Teacher status updated successfully',
+  },
+} as const;

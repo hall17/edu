@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15.6
+    env_file: .env.development
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: edusama
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5433:5432 # first port is the host port, second port is the container port
