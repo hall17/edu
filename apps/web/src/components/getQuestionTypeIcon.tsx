@@ -1,4 +1,4 @@
-import { QuestionType } from '@prisma/client';
+import { QuestionType } from '@edusama/server';
 import {
   Circle,
   FileText,

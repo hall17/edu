@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@api/prisma/generated/prisma/client';
 import pLimit from 'p-limit';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

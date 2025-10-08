@@ -1,5 +1,5 @@
 import { SYSTEM_ROLES } from '@edusama/common';
-import { Gender, UserStatus } from '@prisma/client';
+import { Gender, UserStatus } from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

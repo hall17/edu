@@ -1,5 +1,5 @@
 import { ModuleCode, Permission } from '@edusama/common';
-import { RoleStatus } from '@prisma/client';
+import { RoleStatus } from '@edusama/server';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 

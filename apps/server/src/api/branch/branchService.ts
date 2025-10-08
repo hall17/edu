@@ -3,7 +3,7 @@ import { branchInclude } from '@api/libs/prisma/selections';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import dayjs from 'dayjs';
 import { Service } from 'typedi';
 

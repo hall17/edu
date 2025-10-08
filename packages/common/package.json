@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "main": "./src/index.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "yarn clean && tsup",
     "build:dev": "tsup --watch",
     "build:tsc": "tsc",
-    "clean": "rm -rf dist",
+    "clean": "npx rimraf dist",
     "check-types": "tsc --noEmit",
     "check-format": "prettier --check .",
     "format": "prettier --write .",

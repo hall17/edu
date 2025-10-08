@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@prisma/client';
+import { QuestionDifficulty } from '@edusama/server';
 import { Target, TrendingUp, Award } from 'lucide-react';
 
 // Difficulty Helpers

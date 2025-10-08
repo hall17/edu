@@ -1,6 +1,6 @@
 import { ModuleCode, Permission } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { RoleStatus } from '@prisma/client';
+import { RoleStatus } from '@edusama/server';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { InfoIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';

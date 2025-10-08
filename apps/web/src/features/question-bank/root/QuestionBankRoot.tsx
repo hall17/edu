@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@prisma/client';
+import { QuestionDifficulty } from '@edusama/server';
 import { BookOpen, CircleQuestionMark, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

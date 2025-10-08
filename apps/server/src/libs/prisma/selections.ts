@@ -1,4 +1,4 @@
-import { Prisma, QuestionType } from '@prisma/client';
+import { Prisma, QuestionType } from '@api/prisma/generated/prisma/client';
 
 export const userAuthInclude = (options: { branchId?: number } = {}) => {
   return {

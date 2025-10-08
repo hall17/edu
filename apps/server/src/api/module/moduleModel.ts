@@ -1,4 +1,4 @@
-import { ModuleStatus } from '@prisma/client';
+import { ModuleStatus } from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, intIdSchema } from '../../types';

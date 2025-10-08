@@ -6,7 +6,7 @@ import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
 } from '@api/utils/constants';
-import { User } from '@prisma/client';
+import { User } from '@api/prisma/generated/prisma/client';
 import { sign } from 'jsonwebtoken';
 import Container from 'typedi';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

@@ -26,7 +26,7 @@ import {
   USER_TYPES,
   UserType,
 } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { compare, hash } from 'bcrypt';
 import { Request } from 'express';
 import { sign } from 'jsonwebtoken';

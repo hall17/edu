@@ -1,4 +1,4 @@
-import { EnrollmentStatus } from '@prisma/client';
+import { EnrollmentStatus } from '@edusama/server';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

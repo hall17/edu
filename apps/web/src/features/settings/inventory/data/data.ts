@@ -1,4 +1,4 @@
-import { DeviceCondition, DeviceStatus, DeviceType } from '@prisma/client';
+import { DeviceCondition, DeviceStatus, DeviceType } from '@edusama/server';
 import {
   IconDeviceDesktop,
   IconDeviceLaptop,

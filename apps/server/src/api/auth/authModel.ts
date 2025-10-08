@@ -1,4 +1,9 @@
-import { Gender, Language, Theme, TokenType } from '@prisma/client';
+import {
+  Gender,
+  Language,
+  Theme,
+  TokenType,
+} from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { userCreateSchema } from '../user/userModel';

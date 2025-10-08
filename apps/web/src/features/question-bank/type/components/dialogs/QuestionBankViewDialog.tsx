@@ -7,7 +7,7 @@ import {
   ShortAnswerQuestionData,
   TrueFalseQuestionData,
 } from '@edusama/common';
-import { QuestionType, QuestionDifficulty } from '@prisma/client';
+import { QuestionType, QuestionDifficulty } from '@edusama/server';
 import { useTranslation } from 'react-i18next';
 
 import { useQuestionBankContext } from '../../QuestionBankContext';

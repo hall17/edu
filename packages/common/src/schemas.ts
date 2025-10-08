@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { QuestionDifficulty, QuestionType } from '@prisma/client';
+// import {
+//   QuestionDifficulty,
+//   QuestionType,
+// } from '@api/prisma/generated/prisma/client';
+import {
+  QuestionDifficulty,
+  QuestionType,
+} from '../../../apps/server/src/prisma/generated/prisma/enums';
 
 // Base option schema used across multiple question types
 const optionSchema = z.object({

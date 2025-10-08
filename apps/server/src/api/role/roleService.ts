@@ -3,7 +3,7 @@ import { roleInclude } from '@api/libs/prisma/selections';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils/hasPermission';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
 import { prisma } from '@api/libs/prisma';

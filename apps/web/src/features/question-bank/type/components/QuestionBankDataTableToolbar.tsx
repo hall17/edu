@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType } from '@prisma/client';
+import { QuestionDifficulty, QuestionType } from '@edusama/server';
 import { IconPlus } from '@tabler/icons-react';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';

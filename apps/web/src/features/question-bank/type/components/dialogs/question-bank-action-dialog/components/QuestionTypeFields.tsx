@@ -5,7 +5,7 @@ import {
   OrderingQuestionData,
   QuestionData,
 } from '@edusama/common';
-import { QuestionType } from '@prisma/client';
+import { QuestionType } from '@edusama/server';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 

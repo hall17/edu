@@ -2,7 +2,7 @@ import { HTTP_EXCEPTIONS } from '@api/constants';
 import { curriculumInclude, subjectInclude } from '@api/libs/prisma/selections';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 import z from 'zod';
 

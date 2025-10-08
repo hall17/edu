@@ -1,4 +1,4 @@
-import { SubjectStatus } from '@prisma/client';
+import { SubjectStatus } from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

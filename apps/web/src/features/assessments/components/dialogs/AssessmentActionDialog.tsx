@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ScheduleType, ScoringType } from '@prisma/client';
+import { ScheduleType, ScoringType } from '@edusama/server';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';

@@ -33,7 +33,7 @@ import {
   SubjectStatus,
   Theme,
   UserStatus,
-} from '@prisma/client';
+} from '@edusama/server';
 
 import { countries } from './countriesEn';
 

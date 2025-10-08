@@ -1,4 +1,8 @@
-import { ClassroomStatus, DayOfWeek, EnrollmentStatus } from '@prisma/client';
+import {
+  ClassroomStatus,
+  DayOfWeek,
+  EnrollmentStatus,
+} from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

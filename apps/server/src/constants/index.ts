@@ -1,4 +1,4 @@
-import { Language } from '@prisma/client';
+import { Language } from '@api/prisma/generated/prisma/client';
 
 export * from './httpExceptions';
 

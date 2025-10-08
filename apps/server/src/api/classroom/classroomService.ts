@@ -1,4 +1,5 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { prisma } from '@api/libs/prisma';
 import {
   classroomInclude,
   classroomIntegrationInclude,
@@ -7,13 +8,12 @@ import {
   classroomStudentInclude,
 } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@prisma/client';
 import Container, { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { PAGE_SIZE } from '../../utils/constants';
 import { hasPermission } from '../../utils/hasPermission';
 import { StudentService } from '../student/studentService';

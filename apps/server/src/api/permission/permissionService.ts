@@ -1,6 +1,6 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { CustomError, TokenUser } from '@api/types';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
 import { prisma } from '@api/libs/prisma';

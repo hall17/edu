@@ -5,7 +5,7 @@ import {
   CountryCode,
 } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Gender } from '@prisma/client';
+import { Gender } from '@edusama/server';
 import {
   IconCamera,
   IconCheck,

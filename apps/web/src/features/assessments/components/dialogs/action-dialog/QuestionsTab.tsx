@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType } from '@prisma/client';
+import { QuestionDifficulty, QuestionType } from '@edusama/server';
 import { useQuery } from '@tanstack/react-query';
 import {
   CheckCircle2,

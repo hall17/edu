@@ -1,4 +1,4 @@
-import { SubjectStatus } from '@prisma/client';
+import { SubjectStatus } from '@edusama/server';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {

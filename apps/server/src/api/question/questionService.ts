@@ -8,7 +8,7 @@ import {
   QuestionData,
   SYSTEM_ROLES,
 } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
 import { prisma } from '@api/libs/prisma';

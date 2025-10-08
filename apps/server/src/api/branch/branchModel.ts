@@ -1,4 +1,7 @@
-import { BranchStatus, ModuleStatus } from '@prisma/client';
+import {
+  BranchStatus,
+  ModuleStatus,
+} from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, intIdSchema } from '../../types';

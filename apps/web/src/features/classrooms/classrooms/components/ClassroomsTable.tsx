@@ -1,4 +1,4 @@
-import { ClassroomStatus } from '@prisma/client';
+import { ClassroomStatus } from '@edusama/server';
 import { IconEdit, IconEye, IconTrash, IconUsers } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';

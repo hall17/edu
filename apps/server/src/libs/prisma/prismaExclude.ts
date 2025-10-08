@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 
 type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
 type Entity = A<keyof typeof Prisma>;

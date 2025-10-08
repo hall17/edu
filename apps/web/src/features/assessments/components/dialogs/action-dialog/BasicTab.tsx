@@ -1,4 +1,4 @@
-import { ScheduleType, ScoringType } from '@prisma/client';
+import { ScheduleType, ScoringType } from '@edusama/server';
 import { Control, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 

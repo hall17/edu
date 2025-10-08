@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@prisma/client';
+import { QuestionDifficulty } from '@edusama/server';
 import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';

@@ -6,7 +6,7 @@ import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import { INVITATION_EXPIRATION_TIME, PAGE_SIZE } from '@api/utils/constants';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma, Parent } from '@prisma/client';
+import { Prisma, Parent } from '@api/prisma/generated/prisma/client';
 import { hash } from 'bcrypt';
 import { Service } from 'typedi';
 

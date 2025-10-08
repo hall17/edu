@@ -5,7 +5,7 @@ import { generateSignedUrl } from '@api/libs/s3';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { hash } from 'bcrypt';
 import ExcelJS from 'exceljs';
 import pLimit from 'p-limit';

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CompanyStatus } from '@prisma/client';
+import { CompanyStatus } from '@edusama/server';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { useEffect, useState } from 'react';

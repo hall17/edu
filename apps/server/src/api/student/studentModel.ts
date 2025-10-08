@@ -1,4 +1,8 @@
-import { Gender, StudentStatus, UserStatus } from '@prisma/client';
+import {
+  Gender,
+  StudentStatus,
+  UserStatus,
+} from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
 

@@ -1,4 +1,4 @@
-import { CurriculumStatus } from '@prisma/client';
+import { CurriculumStatus } from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

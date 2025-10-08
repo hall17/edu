@@ -1,4 +1,4 @@
-import { StudentStatus } from '@prisma/client';
+import { StudentStatus } from '@edusama/server';
 import {
   IconBan,
   IconCheck,

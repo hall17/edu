@@ -4,7 +4,7 @@ import {
   getPhoneNumberSchema,
 } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Gender, StudentStatus } from '@prisma/client';
+import { Gender, StudentStatus } from '@edusama/server';
 import { IconFileTypeXls, IconUserFilled } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';

@@ -3,7 +3,7 @@ import { classroomTemplateInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { ClassroomTemplate, Prisma } from '@prisma/client';
+import { ClassroomTemplate, Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
 import { prisma } from '@api/libs/prisma';

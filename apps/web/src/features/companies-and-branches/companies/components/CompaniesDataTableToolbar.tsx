@@ -1,4 +1,4 @@
-import { CompanyStatus } from '@prisma/client';
+import { CompanyStatus } from '@edusama/server';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 

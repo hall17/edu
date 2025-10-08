@@ -1,4 +1,4 @@
-import { QuestionType } from '@prisma/client';
+import { QuestionType } from '@edusama/server';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import React, { useState } from 'react';

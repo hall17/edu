@@ -6,7 +6,7 @@ import {
   questionDataSchema,
 } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { QuestionDifficulty, QuestionType } from '@prisma/client';
+import { QuestionDifficulty, QuestionType } from '@edusama/server';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { UseFormReturn } from 'react-hook-form';

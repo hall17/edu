@@ -1,14 +1,13 @@
 import { env } from '@api/env';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from '@api/prisma/generated/prisma/client';
+import { config } from '@api/prisma/generated/prisma/internal/class';
 
 // Function to check if a model has deletedAt field using DMMF
 function hasDeletedAtField(modelName: string): boolean {
   try {
     // Access Prisma's DMMF (Data Model Meta Format) to get schema information
-    const dmmf = Prisma.dmmf;
-    const model = dmmf.datamodel.models.find(
-      (m) => m.name.toLowerCase() === modelName.toLowerCase()
-    );
+    const model = config.runtimeDataModel.models[modelName];
+
     if (!model) return false;
 
     // Check if the model has a deletedAt field

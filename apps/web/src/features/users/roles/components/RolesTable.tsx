@@ -1,4 +1,4 @@
-import { RoleStatus } from '@prisma/client';
+import { RoleStatus } from '@edusama/server';
 import {
   IconEdit,
   IconEye,

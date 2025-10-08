@@ -17,7 +17,7 @@ import {
   DeviceStatus,
   Gender,
   Prisma,
-} from '@prisma/client';
+} from '@api/prisma/generated/prisma/client';
 import { hash } from 'bcrypt';
 import dayjs from 'dayjs';
 

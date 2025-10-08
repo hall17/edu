@@ -19,7 +19,8 @@
     "fix:server": "yarn workspace @edusama/server fix:all",
     "fix:all": "yarn fix:web && yarn fix:server",
     "check:types": "yarn workspace @edusama/web check:types && yarn workspace @edusama/server check:types",
-    "remove:node_modules": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules"
+    "remove:node_modules": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+    "deploy:web": "yarn workspace @edusama/server prisma:generate && yarn workspace @edusama/common build && cd apps/web && yarn build"
   },
   "engines": {
     "node": ">=18"

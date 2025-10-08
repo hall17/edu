@@ -1,4 +1,4 @@
-import { EnrollmentStatus } from '@prisma/client';
+import { EnrollmentStatus } from '@edusama/server';
 import { IconEye, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {

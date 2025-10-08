@@ -1,6 +1,6 @@
 import { logger } from '@api/libs/logger';
 import { prisma } from '@api/libs/prisma';
-import { AttendanceNotificationType } from '@prisma/client';
+import { AttendanceNotificationType } from '@api/prisma/generated/prisma/client';
 import dayjs from 'dayjs';
 // import pLimit from 'p-limit';
 

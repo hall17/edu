@@ -1,6 +1,6 @@
 import { MODULE_CODES, ModuleCode } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DayOfWeek } from '@prisma/client';
+import { DayOfWeek } from '@edusama/server';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';

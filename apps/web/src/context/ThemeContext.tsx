@@ -1,4 +1,4 @@
-import { Theme } from '@prisma/client';
+import { Theme } from '@edusama/server';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAuth } from '@/stores/authStore';

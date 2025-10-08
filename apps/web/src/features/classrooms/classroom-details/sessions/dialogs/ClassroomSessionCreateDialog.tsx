@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AttendanceStatus } from '@prisma/client';
+import { AttendanceStatus } from '@edusama/server';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { detailedDiff } from 'deep-object-diff';

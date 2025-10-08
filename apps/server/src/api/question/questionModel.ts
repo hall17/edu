@@ -1,5 +1,8 @@
 import { questionDataSchema } from '@edusama/common';
-import { QuestionType, QuestionDifficulty } from '@prisma/client';
+import {
+  QuestionType,
+  QuestionDifficulty,
+} from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

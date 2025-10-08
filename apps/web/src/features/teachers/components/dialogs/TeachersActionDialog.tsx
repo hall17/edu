@@ -4,7 +4,7 @@ import {
   getPhoneNumberSchema,
 } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Gender, UserStatus } from '@prisma/client';
+import { Gender, UserStatus } from '@edusama/server';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';

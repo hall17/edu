@@ -1,4 +1,4 @@
-import { CompanyStatus } from '@prisma/client';
+import { CompanyStatus } from '@api/prisma/generated/prisma/client';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, intIdSchema } from '../../types';
