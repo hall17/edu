@@ -39,21 +39,21 @@ function useProviderValue(initialFilters?: { type?: string[] }) {
     NonNullable<typeof questions>[number]['curriculum']
   >;
 
-  const subjects = questionsQuery.data?.questions.reduce((acc, q) => {
-    if (acc.find((s) => s.id === q.subject.id)) {
-      return acc;
-    }
-    return [...acc, q.subject] as SubjectType[];
-  }, [] as SubjectType[]);
+  // const subjects = questionsQuery.data?.questions.reduce((acc, q) => {
+  //   if (acc.find((s) => s.id === q.subject.id)) {
+  //     return acc;
+  //   }
+  //   return [...acc, q.subject] as SubjectType[];
+  // }, [] as SubjectType[]);
 
-  const curriculums =
-    questionsQuery.data?.questions.reduce((acc, q) => {
-      if (!q.curriculum) return acc;
-      if (acc.find((curriculum) => curriculum?.id === q.curriculum!.id)) {
-        return acc;
-      }
-      return [...acc, q.curriculum] as CurriculumType[];
-    }, [] as CurriculumType[]) ?? [];
+  // const curriculums =
+  //   questionsQuery.data?.questions.reduce((acc, q) => {
+  //     if (!q.curriculum) return acc;
+  //     if (acc.find((curriculum) => curriculum?.id === q.curriculum!.id)) {
+  //       return acc;
+  //     }
+  //     return [...acc, q.curriculum] as CurriculumType[];
+  //   }, [] as CurriculumType[]) ?? [];
 
   const queryKey = trpc.question.findAll.queryKey(filters);
 
@@ -120,8 +120,8 @@ function useProviderValue(initialFilters?: { type?: string[] }) {
     updateQuestion,
     deleteQuestion,
     questions,
-    subjects,
-    curriculums,
+    // subjects,
+    // curriculums,
   };
 }
 

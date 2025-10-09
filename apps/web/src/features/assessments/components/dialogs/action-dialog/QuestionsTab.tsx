@@ -74,12 +74,12 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
     const lessonId = form.getValues('lessonId');
 
     if (!subjectId) {
-      toast.error('Please select a subject first.');
+      toast.error(t('assessments.actionDialog.errors.selectSubject'));
       return;
     }
 
     if (!questionCount || questionCount < 1) {
-      toast.error('Please enter a valid question count (1-100).');
+      toast.error(t('assessments.actionDialog.errors.invalidQuestionCount'));
       return;
     }
 
@@ -123,7 +123,9 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
       );
       form.setValue('questions', formQuestions);
       toast.success(
-        `Successfully fetched ${randomQuestions.length} random questions.`
+        t('assessments.actionDialog.success.fetchedQuestions', {
+          count: randomQuestions.length,
+        })
       );
     } catch (error) {
       console.error('Failed to fetch random questions:', error);
@@ -159,7 +161,9 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
       <div className="flex items-end justify-between gap-8">
         <div className="flex w-full flex-1 gap-4">
           <div>
-            <label className="text-sm font-medium">Question Count</label>
+            <label className="text-sm font-medium">
+              {t('assessments.actionDialog.questionCount')}
+            </label>
             <Input
               type="number"
               min="1"
@@ -171,13 +175,17 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
           </div>
 
           <div className="w-full">
-            <label className="text-sm font-medium">Type</label>
+            <label className="text-sm font-medium">
+              {t('assessments.actionDialog.questionType')}
+            </label>
             <Select
               value={questionType}
               onValueChange={(value) => setQuestionType(value as QuestionType)}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select question type" />
+                <SelectValue
+                  placeholder={t('assessments.actionDialog.selectQuestionType')}
+                />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(QuestionType).map((type) => (
@@ -190,7 +198,9 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
           </div>
 
           <div className="w-full">
-            <label className="text-sm font-medium">Difficulty</label>
+            <label className="text-sm font-medium">
+              {t('assessments.actionDialog.questionDifficulty')}
+            </label>
             <Select
               value={questionDifficulty}
               onValueChange={(value) =>
@@ -198,7 +208,9 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
               }
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select difficulty" />
+                <SelectValue
+                  placeholder={t('assessments.actionDialog.selectDifficulty')}
+                />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(QuestionDifficulty).map((difficulty) => (
@@ -219,7 +231,7 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
             isLoading={isFetchingQuestions}
             variant="outline"
           >
-            Fetch Random Questions
+            {t('assessments.actionDialog.fetchRandomQuestions')}
           </LoadingButton>
         </div>
       </div>
@@ -228,7 +240,8 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
       {selectedQuestions.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">
-            Selected Questions ({selectedQuestions.length})
+            {t('assessments.actionDialog.selectedQuestions')} (
+            {selectedQuestions.length})
           </h3>
           <div className="max-h-60 space-y-2 overflow-y-auto">
             {selectedQuestions.map((question) => (
@@ -265,7 +278,7 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
                     size="sm"
                     onClick={() => handleRemoveQuestion(question.id)}
                   >
-                    Remove
+                    {t('common.remove')}
                   </Button>
                 </ItemActions>
               </Item>

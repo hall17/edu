@@ -25,7 +25,7 @@ COPY ./packages ./packages
 # go into apps/server
 WORKDIR /app/apps/server
 
-RUN yarn prisma generate
+RUN yarn prisma:generate
 
 # Build the application
 RUN yarn workspace @edusama/common build

@@ -39,7 +39,7 @@ export function QuestionBankDeleteDialog() {
   }
 
   return (
-    <Dialog open={openedDialog === 'delete'}>
+    <Dialog open onOpenChange={() => setOpenedDialog(null)}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('questionBank.dialogs.deleteTitle')}</DialogTitle>

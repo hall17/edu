@@ -393,6 +393,7 @@ export const common = {
     phoneNumberInvalid: 'Invalid phone number',
     nationalIdInvalid: 'Invalid national ID',
     actions: 'Actions',
+    remove: 'Remove',
     resetFilters: 'Reset Filters',
     pagination: {
       showing: 'Showing',
@@ -512,6 +513,7 @@ export const common = {
     noRecord: 'No record',
     pleaseEnsureAllFieldsAreValid: 'Please ensure all fields are valid',
     pleaseFillInAllRequiredFields: 'Please fill in all required fields',
+    select: 'Select',
   },
   // Shared dialog translations
   dialogs: {

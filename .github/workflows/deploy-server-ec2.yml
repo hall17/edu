@@ -3,7 +3,7 @@ name: Deploy API to AWS EC2
 on:
   workflow_dispatch:
   push:
-    branches: ['production']
+    branches: ['master']
     paths:
       - 'apps/server/**'
       - '.github/workflows/deploy-server-ec2.yml'
@@ -16,15 +16,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        node-version: [20.x]
-    env:
-      NODE_ENV: ${{ vars.NODE_ENV }}
-      ACCESS_TOKEN_SECRET_KEY: ${{ vars.ACCESS_TOKEN_SECRET_KEY }}
-      CREDENTIALS: ${{ vars.CREDENTIALS }}
-      DATABASE_URL: ${{ vars.DATABASE_URL }}
-      LOG_DIR: ${{ vars.LOG_DIR }}
-      LOG_FORMAT: ${{ vars.LOG_FORMAT }}
-      ORIGIN: ${{ vars.ORIGIN }}
+        node-version: [22.x]
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
@@ -35,26 +27,19 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
 
-      - name: Create env file
-        uses: 0ndt/envfile@v1
-        with:
-          secrets: ${{ toJSON(vars) }}
-          exclude: ENV_FILE
-          file: ./.env.production
-
       - name: Install dependencies & Create env file and Build the project
         run: |
           ls
           export NODE_OPTIONS="--max-old-space-size=1024"
-          rm -rf ./client
+          rm -rf ./apps/web
           yarn install --production=false
           cd apps/server
           touch .env.production
           echo "${{ vars.ENV_FILE }}" > .env.production
           export $(grep -v '^#' .env.production | xargs)
-          yarn prisma-generate
+          yarn prisma:generate
+          yarn workspace @edusama/common build
           yarn build
-          yarn prisma migrate deploy
 
       - name: Restart server running in pm2
-        run: yarn restart-server
+        run: yarn workspace @edusama/server restart:prod:pm2

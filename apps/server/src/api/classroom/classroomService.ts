@@ -31,8 +31,9 @@ import {
   CreateIntegrationSessionDto,
   UpdateIntegrationSessionDto,
   FindAllClassroomIntegrationsDto,
-  ClassroomIntegrationSessionFindAllDto,
   ClassroomUpdateStatusDto,
+  FindAllIntegrationSessionsDto,
+  FindAllClassroomIntegrationAssessmentsDto,
 } from './classroomModel';
 
 type ClassroomStudentReturnType = Prisma.ClassroomStudentGetPayload<{
@@ -599,6 +600,7 @@ export class ClassroomService {
     }
 
     let where: Prisma.ClassroomStudentWhereInput = {
+      classroomId: filterDto.classroomId,
       student: {
         deletedAt: null,
         branchId:
@@ -822,7 +824,7 @@ export class ClassroomService {
 
   async findAllIntegrationSessions(
     requestedBy: TokenUser,
-    filterDto: ClassroomIntegrationSessionFindAllDto
+    filterDto: FindAllIntegrationSessionsDto
   ) {
     // Apply permission-based access control
     if (!requestedBy.isSuperAdmin) {
@@ -1256,6 +1258,101 @@ export class ClassroomService {
     }
 
     return classroomIntegration;
+  }
+
+  async findAllClassroomIntegrationAssessments(
+    requestedBy: TokenUser,
+    filterDto: FindAllClassroomIntegrationAssessmentsDto
+  ) {
+    if (!requestedBy.isSuperAdmin) {
+      const userHasReadPermission = hasPermission(
+        requestedBy,
+        MODULE_CODES.classrooms,
+        PERMISSIONS.read
+      );
+
+      if (!userHasReadPermission) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+      }
+    }
+
+    const { q, sort, size = PAGE_SIZE } = filterDto;
+
+    const page = filterDto.page || 1;
+    let orderBy: Prisma.ClassroomIntegrationAssessmentOrderByWithRelationInput =
+      {};
+
+    if (sort) {
+      const [field, order] = sort.split(':');
+      orderBy = { [field]: order as Prisma.SortOrder };
+    } else {
+      orderBy.createdAt = 'desc';
+    }
+
+    let where: Prisma.ClassroomIntegrationAssessmentWhereInput = {};
+
+    if (filterDto.subjectIds) {
+      where.classroomIntegration = {
+        subjectId: {
+          in: filterDto.subjectIds,
+        },
+      };
+    }
+
+    if (filterDto.lessonIds) {
+      where.assessment = {
+        lessonId: {
+          in: filterDto.lessonIds,
+        },
+      };
+    }
+
+    if (q) {
+      where = {
+        ...where,
+        OR: [
+          {
+            classroomIntegration: {
+              classroom: { name: { contains: q, mode: 'insensitive' } },
+            },
+          },
+          { assessment: { title: { contains: q, mode: 'insensitive' } } },
+        ],
+      };
+    }
+
+    const [classroomIntegrationAssessments, count] = await Promise.all([
+      prisma.classroomIntegrationAssessment.findMany({
+        ...(filterDto.all
+          ? {}
+          : {
+              skip: (page - 1) * size,
+              take: size,
+            }),
+        where,
+        orderBy,
+        include: {
+          classroomIntegration: {
+            include: {
+              classroom: true,
+              subject: true,
+            },
+          },
+          assessment: true,
+        },
+      }),
+      prisma.classroomIntegrationAssessment.count({ where }),
+    ]);
+
+    return {
+      classroomIntegrationAssessments,
+      pagination: {
+        page,
+        size,
+        count,
+        totalPages: Math.ceil(count / size),
+      },
+    };
   }
 
   async createStudentData(

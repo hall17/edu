@@ -16,8 +16,8 @@ import {
   findAllClassroomIntegrationsSchema,
   createIntegrationSessionSchema,
   updateIntegrationSessionSchema,
-  classroomIntegrationSessionFindAllSchema,
   classroomUpdateStatusSchema,
+  findAllIntegrationSessionsSchema,
 } from './classroomModel';
 import { ClassroomService } from './classroomService';
 
@@ -94,8 +94,18 @@ export const classroomRouter = t.router({
     .mutation(async ({ ctx: { req }, input }) => {
       return classroomService.generateAccessLink(req.user, input.id);
     }),
+  findAllClassroomIntegrations: protectedProcedure
+    .input(findAllClassroomIntegrationsSchema)
+    .query(async ({ ctx: { req }, input }) => {
+      return classroomService.findAllClassroomIntegrations(req.user, input);
+    }),
+  findOneClassroomIntegration: protectedProcedure
+    .input(idSchema)
+    .query(async ({ ctx: { req }, input }) => {
+      return classroomService.findOneClassroomIntegration(req.user, input.id);
+    }),
   findAllIntegrationSessions: protectedProcedure
-    .input(classroomIntegrationSessionFindAllSchema)
+    .input(findAllIntegrationSessionsSchema)
     .query(async ({ ctx: { req }, input }) => {
       return classroomService.findAllIntegrationSessions(req.user, input);
     }),
@@ -109,14 +119,9 @@ export const classroomRouter = t.router({
     .mutation(async ({ ctx: { req }, input }) => {
       return classroomService.updateIntegrationSession(req.user, input);
     }),
-  findAllClassroomIntegrations: protectedProcedure
-    .input(findAllClassroomIntegrationsSchema)
-    .query(async ({ ctx: { req }, input }) => {
-      return classroomService.findAllClassroomIntegrations(req.user, input);
-    }),
-  findOneClassroomIntegration: protectedProcedure
+  deleteIntegrationSession: protectedProcedure
     .input(idSchema)
-    .query(async ({ ctx: { req }, input }) => {
-      return classroomService.findOneClassroomIntegration(req.user, input.id);
+    .mutation(async ({ ctx: { req }, input }) => {
+      return classroomService.deleteIntegrationSession(req.user, input.id);
     }),
 });

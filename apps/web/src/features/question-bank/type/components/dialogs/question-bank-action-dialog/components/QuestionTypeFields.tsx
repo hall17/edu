@@ -67,11 +67,9 @@ export function QuestionTypeFields({
             (watchedQuestionData.correctAnswers as number[]) || []
           }
           onQuestionTextChange={(text) => {
-            console.log('text', text);
             form.setValue('questionText', text);
           }}
           onCorrectAnswersChange={(correctAnswers) => {
-            console.log('correctAnswers', correctAnswers);
             const currentData = watchedQuestionData as FillInBlankQuestionData;
             form.setValue('questionData', {
               ...currentData,

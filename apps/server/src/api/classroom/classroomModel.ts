@@ -117,7 +117,7 @@ export const updateAnnouncementSchema = createAnnouncementSchema
   .partial()
   .merge(idSchema);
 
-export const classroomIntegrationSessionFindAllSchema = z
+export const findAllIntegrationSessionsSchema = z
   .object({
     classroomId: z.uuid(),
     subjectIds: z.array(z.string().uuid()).optional(),
@@ -152,9 +152,18 @@ export const updateIntegrationSessionSchema = createIntegrationSessionSchema
     })
   );
 
+// classroom integration schemas
 export const findAllClassroomIntegrationsSchema = z
   .object({
     classroomIds: z.array(z.uuid()).optional(),
+  })
+  .merge(DefaultFilterSchema);
+
+// classroom integration assessment schemas
+export const findAllClassroomIntegrationAssessmentsSchema = z
+  .object({
+    subjectIds: z.array(z.uuid()).optional(),
+    lessonIds: z.array(z.uuid()).optional(),
   })
   .merge(DefaultFilterSchema);
 
@@ -195,7 +204,11 @@ export type FindAllClassroomIntegrationsDto = z.infer<
   typeof findAllClassroomIntegrationsSchema
 >;
 
+export type FindAllClassroomIntegrationAssessmentsDto = z.infer<
+  typeof findAllClassroomIntegrationAssessmentsSchema
+>;
+
 // classroom integration session
-export type ClassroomIntegrationSessionFindAllDto = z.infer<
-  typeof classroomIntegrationSessionFindAllSchema
+export type FindAllIntegrationSessionsDto = z.infer<
+  typeof findAllIntegrationSessionsSchema
 >;

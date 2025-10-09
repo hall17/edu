@@ -354,6 +354,7 @@ export const common = {
       'Tüm öğrencilerin yoklama kaydı yapılmak zorundadır',
     passwordsDoNotMatch: 'Şifreler eşleşmiyor',
     actions: 'İşlemler',
+    remove: 'Kaldır',
     resetFilters: 'Filtreleri Sıfırla',
     pagination: {
       showing: 'Gösteriliyor',
@@ -474,6 +475,7 @@ export const common = {
     noRecord: 'Kayıt yok',
     pleaseEnsureAllFieldsAreValid: 'Lütfen tüm alanları doğru giriniz',
     pleaseFillInAllRequiredFields: 'Lütfen tüm zorunlu alanları doldurunuz',
+    select: 'Seçin',
   },
   // Shared dialog translations
   dialogs: {

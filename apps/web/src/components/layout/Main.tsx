@@ -65,9 +65,9 @@ export const Main = ({
                   onClick={(e) => {
                     if (onClickBackButton) {
                       onClickBackButton();
+                      e.preventDefault();
+                      e.stopPropagation();
                     }
-                    e.preventDefault();
-                    e.stopPropagation();
                   }}
                 >
                   <Link to={backButtonTo || '/'}>

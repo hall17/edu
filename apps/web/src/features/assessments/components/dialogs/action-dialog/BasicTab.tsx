@@ -1,11 +1,11 @@
 import { ScheduleType, ScoringType } from '@edusama/server';
-import { Control, UseFormReturn } from 'react-hook-form';
+import { useQuery } from '@tanstack/react-query';
+import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { AssessmentFormData } from '../AssessmentActionDialog';
 
 import { DroppableImage } from '@/components/DroppableImage';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Combobox } from '@/components/ui/combobox';
 import {
@@ -24,144 +24,167 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { trpc } from '@/lib/trpc';
 
 interface BasicTabProps {
   form: UseFormReturn<AssessmentFormData>;
-  subjects: Array<{ id: string; name: string }>;
-  curriculums: Array<{ id: string; name: string }>;
-  lessons: Array<{ id: string; name: string }>;
 }
 
-export function BasicTab({
-  form,
-  subjects,
-  curriculums,
-  lessons,
-}: BasicTabProps) {
+export function BasicTab({ form }: BasicTabProps) {
   const { t } = useTranslation();
 
+  const selectedSubjectId = form.watch('subjectId');
+  const selectedCurriculumId = form.watch('curriculumId');
+
+  const subjectsQuery = useQuery(
+    trpc.subject.findAll.queryOptions({ all: true })
+  );
+
+  const subjects = subjectsQuery.data?.subjects ?? [];
+  const selectedSubject = subjects.find(
+    (subject) => subject.id === selectedSubjectId
+  );
+  const availableCurriculums = selectedSubject?.curriculums || [];
+
+  const availableLessons = selectedCurriculumId
+    ? availableCurriculums.find(
+        (curriculum) => curriculum.id === selectedCurriculumId
+      )?.lessons
+    : [];
+
   return (
-    <div className="space-y-6">
+    <div className="mt-8 space-y-8">
       {/* Subject, Curriculum, Lesson Selection */}
-      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-3">
-        <FormField
-          control={form.control}
-          name="subjectId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>Subject</FormLabel>
-              <Combobox
-                options={subjects.map((subject) => ({
-                  label: subject.name,
-                  value: subject.id,
-                }))}
-                value={field.value}
-                onValueChange={field.onChange}
-                placeholder="Select subject"
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-2">
+        <div className="col-span-2 grid w-full grid-cols-1 space-y-4 md:grid-cols-6">
+          {/* Cover Image */}
+          <div className="col-span-1">
+            <FormField
+              control={form.control}
+              name="coverImageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="justify-center">
+                    {t('assessments.coverImage')}
+                  </FormLabel>
+                  <FormControl>
+                    <DroppableImage
+                      size="2xl"
+                      value={field.value}
+                      onChange={field.onChange}
+                      uploadText={t('common.uploadImage')}
+                      changeText={t('common.changeImage')}
+                      helpText={t('common.imageUploadHelp')}
+                      previewTitle={t('common.imagePreview')}
+                      maxSize={5 * 1024 * 1024} // 5MB for cover images
+                      accept={{
+                        'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* Title and Description */}
+          <div className="col-span-5 grid w-full grid-cols-1 items-start gap-y-1 md:gap-y-0">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>
+                    {t('assessments.fields.title')}
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="curriculumId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Curriculum</FormLabel>
-              <Combobox
-                options={curriculums.map((curriculum) => ({
-                  label: curriculum.name,
-                  value: curriculum.id,
-                }))}
-                value={field.value}
-                onValueChange={field.onChange}
-                placeholder="Select curriculum"
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('assessments.fields.description')}</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} rows={3} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="col-span-2 grid grid-cols-1 items-start gap-4 space-y-4 md:grid-cols-3">
+          <FormField
+            control={form.control}
+            name="subjectId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>
+                  {t('assessments.fields.subject')}
+                </FormLabel>
+                <Combobox
+                  options={subjects.map((subject) => ({
+                    label: subject.name,
+                    value: subject.id,
+                  }))}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  placeholder={t('assessments.actionDialog.selectSubject')}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="lessonId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lesson</FormLabel>
-              <Combobox
-                options={lessons.map((lesson) => ({
-                  label: lesson.name,
-                  value: lesson.id,
-                }))}
-                value={field.value}
-                onValueChange={field.onChange}
-                placeholder="Select lesson"
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+          <FormField
+            control={form.control}
+            name="curriculumId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('assessments.fields.curriculum')}</FormLabel>
+                <Combobox
+                  options={availableCurriculums?.map((curriculum) => ({
+                    label: curriculum.name,
+                    value: curriculum.id,
+                  }))}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  placeholder={t('assessments.actionDialog.selectCurriculum')}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      {/* Cover Image */}
-      <FormField
-        control={form.control}
-        name="coverImageUrl"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="justify-center">
-              {t('assessments.coverImage')}
-            </FormLabel>
-            <FormControl>
-              <DroppableImage
-                value={field.value}
-                onChange={field.onChange}
-                uploadText={t('common.uploadImage')}
-                changeText={t('common.changeImage')}
-                helpText={t('common.imageUploadHelp')}
-                previewTitle={t('common.imagePreview')}
-                maxSize={5 * 1024 * 1024} // 5MB for cover images
-                accept={{
-                  'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
-                }}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      {/* Title and Description */}
-      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>Title</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={3} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="lessonId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('assessments.fields.lesson')}</FormLabel>
+                <Combobox
+                  options={
+                    availableLessons?.map((lesson) => ({
+                      label: lesson.name,
+                      value: lesson.id,
+                    })) ?? []
+                  }
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  placeholder={t('assessments.actionDialog.selectLesson')}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
@@ -172,7 +195,7 @@ export function BasicTab({
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select" />
+                    <SelectValue placeholder={t('common.select')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
@@ -216,7 +239,7 @@ export function BasicTab({
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select" />
+                    <SelectValue placeholder={t('common.select')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>

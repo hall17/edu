@@ -295,6 +295,11 @@ export const subjectInclude = {
           order: 'asc',
         },
       },
+      _count: {
+        select: {
+          questions: true,
+        },
+      },
     },
   },
   teachers: {
@@ -313,6 +318,7 @@ export const subjectInclude = {
     select: {
       curriculums: true,
       teachers: true,
+      questions: true,
     },
   },
 } satisfies Prisma.SubjectInclude;

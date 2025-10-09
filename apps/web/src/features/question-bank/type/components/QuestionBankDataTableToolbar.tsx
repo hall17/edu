@@ -21,18 +21,28 @@ export function QuestionBankDataTableToolbar<TData>({
   table,
 }: QuestionBankDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
-  const { filters, setFilters, resetFilters, subjects, curriculums } =
+  const { filters, setFilters, resetFilters, subjectsQuery } =
     useQuestionBankContext();
   const columnFilters = table.getState().columnFilters;
   const columnFiltersWithoutType = columnFilters.filter((c) => c.id !== 'type');
   const isFiltered = columnFiltersWithoutType.length > 0;
-  console.log('filtered', isFiltered, columnFiltersWithoutType);
 
-  const filteredCurriculums = filters.subjectIds?.length
-    ? curriculums?.filter((c) => filters.subjectIds?.includes(c.subjectId))
-    : curriculums;
+  const subjects = subjectsQuery.data?.subjects ?? [];
 
-  console.log('filteredCurriculums', filters.subjectIds, filteredCurriculums);
+  const curriculumsFlat =
+    subjects?.flatMap((s) =>
+      s.curriculums.map((c) => ({
+        ...c,
+        subjectId: s.id,
+      }))
+    ) ?? [];
+  const curriculums =
+    (filters.subjectIds?.length
+      ? curriculumsFlat?.filter((c) =>
+          filters.subjectIds?.includes(c.subjectId)
+        )
+      : curriculumsFlat
+    )?.filter((c) => c._count.questions > 0) ?? [];
 
   return (
     <div className="flex flex-1 items-center justify-between space-x-2">
@@ -93,7 +103,7 @@ export function QuestionBankDataTableToolbar<TData>({
               selectedValues={new Set(filters.curriculumIds)}
               facets={
                 new Map(
-                  filteredCurriculums?.map((curriculum) => [
+                  curriculums?.map((curriculum) => [
                     curriculum.id,
                     curriculum._count.questions,
                   ])
@@ -101,7 +111,7 @@ export function QuestionBankDataTableToolbar<TData>({
               }
               title={t('questionBank.table.filters.curriculum')}
               options={
-                filteredCurriculums?.map((curriculum) => ({
+                curriculums?.map((curriculum) => ({
                   label: curriculum.name,
                   value: curriculum.id,
                 })) ?? []

@@ -39,7 +39,7 @@ function parseEnv() {
     ALLOWED_ORIGINS: z
       .string()
       .min(1)
-      .transform((origin) => JSON.parse(origin)),
+      .transform((origin) => origin.split(',')),
     BACKEND_URL: z.string().min(1),
     COMMON_RATE_LIMIT_WINDOW_MS: z
       .string()

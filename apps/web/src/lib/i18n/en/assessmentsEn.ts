@@ -29,6 +29,8 @@ export const assessments = {
       selectSubject: 'Please select a subject first.',
       invalidQuestionCount: 'Please enter a valid question count (1-100).',
       fetchQuestionsFailed: 'Failed to fetch random questions.',
+      create: 'Failed to create assessment',
+      update: 'Failed to update assessment',
     },
     success: {
       create: 'Assessment created successfully.',
@@ -40,6 +42,11 @@ export const assessments = {
     editTitle: 'Edit Assessment',
     addDescription: "Create new assessment here. Click save when you're done.",
     editDescription: "Update the assessment here. Click save when you're done.",
+    selectSubject: 'Select subject',
+    selectCurriculum: 'Select curriculum',
+    selectLesson: 'Select lesson',
+    selectQuestionType: 'Select question type',
+    selectDifficulty: 'Select difficulty',
   },
   viewDialog: {
     title: 'View Assessment',

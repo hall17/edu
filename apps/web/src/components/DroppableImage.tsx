@@ -27,7 +27,7 @@ interface DroppableImageProps {
   disabled?: boolean;
   accept?: Record<string, string[]>;
   maxSize?: number; // in bytes
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   customSize?: string;
   className?: string;
   uploadText?: string;
@@ -45,6 +45,11 @@ const sizeClasses = {
   sm: 'size-16',
   md: 'size-20',
   lg: 'size-24',
+  xl: 'size-28',
+  '2xl': 'size-32',
+  '3xl': 'size-36',
+  '4xl': 'size-40',
+  '5xl': 'size-44',
 };
 
 const iconSizes = {
@@ -52,6 +57,10 @@ const iconSizes = {
   sm: 'h-6 w-6',
   md: 'h-8 w-8',
   lg: 'h-10 w-10',
+  xl: 'h-12 w-12',
+  '2xl': 'h-14 w-14',
+  '3xl': 'h-16 w-16',
+  '4xl': 'h-18 w-18',
 };
 
 const buttonSizes = {
@@ -59,6 +68,10 @@ const buttonSizes = {
   sm: 'h-6 w-6',
   md: 'h-8 w-8',
   lg: 'h-10 w-10',
+  xl: 'h-12 w-12',
+  '2xl': 'h-14 w-14',
+  '3xl': 'h-16 w-16',
+  '4xl': 'h-18 w-18',
 };
 
 const actionIconSizes = {
@@ -66,6 +79,10 @@ const actionIconSizes = {
   sm: 'h-3 w-3',
   md: 'h-4 w-4',
   lg: 'h-5 w-5',
+  xl: 'h-6 w-6',
+  '2xl': 'h-7 w-7',
+  '3xl': 'h-8 w-8',
+  '4xl': 'h-9 w-9',
 };
 
 export function DroppableImage({

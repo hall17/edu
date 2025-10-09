@@ -1,5 +1,7 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { prisma } from '@api/libs/prisma';
 import { getQuestionInclude } from '@api/libs/prisma/selections';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils/hasPermission';
 import {
@@ -8,10 +10,8 @@ import {
   QuestionData,
   SYSTEM_ROLES,
 } from '@edusama/common';
-import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { PAGE_SIZE } from '../../utils/constants';
 
 import {

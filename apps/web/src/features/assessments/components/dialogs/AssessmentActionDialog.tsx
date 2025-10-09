@@ -1,5 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { ScheduleType, ScoringType } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -64,18 +64,40 @@ export function AssessmentActionDialog() {
     currentRow,
   } = useAssessmentsContext();
 
-  // Queries for dropdown data
-  const subjectsQuery = useQuery(
-    trpc.subject.findAll.queryOptions({ all: true })
+  // Mutations
+  const createMutation = useMutation(
+    trpc.assessment.create.mutationOptions({
+      onSuccess: (assessment) => {
+        toast.success(t('assessments.actionDialog.success.create'));
+        createAssessment({
+          ...assessment,
+          _count: { questions: 0, classroomIntegrationAssessments: 0 },
+        });
+        setOpenedDialog(null);
+        form.reset();
+      },
+      onError: (error) => {
+        console.error('Failed to create assessment:', error);
+        toast.error(t('assessments.actionDialog.errors.create'));
+      },
+    })
   );
-  const curriculumsQuery = useQuery(
-    trpc.curriculum.findAll.queryOptions({ all: true })
-  );
-  const lessonsQuery = useQuery(
-    trpc.lesson.findAll.queryOptions({ all: true })
-  );
-  const questionsQuery = useQuery(
-    trpc.question.findAll.queryOptions({ all: true })
+
+  const updateMutation = useMutation(
+    trpc.assessment.update.mutationOptions({
+      onSuccess: (assessment) => {
+        toast.success(t('assessments.actionDialog.success.update'));
+        updateAssessment({
+          ...assessment,
+          _count: { questions: 0, classroomIntegrationAssessments: 0 },
+        });
+        setOpenedDialog(null);
+      },
+      onError: (error) => {
+        console.error('Failed to update assessment:', error);
+        toast.error(t('assessments.actionDialog.errors.update'));
+      },
+    })
   );
 
   // Form setup
@@ -123,41 +145,8 @@ export function AssessmentActionDialog() {
     }
   }, [isEdit, currentRow, form]);
 
-  // Mutations
-  const createMutation = useMutation(
-    trpc.assessment.create.mutationOptions({
-      onSuccess: (assessment) => {
-        toast.success(t('assessments.actionDialog.success.create'));
-        createAssessment({
-          ...assessment,
-          _count: { questions: 0, classroomIntegrationAssessments: 0 },
-        });
-        setOpenedDialog(null);
-        form.reset();
-      },
-      onError: (error) => {
-        console.error('Failed to create assessment:', error);
-        toast.error('Failed to create assessment');
-      },
-    })
-  );
-
-  const updateMutation = useMutation(
-    trpc.assessment.update.mutationOptions({
-      onSuccess: (assessment) => {
-        toast.success(t('assessments.actionDialog.success.update'));
-        updateAssessment({
-          ...assessment,
-          _count: { questions: 0, classroomIntegrationAssessments: 0 },
-        });
-        setOpenedDialog(null);
-      },
-      onError: (error) => {
-        console.error('Failed to update assessment:', error);
-        toast.error('Failed to update assessment');
-      },
-    })
-  );
+  const selectedSubjectId = form.watch('subjectId');
+  const selectedCurriculumId = form.watch('curriculumId');
 
   // Form submission handlers
   function onSubmit(data: AssessmentFormData) {
@@ -202,17 +191,16 @@ export function AssessmentActionDialog() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="basic">Basic Information</TabsTrigger>
-                <TabsTrigger value="questions">Questions</TabsTrigger>
+                <TabsTrigger value="basic">
+                  {t('assessments.actionDialog.tabs.basic')}
+                </TabsTrigger>
+                <TabsTrigger value="questions">
+                  {t('assessments.actionDialog.tabs.questions')}
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="basic" className="space-y-6">
-                <BasicTab
-                  form={form}
-                  subjects={subjectsQuery.data?.subjects || []}
-                  curriculums={curriculumsQuery.data?.curriculums || []}
-                  lessons={lessonsQuery.data?.lessons || []}
-                />
+                <BasicTab form={form} />
               </TabsContent>
 
               <TabsContent value="questions" className="space-y-6">
@@ -226,13 +214,13 @@ export function AssessmentActionDialog() {
                 variant="outline"
                 onClick={() => setOpenedDialog(null)}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
               <LoadingButton
                 type="submit"
                 isLoading={createMutation.isPending || updateMutation.isPending}
               >
-                {isEdit ? 'Update' : 'Create'}
+                {isEdit ? t('common.update') : t('common.create')}
               </LoadingButton>
             </DialogFooter>
           </form>

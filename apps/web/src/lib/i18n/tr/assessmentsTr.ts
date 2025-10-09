@@ -29,6 +29,8 @@ export const assessments = {
       selectSubject: 'Lütfen önce bir konu seçin.',
       invalidQuestionCount: 'Lütfen geçerli bir soru sayısı girin (1-100).',
       fetchQuestionsFailed: 'Rastgele sorular getirilemedi.',
+      create: 'Değerlendirme oluşturulamadı',
+      update: 'Değerlendirme güncellenemedi',
     },
     success: {
       create: 'Değerlendirme başarıyla oluşturuldu.',
@@ -42,6 +44,11 @@ export const assessments = {
       "Yeni değerlendirme oluşturun. İşiniz bittiğinde kaydet'e tıklayın.",
     editDescription:
       "Değerlendirmeyi güncelleyin. İşiniz bittiğinde kaydet'e tıklayın.",
+    selectSubject: 'Konu seçin',
+    selectCurriculum: 'Müfredat seçin',
+    selectLesson: 'Ders seçin',
+    selectQuestionType: 'Soru türü seçin',
+    selectDifficulty: 'Zorluk seçin',
   },
   viewDialog: {
     title: 'Değerlendirme Görüntüle',

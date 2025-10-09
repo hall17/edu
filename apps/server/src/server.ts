@@ -164,7 +164,7 @@ function initializeErrorMiddleware() {
 }
 
 function initializePingServerCronJob() {
-  if (env.NODE_ENV === 'test') {
+  if (env.NODE_ENV === 'test' || env.NODE_ENV === 'development') {
     return;
   }
 
