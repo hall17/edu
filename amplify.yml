@@ -1,0 +1,20 @@
+version: 1
+applications:
+  - appRoot: apps
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn install
+            - yarn workspace @edusama/server prisma:generate
+        build:
+          commands:
+            - yarn workspace @edusama/web build
+      artifacts:
+        baseDirectory: apps/web/dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+      buildPath: /
