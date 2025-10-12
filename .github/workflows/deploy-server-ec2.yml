@@ -9,30 +9,35 @@ on:
       - '.github/workflows/deploy-server-ec2.yml'
 
 jobs:
-  deploy:
-    concurrency:
-      group: ${{ github.ref_name }}
-    timeout-minutes: 30
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-name: ${{ steps.generate-timestamp.outputs.artifact-name }}
     strategy:
       matrix:
         node-version: [22.x]
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Generate timestamp
+        id: generate-timestamp
+        run: |
+          TIMESTAMP=$(date +'%d-%m-%Y-%H-%M')
+          ARTIFACT_NAME="server-build-${TIMESTAMP}"
+          echo "artifact-name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "Generated artifact name: ${ARTIFACT_NAME}"
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
 
-      - name: Install dependencies & Create env file and Build the project
+      - name: Build server
         run: |
-          ls
-          export NODE_OPTIONS="--max-old-space-size=1024"
           rm -rf ./apps/web
-          yarn install --production=false
+          PRISMA_CLI_BINARY_TARGETS=debian-openssl-3.0.x,rhel-openssl-3.0.x yarn install --frozen-lockfile
           cd apps/server
           touch .env.production
           echo "${{ vars.ENV_FILE }}" > .env.production
@@ -41,5 +46,84 @@ jobs:
           yarn workspace @edusama/common build
           yarn build
 
-      - name: Restart server running in pm2
-        run: yarn workspace @edusama/server restart:prod:pm2
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.generate-timestamp.outputs.artifact-name }}
+          path: |
+            **/*
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    timeout-minutes: 10
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.artifact-name }}
+          path: ./${{ needs.build.outputs.artifact-name }}/
+
+      - name: Deploy to server
+        run: |
+          #  make sure dotenv and dotenv-cli are installed
+          npm install -g dotenv dotenv-cli
+
+          # List pm2 processes
+          pm2 ls
+
+          # Stop current server
+          pm2 stop all || true
+
+          # Delete all current pm2 processes
+          pm2 delete all || true
+
+          # show current directory
+          pwd
+
+          # move to server
+          cd ./${{ needs.build.outputs.artifact-name }}/apps/server
+
+          # create .env.production
+          touch .env.production
+          echo "${{ vars.ENV_FILE }}" | tr -d '\r' > .env.production
+          export $(grep -v '^#' .env.production | xargs)
+
+          # Start server
+          PRISMA_QUERY_ENGINE_LIBRARY=/home/ec2-user/actions-runner/_work/edusama/edusama/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/libquery_engine-rhel-openssl-3.0.x.so.node PRISMA_SCHEMA_ENGINE_BINARY=/home/ec2-user/actions-runner/_work/edusama/edusama/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/schema-engine-rhel-openssl-3.0.x NODE_ENV=production pm2 start dist/src/server.js
+
+          # Save pm2 processes
+          pm2 save
+
+      - name: Clean previous build artifacts except current deployment
+        run: |
+          echo "Current deployment folder: ${{ needs.build.outputs.artifact-name }}"
+
+          # List all folders in the edusama directory
+          echo "Contents of /actions-runner/_work/edusama/edusama before cleanup:"
+          ls -la ~/actions-runner/_work/edusama/edusama/ || echo "Directory does not exist or is empty"
+
+          # Remove all folders except the current deployment folder
+          for folder in ~/actions-runner/_work/edusama/edusama/*/; do
+            if [ -d "$folder" ]; then
+              folder_name=$(basename "$folder")
+              if [ "$folder_name" != "${{ needs.build.outputs.artifact-name }}" ]; then
+                echo "Removing old deployment folder: $folder_name"
+                rm -rf "$folder"
+              else
+                echo "Keeping current deployment folder: $folder_name"
+              fi
+            fi
+          done
+
+          # Also remove any non-directory files in the edusama directory
+          for file in ~/actions-runner/_work/edusama/edusama/*; do
+            if [ ! -d "$file" ]; then
+              echo "Removing old file: $(basename "$file")"
+              rm -f "$file"
+            fi
+          done
+
+          echo "Contents of /actions-runner/_work/edusama/edusama after cleanup:"
+          ls -la ~/actions-runner/_work/edusama/edusama/ || echo "Directory does not exist or is empty"
