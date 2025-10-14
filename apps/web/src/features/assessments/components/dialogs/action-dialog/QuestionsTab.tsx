@@ -97,8 +97,6 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
         })
       );
 
-      console.log(randomQuestions);
-
       setSelectedQuestions(randomQuestions);
       const maxPoints = form.getValues('maxPoints') || 100;
       const pointsPerQuestion =

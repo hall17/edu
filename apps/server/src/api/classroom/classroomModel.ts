@@ -32,6 +32,7 @@ export const createClassroomIntegrationSchema = z.object({
   curriculumId: z.string().uuid(),
   teacherId: z.string().uuid().optional().nullable(),
   schedules: z.array(classroomIntegrationScheduleSchema).optional(),
+  accessLink: z.string().url().max(255).optional().or(z.literal('')),
 });
 
 export const updateClassroomIntegrationSchema = createClassroomIntegrationSchema
@@ -50,7 +51,6 @@ export const classroomCreateSchema = z
     reminderFrequency: z.number().int().optional(),
     attendanceThreshold: z.number().int().min(0).max(100).optional(),
     sendNotifications: z.boolean().optional(),
-    accessLink: z.string().url().max(255).optional().or(z.literal('')),
     startDate: z.string().transform((stringDate) => new Date(stringDate)),
     endDate: z.string().transform((stringDate) => new Date(stringDate)),
     classroomTemplateId: z.string().uuid().optional(),
@@ -131,12 +131,7 @@ export const createIntegrationSessionSchema = z.object({
   teacherId: z.string().uuid().optional(),
   startDate: z.string().transform((stringDate) => new Date(stringDate)),
   endDate: z.string().transform((stringDate) => new Date(stringDate)),
-  attendanceRecords: z.array(
-    attendanceRecordCreateSchema.omit({
-      id: true,
-      classroomIntegrationSessionId: true,
-    })
-  ),
+  accessLink: z.string().url().max(255).optional(),
 });
 
 export const updateIntegrationSessionSchema = createIntegrationSessionSchema
@@ -144,11 +139,14 @@ export const updateIntegrationSessionSchema = createIntegrationSessionSchema
   .merge(idSchema)
   .merge(
     z.object({
-      attendanceRecords: z.array(
-        attendanceRecordCreateSchema.omit({
-          classroomIntegrationSessionId: true,
-        })
-      ),
+      isAttendanceRecordCompleted: z.boolean().optional(),
+      attendanceRecords: z
+        .array(
+          attendanceRecordCreateSchema.omit({
+            classroomIntegrationSessionId: true,
+          })
+        )
+        .optional(),
     })
   );
 

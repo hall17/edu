@@ -373,6 +373,8 @@ export const common = {
     noParentsFound: 'No parents found',
   },
   common: {
+    myChildren: 'My children',
+    search: 'Search...',
     title: 'Title',
     updating: 'Updating...',
     // common validation messages
@@ -457,6 +459,9 @@ export const common = {
     searchSubjects: 'Search subjects...',
     noSubjectsFound: 'No subjects found',
     subjectRequired: 'Subject is required',
+    taughtSubjects: 'Taught Subjects',
+    selectTaughtSubjects: 'Select taught subjects',
+    searchTaughtSubjects: 'Search taught subjects...',
     name: 'Name',
     curriculum: 'Curriculum',
     lessons: 'Lessons',

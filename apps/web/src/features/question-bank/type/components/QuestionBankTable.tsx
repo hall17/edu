@@ -20,7 +20,6 @@ import { getQuestionDifficultyBadgeVariant } from '@/utils';
 export function QuestionBankTable() {
   const { questionsQuery, filters, setFilters } = useQuestionBankContext();
   const columns = useColumns();
-  console.log('filters', filters);
 
   const columnFiltersState: ColumnFiltersState = [];
 
@@ -51,8 +50,6 @@ export function QuestionBankTable() {
       value: filters.lessonIds,
     });
   }
-
-  console.log('filters', filters);
 
   return (
     <CustomTable

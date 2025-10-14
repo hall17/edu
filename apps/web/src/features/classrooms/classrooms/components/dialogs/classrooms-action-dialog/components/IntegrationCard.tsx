@@ -1,4 +1,4 @@
-import { ClockIcon, TrashIcon } from 'lucide-react';
+import { ClockIcon, Link, TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Tooltip,
   TooltipContent,
@@ -257,6 +258,29 @@ export function IntegrationCard({
                   className="w-full"
                   disabled={!selectedSubjectId}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name={`integrations.${index}.accessLink`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {t('classrooms.actionDialog.integrations.accessLink')}
+              </FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Link className="text-muted-foreground size-4" />
+                  <Input
+                    type="text"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -335,6 +335,8 @@ export const common = {
     noParentsFound: 'Veli bulunamadı',
   },
   common: {
+    myChildren: 'Çocuklarım',
+    search: 'Ara...',
     title: 'Başlık',
     updating: 'Güncelleniyor...',
     // common validation messages
@@ -346,6 +348,8 @@ export const common = {
     stringValueMinLengthError: 'Değer en az {{count}} karakter içermelidir',
     stringValueMaxLengthError: 'Değer en fazla {{count}} karakter içermelidir',
     invalidEmail: 'Geçersiz e-posta formatı',
+    nationalIdInvalid: 'Geçersiz T.C. Kimlik No',
+    phoneNumberInvalid: 'Geçersiz telefon numarası',
     invalidUrl: 'Geçersiz URL formatı',
     endDateMustBeAfterStartDate:
       'Bitiş tarihi başlangıç tarihinden sonra olmalıdır',
@@ -414,6 +418,9 @@ export const common = {
     description: 'Açıklama',
     subject: 'Konu',
     selectSubject: 'Bir konu seçin',
+    taughtSubjects: 'Öğretilen Konular',
+    selectTaughtSubjects: 'Öğretilen konuları seçin',
+    searchTaughtSubjects: 'Öğretilen konuları ara...',
     searchSubjects: 'Konu ara...',
     noSubjectsFound: 'Konu bulunamadı',
     subjectRequired: 'Konu zorunludur',

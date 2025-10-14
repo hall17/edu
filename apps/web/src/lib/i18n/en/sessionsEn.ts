@@ -82,5 +82,8 @@ export const sessions = {
     cancel: 'Cancel',
     update: 'Update Session',
     create: 'Create Session',
+    incompleteAttendanceRecord: 'Complete Attendance Record',
+    completeAttendanceRecord: 'Attendance Record Completed',
+    completeAttendanceRecordSuccess: 'Attendance record completed successfully',
   },
 } as const;

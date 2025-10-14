@@ -10,7 +10,10 @@ export const parentCreateSchema = z.object({
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),
   gender: z.nativeEnum(Gender).optional(),
-  dateOfBirth: z.date().optional(),
+  dateOfBirth: z
+    .string()
+    .transform((stringDate) => new Date(stringDate))
+    .optional(),
   email: z.string().email().max(100),
   profilePictureUrl: z.string().max(255).optional(),
   phoneCountryCode: z.string().max(5).optional(),
@@ -25,6 +28,7 @@ export const parentCreateSchema = z.object({
   twitterLink: z.string().url().max(255).optional(),
   instagramLink: z.string().url().max(255).optional(),
   linkedinLink: z.string().url().max(255).optional(),
+  studentIds: z.array(z.uuid()),
 });
 
 export const parentUpdateSchema = parentCreateSchema.partial().merge(idSchema);

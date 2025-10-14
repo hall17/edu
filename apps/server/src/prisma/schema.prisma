@@ -292,46 +292,47 @@ model User {
 
   title Title? @relation(fields: [titleId], references: [id])
 
-  statusUpdatedByUser                 User?                                   @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
-  deletedByUser                       User?                                   @relation("DeletedBy", fields: [deletedBy], references: [id])
-  preferences                         UserPreference?
-  activityLogs                        UserActivityLog[]
-  loginAttempts                       LoginAttempt[]
-  branches                            BranchUser[]
-  widgets                             UserWidget[]
-  roles                               UserRole[]
-  createdTokens                       Token[]                                 @relation("TokensCreatedByUser")
-  tokens                              Token[]
-  createdModules                      BranchModule[]                          @relation("ModulesCreatedByUser")
-  devices                             UserDevice[]
-  deletedUsers                        User[]                                  @relation("DeletedBy")
-  statusUpdatedUsers                  User[]                                  @relation("StatusUpdatedBy")
-  deletedStudents                     Student[]                               @relation("DeletedBy")
-  statusUpdatedStudents               Student[]                               @relation("StatusUpdatedBy")
-  deletedParents                      Parent[]                                @relation("ParentsDeletedBy")
-  statusUpdatedParents                Parent[]                                @relation("StatusUpdatedBy")
-  deletedClassroomTemplates           ClassroomTemplate[]                     @relation("DeletedBy")
-  statusUpdatedClassroomTemplates     ClassroomTemplate[]                     @relation("StatusUpdatedBy")
-  deletedClassrooms                   Classroom[]                             @relation("DeletedBy")
-  statusUpdatedClassrooms             Classroom[]                             @relation("StatusUpdatedBy")
-  deletedRoles                        Role[]                                  @relation("DeletedBy")
-  statusUpdatedRoles                  Role[]                                  @relation("StatusUpdatedBy")
-  deletedBranches                     Branch[]                                @relation("DeletedBy")
-  statusUpdatedBranches               Branch[]                                @relation("StatusUpdatedBy")
-  classrooms                          ClassroomIntegration[]
-  createdAttendanceRecords            AttendanceRecord[]                      @relation("CreatedBy")
-  taughtSubjects                      SubjectTeacher[]
-  deletedClassroomIntegrations        ClassroomIntegrationSchedule[]          @relation("DeletedBy")
-  classroomIntegrationSessions        ClassroomIntegrationSession[]           @relation("TaughtBy")
-  deletedClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("DeletedBy")
-  statusUpdatedCompanies              Company[]                               @relation("StatusUpdatedBy")
-  deletedCompanies                    Company[]                               @relation("DeletedBy")
-  createdAssessments                  Assessment[]                            @relation("CreatedBy")
-  deletedAssessments                  Assessment[]                            @relation("DeletedBy")
-  statusUpdatedAssessments            Assessment[]                            @relation("StatusUpdatedBy")
-  performedLogs                       AssessmentLog[]                         @relation("PerformedBy")
-  createdNotifications                AssessmentNotification[]                @relation("AssessmentNotificationCreator")
-  evaluatedAssessments                StudentClassroomIntegrationAssessment[] @relation("EvaluatedBy")
+  statusUpdatedByUser                                     User?                                   @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  deletedByUser                                           User?                                   @relation("DeletedBy", fields: [deletedBy], references: [id])
+  preferences                                             UserPreference?
+  activityLogs                                            UserActivityLog[]
+  loginAttempts                                           LoginAttempt[]
+  branches                                                BranchUser[]
+  widgets                                                 UserWidget[]
+  roles                                                   UserRole[]
+  createdTokens                                           Token[]                                 @relation("TokensCreatedByUser")
+  tokens                                                  Token[]
+  createdModules                                          BranchModule[]                          @relation("ModulesCreatedByUser")
+  devices                                                 UserDevice[]
+  deletedUsers                                            User[]                                  @relation("DeletedBy")
+  statusUpdatedUsers                                      User[]                                  @relation("StatusUpdatedBy")
+  deletedStudents                                         Student[]                               @relation("DeletedBy")
+  statusUpdatedStudents                                   Student[]                               @relation("StatusUpdatedBy")
+  deletedParents                                          Parent[]                                @relation("ParentsDeletedBy")
+  statusUpdatedParents                                    Parent[]                                @relation("StatusUpdatedBy")
+  deletedClassroomTemplates                               ClassroomTemplate[]                     @relation("DeletedBy")
+  statusUpdatedClassroomTemplates                         ClassroomTemplate[]                     @relation("StatusUpdatedBy")
+  deletedClassrooms                                       Classroom[]                             @relation("DeletedBy")
+  statusUpdatedClassrooms                                 Classroom[]                             @relation("StatusUpdatedBy")
+  deletedRoles                                            Role[]                                  @relation("DeletedBy")
+  statusUpdatedRoles                                      Role[]                                  @relation("StatusUpdatedBy")
+  deletedBranches                                         Branch[]                                @relation("DeletedBy")
+  statusUpdatedBranches                                   Branch[]                                @relation("StatusUpdatedBy")
+  classrooms                                              ClassroomIntegration[]
+  createdAttendanceRecords                                AttendanceRecord[]                      @relation("CreatedBy")
+  taughtSubjects                                          SubjectTeacher[]
+  deletedClassroomIntegrations                            ClassroomIntegrationSchedule[]          @relation("DeletedBy")
+  classroomIntegrationSessions                            ClassroomIntegrationSession[]           @relation("TaughtBy")
+  deletedClassroomIntegrationSessions                     ClassroomIntegrationSession[]           @relation("DeletedBy")
+  statusUpdatedCompanies                                  Company[]                               @relation("StatusUpdatedBy")
+  deletedCompanies                                        Company[]                               @relation("DeletedBy")
+  createdAssessments                                      Assessment[]                            @relation("CreatedBy")
+  deletedAssessments                                      Assessment[]                            @relation("DeletedBy")
+  statusUpdatedAssessments                                Assessment[]                            @relation("StatusUpdatedBy")
+  performedLogs                                           AssessmentLog[]                         @relation("PerformedBy")
+  createdNotifications                                    AssessmentNotification[]                @relation("AssessmentNotificationCreator")
+  evaluatedAssessments                                    StudentClassroomIntegrationAssessment[] @relation("EvaluatedBy")
+  attendanceRecordCompletedByClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("AttendanceRecordCompletedBy")
 }
 
 model Title {
@@ -536,7 +537,6 @@ model Classroom {
   sendNotifications        Boolean         @default(true)
   attendanceThreshold      Int?
   reminderFrequency        Int?
-  accessLink               String?
 
   startDate DateTime
   endDate   DateTime
@@ -665,23 +665,28 @@ model ClassroomIntegrationSchedule {
 }
 
 model ClassroomIntegrationSession {
-  id                     String   @id @default(uuid())
-  description            String?
-  classroomIntegrationId String
-  teacherId              String?
-  startDate              DateTime
-  endDate                DateTime
+  id                          String   @id @default(uuid())
+  description                 String?
+  classroomIntegrationId      String
+  teacherId                   String?
+  startDate                   DateTime
+  endDate                     DateTime
+  isAttendanceRecordCompleted Boolean  @default(false)
+  accessLink                  String?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  deletedBy String?
+  createdAt                   DateTime  @default(now())
+  updatedAt                   DateTime  @updatedAt
+  deletedAt                   DateTime?
+  deletedBy                   String?
+  attendanceRecordCompletedAt DateTime?
+  attendanceRecordCompletedBy String?
 
-  classroomIntegration ClassroomIntegration                @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
-  deletedByUser        User?                               @relation("DeletedBy", fields: [deletedBy], references: [id])
-  attendanceRecords    AttendanceRecord[]
-  teacher              User?                               @relation("TaughtBy", fields: [teacherId], references: [id], onDelete: SetNull)
-  lessons              ClassroomIntegrationSessionLesson[]
+  classroomIntegration            ClassroomIntegration                @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  deletedByUser                   User?                               @relation("DeletedBy", fields: [deletedBy], references: [id])
+  attendanceRecordCompletedByUser User?                               @relation("AttendanceRecordCompletedBy", fields: [attendanceRecordCompletedBy], references: [id])
+  attendanceRecords               AttendanceRecord[]
+  teacher                         User?                               @relation("TaughtBy", fields: [teacherId], references: [id], onDelete: SetNull)
+  lessons                         ClassroomIntegrationSessionLesson[]
 
   @@unique([classroomIntegrationId, startDate, endDate])
   @@index([classroomIntegrationId])
@@ -783,6 +788,7 @@ model ClassroomIntegration {
   subjectId    String
   curriculumId String
   teacherId    String?
+  accessLink   String?
 
   classroom  Classroom                      @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   subject    Subject                        @relation(fields: [subjectId], references: [id], onDelete: Cascade)

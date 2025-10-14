@@ -3,9 +3,9 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender, UserStatus } from '@edusama/server';
-import { useMutation } from '@tanstack/react-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
 import { useMemo, useState } from 'react';
@@ -21,6 +21,7 @@ import {
   CitySelector,
   CountrySelector,
   LoadingButton,
+  MultiSelect,
   PhoneInput,
   UnsavedChangesDialog,
 } from '@/components';
@@ -80,6 +81,7 @@ function getFormSchema(t: TFunction) {
       twitterLink: z.string().url().max(255).optional(),
       instagramLink: z.string().url().max(255).optional(),
       linkedinLink: z.string().url().max(255).optional(),
+      taughtSubjectIds: z.array(z.string()).optional(),
       status: z.nativeEnum(UserStatus),
       statusUpdateReason: z.string().max(255).optional(),
     })
@@ -133,6 +135,9 @@ export function UsersActionDialog() {
   const { createUser, updateUser } = useUsersContext();
   const createUserMutation = useMutation(trpc.user.create.mutationOptions());
   const updateUserMutation = useMutation(trpc.user.update.mutationOptions());
+  const subjectsQuery = useQuery(
+    trpc.subject.findAll.queryOptions({ all: true })
+  );
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
@@ -159,6 +164,8 @@ export function UsersActionDialog() {
         twitterLink: currentRow?.twitterLink ?? undefined,
         instagramLink: currentRow?.instagramLink ?? undefined,
         linkedinLink: currentRow?.linkedinLink ?? undefined,
+        taughtSubjectIds:
+          currentRow?.taughtSubjects?.map((subject) => subject.subjectId) ?? [],
         status: currentRow?.status ?? UserStatus.ACTIVE,
         statusUpdateReason: currentRow?.statusUpdateReason ?? undefined,
       }
@@ -181,6 +188,7 @@ export function UsersActionDialog() {
         twitterLink: undefined,
         instagramLink: undefined,
         linkedinLink: undefined,
+        taughtSubjectIds: [],
         status: UserStatus.ACTIVE,
         statusUpdateReason: undefined,
       };
@@ -700,11 +708,51 @@ export function UsersActionDialog() {
     </div>
   );
 
+  const renderTaughtSubjectsSection = () => (
+    <div className="space-y-4">
+      <div className="border-border border-b pb-4">
+        <div className="mb-3">
+          <span className="text-base font-semibold capitalize">
+            {t('common.taughtSubjects')}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          <FormField
+            control={form.control}
+            name="taughtSubjectIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('common.selectTaughtSubjects')}</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    options={
+                      subjectsQuery.data?.subjects?.map((subject) => ({
+                        label: subject.name,
+                        value: subject.id,
+                      })) || []
+                    }
+                    onValueChange={field.onChange}
+                    defaultValue={field.value || []}
+                    placeholder={t('common.searchTaughtSubjects')}
+                    searchable={true}
+                    maxCount={5}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   const renderFormFields = () => (
     <div className="space-y-2">
       {renderPersonalInformationSection()}
       {renderContactInformationSection()}
-      {renderStatusSection()}
+      {isEdit && renderStatusSection()}
+      {renderTaughtSubjectsSection()}
       {renderSocialLinksSection()}
     </div>
   );

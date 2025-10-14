@@ -1,8 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { AttendanceStatus } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { detailedDiff } from 'deep-object-diff';
+import { Lock, LockOpen } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -101,6 +102,7 @@ export function ClassroomSessionCreateDialog() {
           status: z.nativeEnum(AttendanceStatus).or(z.literal('none')),
         })
       ),
+      isAttendanceRecordCompleted: z.boolean().optional(),
     })
     .refine(
       (data) => {
@@ -157,6 +159,14 @@ export function ClassroomSessionCreateDialog() {
     })
   );
 
+  // const completeAttendanceRecordMutation = useMutation(
+  //   trpc.classroom.updateIntegrationSession.mutationOptions({
+  //     onSuccess: () => {
+  //       toast.success(t('sessions.createDialog.completeAttendanceRecordSuccess'));
+  //     },
+  //   })
+  // );
+
   const defaultValues: FormData = {
     classroomIntegrationId: '',
     description: '',
@@ -164,12 +174,8 @@ export function ClassroomSessionCreateDialog() {
     teacherId: '',
     startDate: '',
     endDate: '',
-    attendanceRecords:
-      studentsSorted?.map(({ student }) => ({
-        studentId: student.id,
-        status: AttendanceStatus.PRESENT,
-        remarks: '',
-      })) || [],
+    attendanceRecords: [],
+    isAttendanceRecordCompleted: false,
   };
 
   const form = useForm<FormData>({
@@ -188,7 +194,7 @@ export function ClassroomSessionCreateDialog() {
   }, [watchedClassroomIntegrationId, classroom?.integrations]);
 
   const isAllSelected = studentsSorted
-    ? watchedAttendanceRecords.length === studentsSorted.length
+    ? watchedAttendanceRecords?.length === studentsSorted.length
     : false;
 
   // Populate form when editing
@@ -209,6 +215,8 @@ export function ClassroomSessionCreateDialog() {
             status: record.status,
             remarks: record.remarks || '',
           })) || [],
+        isAttendanceRecordCompleted:
+          currentRow.isAttendanceRecordCompleted || false,
       });
     } else if (isCreate) {
       form.reset(defaultValues);
@@ -236,15 +244,15 @@ export function ClassroomSessionCreateDialog() {
     if (!classroom) return;
 
     // Validate that attendance records count equals students count
-    const attendanceRecordsWithoutStatus = data.attendanceRecords.filter(
+    const attendanceRecordsWithoutStatus = data.attendanceRecords?.filter(
       (record) => record.status === 'none'
     );
-    if (attendanceRecordsWithoutStatus.length) {
+    if (attendanceRecordsWithoutStatus?.length) {
       toast.error(t('common.allStudentsMustHaveAttendanceRecord'));
       return;
     }
 
-    const recordsToSave = data.attendanceRecords.map((record) => ({
+    const recordsToSave = data.attendanceRecords?.map((record) => ({
       id: record.id,
       studentId: record.studentId,
       status: record.status as AttendanceStatus,
@@ -527,194 +535,205 @@ export function ClassroomSessionCreateDialog() {
                 </div>
               </div>
 
-              <div className="rounded-lg border">
-                <div className="border-b p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium">
-                        {t(
-                          'classrooms.sessions.editDialog.editStudentAttendance'
-                        )}
-                      </h4>
-                      <p className="text-muted-foreground text-sm">
-                        {t(
-                          'classrooms.sessions.editDialog.selectStudentsDescription'
-                        )}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-end">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleSetAllStudentsPresent()}
-                      >
-                        {t('classrooms.sessions.editDialog.setAllPresent')}
-                      </Button>
+              {isEdit && (
+                <div className="rounded-lg border">
+                  <div className="border-b p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">
+                          {t(
+                            'classrooms.sessions.editDialog.editStudentAttendance'
+                          )}
+                        </h4>
+                        <p className="text-muted-foreground text-sm">
+                          {t(
+                            'classrooms.sessions.editDialog.selectStudentsDescription'
+                          )}
+                        </p>
+                      </div>
+                      {!currentRow?.isAttendanceRecordCompleted && (
+                        <div className="flex items-center justify-end">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSetAllStudentsPresent()}
+                          >
+                            {t('classrooms.sessions.editDialog.setAllPresent')}
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-                <div className="max-h-[600px] overflow-y-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>
-                          {t(
-                            'classrooms.sessions.editDialog.tableHeaders.studentName'
-                          )}
-                        </TableHead>
-                        <TableHead>
-                          {t(
-                            'classrooms.sessions.editDialog.tableHeaders.status'
-                          )}
-                        </TableHead>
-                        <TableHead>
-                          {t(
-                            'classrooms.sessions.editDialog.tableHeaders.remarks'
-                          )}
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {!studentsSorted || studentsSorted.length === 0 ? (
+                  <div className="max-h-[600px] overflow-y-auto">
+                    <Table>
+                      <TableHeader>
                         <TableRow>
-                          <TableCell
-                            colSpan={4}
-                            className="text-muted-foreground text-center"
-                          >
+                          <TableHead>
                             {t(
-                              'classrooms.sessions.editDialog.noStudentsEnrolled'
+                              'classrooms.sessions.editDialog.tableHeaders.studentName'
                             )}
-                          </TableCell>
+                          </TableHead>
+                          <TableHead>
+                            {t(
+                              'classrooms.sessions.editDialog.tableHeaders.status'
+                            )}
+                          </TableHead>
+                          <TableHead>
+                            {t(
+                              'classrooms.sessions.editDialog.tableHeaders.remarks'
+                            )}
+                          </TableHead>
                         </TableRow>
-                      ) : (
-                        <>
-                          {studentsSorted.map(({ student }) => {
-                            const existingRecord =
-                              currentRow?.attendanceRecords?.find(
-                                (r: any) => r.studentId === student.id
-                              );
+                      </TableHeader>
+                      <TableBody>
+                        {!studentsSorted || studentsSorted.length === 0 ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={4}
+                              className="text-muted-foreground text-center"
+                            >
+                              {t(
+                                'classrooms.sessions.editDialog.noStudentsEnrolled'
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          <>
+                            {studentsSorted.map(({ student }) => {
+                              const existingRecord =
+                                currentRow?.attendanceRecords?.find(
+                                  (r: any) => r.studentId === student.id
+                                );
 
-                            const existingFormRecord =
-                              watchedAttendanceRecords.find(
+                              const existingFormRecord =
+                                watchedAttendanceRecords?.find(
+                                  (r) => r.studentId === student.id
+                                );
+
+                              const index = watchedAttendanceRecords?.findIndex(
                                 (r) => r.studentId === student.id
                               );
 
-                            const index = watchedAttendanceRecords.findIndex(
-                              (r) => r.studentId === student.id
-                            );
+                              const status =
+                                existingFormRecord?.status ??
+                                existingRecord?.status ??
+                                'none';
 
-                            const status =
-                              existingFormRecord?.status ??
-                              existingRecord?.status ??
-                              'none';
-
-                            return (
-                              <TableRow key={student.id}>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    <div>
-                                      <div className="flex items-center gap-2">
-                                        <p className="font-medium">
-                                          {student.firstName} {student.lastName}
-                                        </p>
-                                        <Badge
-                                          className="text-xs"
-                                          variant={
-                                            existingRecord?.status
-                                              ? getAttendanceRecordStatusBadgeColor(
-                                                  existingRecord.status
-                                                )
-                                              : 'outline'
-                                          }
-                                        >
-                                          {existingRecord?.status
-                                            ? t(
-                                                `attendanceStatuses.${existingRecord.status}` as any
-                                              )
-                                            : t('common.noRecord')}
-                                        </Badge>
-                                      </div>
-                                      <p className="text-muted-foreground text-sm">
-                                        {student.email}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <Select
-                                    value={status}
-                                    onValueChange={(val) => {
-                                      const existingAttendanceRecordIndex =
-                                        watchedAttendanceRecords?.findIndex(
-                                          (r) => r.studentId === student.id
-                                        );
-
-                                      if (
-                                        existingAttendanceRecordIndex !== -1
-                                      ) {
-                                        form.setValue(
-                                          `attendanceRecords.${index}.status`,
-                                          val as AttendanceStatus
-                                        );
-                                      } else {
-                                        form.setValue(`attendanceRecords`, [
-                                          ...watchedAttendanceRecords,
-                                          {
-                                            status: val as AttendanceStatus,
-                                            studentId: student.id,
-                                            remarks: '',
-                                          },
-                                        ]);
-                                      }
-                                    }}
-                                  >
-                                    <SelectTrigger className="w-32">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="none">
-                                        {t('common.noRecord')}
-                                      </SelectItem>
-                                      {Object.values(AttendanceStatus).map(
-                                        (status) => (
-                                          <SelectItem
-                                            key={status}
-                                            value={status}
+                              return (
+                                <TableRow key={student.id}>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      <div>
+                                        <div className="flex items-center gap-2">
+                                          <p className="font-medium">
+                                            {student.firstName}{' '}
+                                            {student.lastName}
+                                          </p>
+                                          <Badge
+                                            className="text-xs"
+                                            variant={
+                                              existingRecord?.status
+                                                ? getAttendanceRecordStatusBadgeColor(
+                                                    existingRecord.status
+                                                  )
+                                                : 'outline'
+                                            }
                                           >
-                                            {t(
-                                              `attendanceStatuses.${status}` as any
-                                            )}
-                                          </SelectItem>
-                                        )
+                                            {existingRecord?.status
+                                              ? t(
+                                                  `attendanceStatuses.${existingRecord.status}` as any
+                                                )
+                                              : t('common.noRecord')}
+                                          </Badge>
+                                        </div>
+                                        <p className="text-muted-foreground text-sm">
+                                          {student.email}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Select
+                                      value={status}
+                                      onValueChange={(val) => {
+                                        const existingAttendanceRecordIndex =
+                                          watchedAttendanceRecords?.findIndex(
+                                            (r) => r.studentId === student.id
+                                          );
+
+                                        if (
+                                          existingAttendanceRecordIndex !== -1
+                                        ) {
+                                          form.setValue(
+                                            `attendanceRecords.${index}.status`,
+                                            val as AttendanceStatus
+                                          );
+                                        } else {
+                                          form.setValue(`attendanceRecords`, [
+                                            ...(watchedAttendanceRecords ?? []),
+                                            {
+                                              status: val as AttendanceStatus,
+                                              studentId: student.id,
+                                              remarks: '',
+                                            },
+                                          ]);
+                                        }
+                                      }}
+                                      disabled={
+                                        currentRow?.isAttendanceRecordCompleted
+                                      }
+                                    >
+                                      <SelectTrigger className="w-32">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="none">
+                                          {t('common.noRecord')}
+                                        </SelectItem>
+                                        {Object.values(AttendanceStatus).map(
+                                          (status) => (
+                                            <SelectItem
+                                              key={status}
+                                              value={status}
+                                            >
+                                              {t(
+                                                `attendanceStatuses.${status}` as any
+                                              )}
+                                            </SelectItem>
+                                          )
+                                        )}
+                                      </SelectContent>
+                                    </Select>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Input
+                                      value={existingFormRecord?.remarks ?? ''}
+                                      onChange={(e) => {
+                                        form.setValue(
+                                          `attendanceRecords.${index}.remarks`,
+                                          e.target.value
+                                        );
+                                      }}
+                                      disabled={
+                                        currentRow?.isAttendanceRecordCompleted
+                                      }
+                                      placeholder={t(
+                                        'classrooms.sessions.editDialog.remarks'
                                       )}
-                                    </SelectContent>
-                                  </Select>
-                                </TableCell>
-                                <TableCell>
-                                  <Input
-                                    value={existingFormRecord?.remarks ?? ''}
-                                    onChange={(e) => {
-                                      form.setValue(
-                                        `attendanceRecords.${index}.remarks`,
-                                        e.target.value
-                                      );
-                                    }}
-                                    placeholder={t(
-                                      'classrooms.sessions.editDialog.remarks'
-                                    )}
-                                    className="w-full"
-                                  />
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </>
-                      )}
-                    </TableBody>
-                  </Table>
+                                      className="w-full"
+                                    />
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </div>
-              </div>
+              )}
             </form>
           </Form>
 
@@ -729,6 +748,40 @@ export function ClassroomSessionCreateDialog() {
             >
               {t('sessions.createDialog.cancel')}
             </Button>
+            {isEdit && (
+              <LoadingButton
+                className="bg-blue-400"
+                isLoading={updateMutation.isPending}
+                onClick={() => {
+                  if (
+                    watchedAttendanceRecords?.length !== studentsSorted?.length
+                  ) {
+                    toast.error(
+                      t('common.allStudentsMustHaveAttendanceRecord')
+                    );
+                    return;
+                  }
+
+                  updateMutation.mutate({
+                    id: currentRow.id,
+                    isAttendanceRecordCompleted:
+                      !currentRow.isAttendanceRecordCompleted,
+                  });
+                }}
+              >
+                {currentRow?.isAttendanceRecordCompleted ? (
+                  <>
+                    <LockOpen />
+                    {t('sessions.createDialog.incompleteAttendanceRecord')}
+                  </>
+                ) : (
+                  <>
+                    <Lock />
+                    {t('sessions.createDialog.completeAttendanceRecord')}
+                  </>
+                )}
+              </LoadingButton>
+            )}
             <LoadingButton
               isLoading={createMutation.isPending || updateMutation.isPending}
               type="submit"

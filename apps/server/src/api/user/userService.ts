@@ -1,15 +1,15 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
+import { prisma } from '@api/libs/prisma';
 import { userAuthInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
-import { CustomError, TokenUser } from '@api/types';
-import { encrypt, generateToken, hasPermission } from '@api/utils';
-import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
 import { Prisma, User } from '@api/prisma/generated/prisma/client';
+import { CustomError, TokenUser } from '@api/types';
+import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
+import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
 import { hash } from 'bcrypt';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { INVITATION_EXPIRATION_TIME, PAGE_SIZE } from '../../utils/constants';
 
 import {
@@ -80,8 +80,8 @@ export class UserService {
       status: {
         in: filterDto.status || undefined,
       },
-      taughtSubjects: filterDto.subjectIds?.length
-        ? { some: { subjectId: { in: filterDto.subjectIds } } }
+      taughtSubjects: filterDto.taughtSubjectIds?.length
+        ? { some: { subjectId: { in: filterDto.taughtSubjectIds } } }
         : undefined,
     };
 
@@ -212,9 +212,10 @@ export class UserService {
     const token = generateToken(tokenData, INVITATION_EXPIRATION_TIME);
     const hashedToken = await hash(token, 10);
 
+    const { taughtSubjectIds, ...userData } = dto;
     const user = await prisma.user.create({
       data: {
-        ...dto,
+        ...userData,
         id,
         password: hashedPassword,
         nationalId: encryptedNationalId,
@@ -224,6 +225,13 @@ export class UserService {
             token: hashedToken,
           },
         },
+        taughtSubjects: taughtSubjectIds?.length
+          ? {
+              createMany: {
+                data: taughtSubjectIds.map((subjectId) => ({ subjectId })),
+              },
+            }
+          : undefined,
       },
       include: {
         tokens: true,
@@ -262,7 +270,14 @@ export class UserService {
           ? undefined
           : { some: { branchId: requestedBy.activeBranchId } },
       },
-      select: { id: true },
+      select: {
+        id: true,
+        taughtSubjects: {
+          select: {
+            subjectId: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -277,13 +292,44 @@ export class UserService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
+    const { taughtSubjectIds, ...userData } = dto;
+
+    if (taughtSubjectIds) {
+      const existingSubjectIds = user.taughtSubjects.map(
+        (subject) => subject.subjectId
+      );
+
+      const newSubjectIds = taughtSubjectIds?.filter(
+        (subjectId) => !existingSubjectIds.includes(subjectId)
+      );
+
+      const deletedSubjectIds = existingSubjectIds.filter(
+        (subjectId) => !taughtSubjectIds?.includes(subjectId)
+      );
+
+      if (newSubjectIds.length) {
+        await prisma.subjectTeacher.createMany({
+          data: newSubjectIds.map((subjectId) => ({
+            subjectId,
+            teacherId: user.id,
+          })),
+        });
+      }
+
+      if (deletedSubjectIds.length) {
+        await prisma.subjectTeacher.deleteMany({
+          where: { subjectId: { in: deletedSubjectIds }, teacherId: user.id },
+        });
+      }
+    }
     const updatedUser = await prisma.user.update({
       where: { id: dto.id },
       data: {
-        ...dto,
+        ...userData,
         statusUpdatedAt: dto.status ? new Date() : undefined,
         statusUpdatedBy: dto.status ? requestedBy.id : undefined,
       },
+      include: userAuthInclude({ branchId: requestedBy.activeBranchId }),
     });
 
     return this.createUserData(requestedBy, updatedUser);
@@ -365,6 +411,10 @@ export class UserService {
       );
       userWithoutPassword.profilePictureUrl = url;
     }
+
+    userWithoutPassword.nationalId = userWithoutPassword.nationalId
+      ? decrypt(userWithoutPassword.nationalId)
+      : null;
 
     return userWithoutPassword;
   }

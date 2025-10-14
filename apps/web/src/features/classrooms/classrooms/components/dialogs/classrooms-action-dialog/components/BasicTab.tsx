@@ -126,45 +126,28 @@ export function BasicTab({
         )}
       />
 
-      <div className="grid grid-cols-1 items-start gap-x-2 gap-y-2 lg:grid-cols-2">
-        <FormField
-          control={form.control}
-          name="capacity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>
-                {t('classrooms.actionDialog.fields.capacity')}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                  placeholder={t(
-                    'classrooms.actionDialog.fields.capacityPlaceholder'
-                  )}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="accessLink"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {t('classrooms.actionDialog.fields.accessLink')}
-              </FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      <FormField
+        control={form.control}
+        name="capacity"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel required>
+              {t('classrooms.actionDialog.fields.capacity')}
+            </FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                placeholder={t(
+                  'classrooms.actionDialog.fields.capacityPlaceholder'
+                )}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <div className="items-start gap-4 space-y-6 md:grid md:grid-cols-2 md:space-y-0">
         <FormField
           control={form.control}

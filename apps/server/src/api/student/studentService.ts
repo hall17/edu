@@ -1,17 +1,17 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
+import { prisma } from '@api/libs/prisma';
 import { studentInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@api/prisma/generated/prisma/client';
 import { hash } from 'bcrypt';
 import ExcelJS from 'exceljs';
 import pLimit from 'p-limit';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { INVITATION_EXPIRATION_TIME, PAGE_SIZE } from '../../utils/constants';
 
 import {
@@ -66,7 +66,7 @@ export class StudentService {
       status: {
         in: filterDto.status || undefined,
       },
-      parentId: filterDto.parentId || undefined,
+      parentId: filterDto.parentId,
     };
 
     if (q) {
@@ -78,15 +78,6 @@ export class StudentService {
           { firstName: { contains: q, mode: 'insensitive' } },
           { lastName: { contains: q, mode: 'insensitive' } },
           { phoneNumber: { contains: q, mode: 'insensitive' } },
-          {
-            parent: {
-              OR: [
-                { firstName: { contains: q, mode: 'insensitive' } },
-                { lastName: { contains: q, mode: 'insensitive' } },
-                { email: { contains: q, mode: 'insensitive' } },
-              ],
-            },
-          },
         ],
       };
     }

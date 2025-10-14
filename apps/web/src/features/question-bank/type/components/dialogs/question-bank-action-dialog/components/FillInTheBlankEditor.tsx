@@ -38,7 +38,6 @@ export function FillInTheBlankEditor({
 
   // Split text into words and handle blank creation
   const handleWordClick = (wordIndex: number) => {
-    console.log('wordIndex', wordIndex);
     const words = splitTextIntoWords(questionText);
     const targetWord = words[wordIndex];
 
@@ -48,8 +47,6 @@ export function FillInTheBlankEditor({
     const existingBlankIndex = correctAnswers.findIndex(
       (answer) => answer === wordIndex
     );
-
-    console.log('existingBlankIndex', existingBlankIndex);
 
     if (existingBlankIndex >= 0) {
       // Remove blank - remove the answer entry

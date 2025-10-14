@@ -11,7 +11,7 @@
       // "../../node_modules/@prisma/client/index.d.ts",
       // "../../node_modules/@prisma/client/runtime/library.d.ts"
     ],
-    "allowJs": true,
+    // "allowJs": true,
     "noImplicitAny": true,
     /* Bundler mode */
     "moduleResolution": "bundler",

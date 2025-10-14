@@ -150,7 +150,6 @@ export function AssessmentActionDialog() {
 
   // Form submission handlers
   function onSubmit(data: AssessmentFormData) {
-    console.log(data);
     // Include selected questions in the form data
     const formData = {
       ...data,

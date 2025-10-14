@@ -125,6 +125,12 @@ interface MultiSelectProps
    */
   onValueChange: (value: string[]) => void;
 
+  /**
+   * Callback function triggered when the search value changes.
+   * Receives the new search value.
+   */
+  onSearchValueChange?: (value: string) => void;
+
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
 
@@ -310,6 +316,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     {
       options,
       onValueChange,
+      onSearchValueChange,
       variant,
       defaultValue = [],
       placeholder,
@@ -345,7 +352,9 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
-    const [searchValue, setSearchValue] = React.useState('');
+    // const [searchValue, setSearchValue] = React.useState('');
+    const searchInputRef = React.useRef<HTMLInputElement>(null);
+    const searchValue = searchInputRef?.current?.value ?? '';
 
     const [politeMessage, setPoliteMessage] = React.useState('');
     const [assertiveMessage, setAssertiveMessage] = React.useState('');
@@ -395,7 +404,10 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
     const resetToDefault = React.useCallback(() => {
       setSelectedValues(defaultValue);
       setIsPopoverOpen(false);
-      setSearchValue('');
+      // setSearchValue('');
+      if (searchInputRef.current) {
+        searchInputRef.current.value = '';
+      }
       onValueChange(defaultValue);
     }, [defaultValue, onValueChange]);
 
@@ -700,7 +712,10 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 
     React.useEffect(() => {
       if (!isPopoverOpen) {
-        setSearchValue('');
+        // setSearchValue('');
+        if (searchInputRef.current) {
+          searchInputRef.current.value = '';
+        }
       }
     }, [isPopoverOpen]);
 
@@ -1054,10 +1069,14 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             <Command>
               {searchable && (
                 <CommandInput
+                  ref={searchInputRef}
                   placeholder={t('multiSelect.searchOptions')}
                   onKeyDown={handleInputKeyDown}
                   value={searchValue}
-                  onValueChange={setSearchValue}
+                  onValueChange={(value) => {
+                    // setSearchValue(value);
+                    onSearchValueChange?.(value);
+                  }}
                   aria-label={t('multiSelect.searchOptions')}
                   aria-describedby={`${multiSelectId}-search-help`}
                 />

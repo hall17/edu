@@ -244,7 +244,6 @@ export class ClassroomService {
           classroomData.reminderFrequency ??
           classroomTemplate.reminderFrequency ??
           undefined,
-        accessLink: classroomData.accessLink,
         // Keep required fields from original data
         name: classroomData.name,
         startDate: classroomData.startDate,
@@ -718,10 +717,10 @@ export class ClassroomService {
     // generate zoom access link
     const accessLink = crypto.randomUUID();
 
-    await prisma.classroom.update({
-      where: { id },
-      data: { accessLink },
-    });
+    // await prisma.classroom.update({
+    //   where: { id },
+    //   data: { accessLink },
+    // });
 
     return { accessLink };
   }
@@ -957,7 +956,7 @@ export class ClassroomService {
       }
     }
 
-    const { lessonIds, attendanceRecords, ...rest } = dto;
+    const { lessonIds, ...rest } = dto;
 
     const integrationSession = await prisma.classroomIntegrationSession.create({
       data: {
@@ -968,18 +967,6 @@ export class ClassroomService {
                 data: lessonIds.map((lessonId) => ({
                   lessonId,
                 })),
-              },
-            }
-          : undefined,
-        attendanceRecords: attendanceRecords
-          ? {
-              createMany: {
-                data: attendanceRecords.map((record) => {
-                  return {
-                    ...record,
-                    createdBy: requestedBy.id,
-                  };
-                }),
               },
             }
           : undefined,

@@ -56,10 +56,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
 
     form.setValue(`questionData.pairs.${key}`, reorderedOptions as string[]);
   };
-  console.log(
-    'watchedQuestionData.pairs.leftColumn',
-    watchedQuestionData.pairs.leftColumn
-  );
+
   return (
     <>
       {/* <FormField
@@ -431,7 +428,6 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                       }))
                       .filter((item) => !item.isMatched)
                       .map((item, filteredIndex) => {
-                        console.log('option', item.option);
                         return (
                           <Draggable
                             key={item.originalIndex}
@@ -468,10 +464,8 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
               <span>Eşleştirilmiş Seçenekler</span>
               {watchedQuestionData.pairs.leftColumn.map(
                 (option, optionIndex) => {
-                  console.log('option', option);
                   const correctAnswer =
                     watchedQuestionData.correctAnswers[optionIndex];
-                  console.log('correctAnswer', correctAnswer);
                   return (
                     <div className="flex items-center gap-2">
                       <Badge

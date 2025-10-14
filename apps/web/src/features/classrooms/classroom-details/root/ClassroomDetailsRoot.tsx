@@ -32,7 +32,7 @@ import {
 export function ClassroomDetailsRoot() {
   const { t } = useTranslation();
   const { classroom } = useClassroomDetailsContext();
-  console.log('classroom', classroom);
+
   if (!classroom) {
     return <div>Loading...</div>;
   }
@@ -110,29 +110,6 @@ export function ClassroomDetailsRoot() {
                     {t('classrooms.viewDialog.totalStudents')}
                   </label>
                   <p className="text-sm">{classroom.students.length ?? '-'}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Link className="text-muted-foreground h-4 w-4" />
-                <div>
-                  <label className="text-muted-foreground text-sm font-medium">
-                    {t('classrooms.table.accessLink')}
-                  </label>
-                  <p className="text-sm">
-                    {classroom.accessLink ? (
-                      <a
-                        href={classroom.accessLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline hover:text-blue-800"
-                      >
-                        {classroom.accessLink}
-                      </a>
-                    ) : (
-                      '-'
-                    )}
-                  </p>
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Language, Theme } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { Settings, Monitor, Globe, Bell } from 'lucide-react';

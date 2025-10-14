@@ -85,7 +85,6 @@ export function QuestionTypeFields({
 
     case QuestionType.ORDERING: {
       const orderingQuestionData = watchedQuestionData as OrderingQuestionData;
-      console.log(orderingQuestionData);
 
       return (
         <OrderingFields

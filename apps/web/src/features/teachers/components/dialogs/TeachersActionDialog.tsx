@@ -3,9 +3,9 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender, UserStatus } from '@edusama/server';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
 import { useMemo, useState } from 'react';
@@ -21,6 +21,7 @@ import {
   CitySelector,
   CountrySelector,
   LoadingButton,
+  MultiSelect,
   PhoneInput,
   UnsavedChangesDialog,
 } from '@/components';
@@ -50,7 +51,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { trpc, User } from '@/lib/trpc';
+import { FindAllSubjectsInput, trpc, User } from '@/lib/trpc';
 
 function getFormSchema(t: TFunction) {
   return z
@@ -76,7 +77,7 @@ function getFormSchema(t: TFunction) {
       status: z.nativeEnum(UserStatus),
       statusUpdateReason: z.string().max(255).optional(),
       statusUpdatedAt: z.date().optional(),
-      // subjectId: z.string().min(1).optional(),
+      taughtSubjectIds: z.array(z.string()).optional(),
     })
     .refine(
       (data) => {
@@ -128,11 +129,14 @@ export function TeachersActionDialog() {
   const createTeacherMutation = useMutation(trpc.user.create.mutationOptions());
   const updateTeacherMutation = useMutation(trpc.user.update.mutationOptions());
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-
   const isEdit = !!currentRow;
 
+  const [subjectFilters, setSubjectFilters] = useState<FindAllSubjectsInput>({
+    all: true,
+  });
+
   const subjectsQuery = useQuery(
-    trpc.subject.findAll.queryOptions({ all: true })
+    trpc.subject.findAll.queryOptions(subjectFilters)
   );
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
@@ -164,7 +168,8 @@ export function TeachersActionDialog() {
         statusUpdatedAt: currentRow?.statusUpdatedAt
           ? new Date(currentRow.statusUpdatedAt)
           : undefined,
-        // subjectId: currentRow?.subjectId ?? undefined,
+        taughtSubjectIds:
+          currentRow?.taughtSubjects?.map((subject) => subject.subjectId) ?? [],
       }
     : {
         nationalId: '',
@@ -188,7 +193,7 @@ export function TeachersActionDialog() {
         status: UserStatus.ACTIVE,
         statusUpdateReason: undefined,
         statusUpdatedAt: undefined,
-        // subjectId: undefined,
+        taughtSubjectIds: [],
       };
 
   const form = useForm<TeacherForm>({
@@ -252,7 +257,11 @@ export function TeachersActionDialog() {
       if (isEdit) {
         const diff = detailedDiff(defaultValues, values);
 
-        if (!Object.keys(diff.updated).length) {
+        if (
+          !Object.keys(diff.updated).length &&
+          !Object.keys(diff.added).length &&
+          !Object.keys(diff.deleted).length
+        ) {
           return;
         }
 
@@ -271,6 +280,7 @@ export function TeachersActionDialog() {
         const response = await updateTeacherMutation.mutateAsync({
           id: currentRow.id,
           ...updateData,
+          taughtSubjectIds: values.taughtSubjectIds,
         } as any);
 
         toast.success(t('dialogs.action.success.updateTeacher'));
@@ -282,6 +292,7 @@ export function TeachersActionDialog() {
           ...(values.statusUpdatedAt && {
             statusUpdatedAt: values.statusUpdatedAt.toISOString(),
           }),
+          taughtSubjectIds: values.taughtSubjectIds,
         };
 
         const response = await createTeacherMutation.mutateAsync(
@@ -402,6 +413,32 @@ export function TeachersActionDialog() {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="taughtSubjectIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('common.taughtSubjects')}</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    options={subjectOptions}
+                    onValueChange={field.onChange}
+                    onSearchValueChange={async (value) => {
+                      setSubjectFilters({
+                        ...subjectFilters,
+                        q: value,
+                      });
+                    }}
+                    defaultValue={field.value || []}
+                    placeholder={t('common.searchTaughtSubjects')}
+                    searchable={true}
+                    maxCount={5}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -688,27 +725,6 @@ export function TeachersActionDialog() {
               </FormItem>
             )}
           />
-          {/* <FormField
-            control={form.control}
-            name="subjectId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('common.subject')}</FormLabel>
-                <FormControl>
-                  <Combobox
-                    options={subjectOptions}
-                    value={field.value ?? ''}
-                    onValueChange={field.onChange}
-                    placeholder={t('common.selectSubject')}
-                    searchPlaceholder={t('common.searchSubjects')}
-                    emptyText={t('common.noSubjectsFound')}
-                    disabled={subjectsQuery.isLoading}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
 
           {status === UserStatus.SUSPENDED && (
             <>
@@ -769,7 +785,7 @@ export function TeachersActionDialog() {
     <div className="space-y-2">
       {renderPersonalInformationSection()}
       {renderContactInformationSection()}
-      {renderStatusSection()}
+      {isEdit && renderStatusSection()}
       {renderSocialLinksSection()}
     </div>
   );

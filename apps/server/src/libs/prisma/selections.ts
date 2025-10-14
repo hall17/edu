@@ -2,6 +2,7 @@ import { Prisma, QuestionType } from '@api/prisma/generated/prisma/client';
 
 export const userAuthInclude = (options: { branchId?: number } = {}) => {
   return {
+    taughtSubjects: true,
     preferences: true,
     branches: { include: { branch: true } },
     devices: {
@@ -87,7 +88,15 @@ export const parentInclude = {
       },
     },
   },
-  students: true,
+  students: {
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      nationalId: true,
+    },
+  },
 } satisfies Prisma.ParentInclude;
 
 export const teacherInclude = {

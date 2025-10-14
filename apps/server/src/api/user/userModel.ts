@@ -1,5 +1,5 @@
-import { SYSTEM_ROLES } from '@edusama/common';
 import { Gender, UserStatus } from '@api/prisma/generated/prisma/client';
+import { SYSTEM_ROLES } from '@edusama/common';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';
@@ -30,7 +30,7 @@ export const userCreateSchema = z.object({
   twitterLink: z.string().url().max(255).optional(),
   instagramLink: z.string().url().max(255).optional(),
   linkedinLink: z.string().url().max(255).optional(),
-  subjectId: z.string().optional(),
+  taughtSubjectIds: z.array(z.string()).optional(),
 });
 
 export const userUpdateSchema = z
@@ -66,7 +66,7 @@ export const userFindAllSchema = z
     isTeacher: z.boolean().optional(),
     isParent: z.boolean().optional(),
     isStudent: z.boolean().optional(),
-    subjectIds: z.array(z.string()).optional(),
+    taughtSubjectIds: z.array(z.string()).optional(),
   })
   .merge(DefaultFilterSchema);
 

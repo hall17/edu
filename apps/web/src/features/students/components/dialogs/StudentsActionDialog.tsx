@@ -3,8 +3,8 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender, StudentStatus } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { IconFileTypeXls, IconUserFilled } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
@@ -855,7 +855,7 @@ export function StudentsActionDialog() {
     <div className="space-y-2">
       {renderPersonalInformationSection()}
       {renderContactInformationSection()}
-      {renderStatusSection()}
+      {isEdit && renderStatusSection()}
       {renderSocialLinksSection()}
     </div>
   );

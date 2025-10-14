@@ -90,23 +90,6 @@ export function ClassroomsViewDialog() {
                 <p className="text-sm">{currentRow.description}</p>
               </div>
             )}
-            {currentRow.accessLink && (
-              <div className="mt-4">
-                <label className="text-muted-foreground text-sm font-medium">
-                  {t('classrooms.table.accessLink')}
-                </label>
-                <p className="text-sm">
-                  <a
-                    href={currentRow.accessLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline hover:text-blue-800"
-                  >
-                    {currentRow.accessLink}
-                  </a>
-                </p>
-              </div>
-            )}
           </div>
 
           <Separator />

@@ -3,8 +3,8 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';

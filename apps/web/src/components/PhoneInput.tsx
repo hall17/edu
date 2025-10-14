@@ -115,7 +115,9 @@ export function PhoneInput({
                     <div className="flex items-center gap-2">
                       <span className="text-xs opacity-70">{c.iso2}</span>
                       <span className="text-sm">+{c.phoneCode}</span>
-                      <span className="text-sm">{c.name}</span>
+                      <span className="text-sm">
+                        {t(`countries.${c.iso2}` as any)}
+                      </span>
                     </div>
                   </CommandItem>
                 ))}

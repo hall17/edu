@@ -1,6 +1,6 @@
 import { MODULE_CODES, ModuleCode } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { DayOfWeek } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
@@ -42,7 +42,6 @@ function getFormSchema(t: TFunction) {
       sendNotifications: z.boolean().optional(),
       attendanceThreshold: z.number().int().min(0).max(100).optional(),
       reminderFrequency: z.number().int().optional(),
-      accessLink: z.string().url().max(255).optional().or(z.literal('')),
       startDate: z.date(),
       endDate: z.date(),
       imageUrl: z.string().optional(),
@@ -56,6 +55,7 @@ function getFormSchema(t: TFunction) {
             subjectId: z.uuid(),
             curriculumId: z.uuid(),
             teacherId: z.uuid().optional().nullable(),
+            accessLink: z.string().url().max(255).optional().or(z.literal('')),
             schedules: z
               .array(
                 z.object({
@@ -104,6 +104,34 @@ export type Schedule = NonNullable<
   FormData['integrations'][number]['schedules']
 >[number];
 
+const initialValues: FormData = {
+  name: '',
+  description: '',
+  capacity: 30,
+  attendancePassPercentage: 80,
+  assessmentScorePass: 80,
+  assignmentScorePass: 80,
+  startDate: new Date(),
+  endDate: (() => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 6); // Default to 6 months from now
+    return date;
+  })(),
+  imageUrl: undefined,
+  classroomTemplateId: undefined,
+  moduleIds: [],
+  integrations: [
+    {
+      classroomId: undefined,
+      subjectId: '',
+      curriculumId: '',
+      teacherId: null,
+      schedules: [],
+      accessLink: '',
+    },
+  ],
+};
+
 export function ClassroomsActionDialog() {
   const { t } = useTranslation();
   const { currentRow, createClassroom, updateClassroom, setOpenedDialog } =
@@ -119,43 +147,21 @@ export function ClassroomsActionDialog() {
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
 
-  const initialValues: FormData = {
-    name: '',
-    description: '',
-    capacity: 30,
-    attendancePassPercentage: 80,
-    assessmentScorePass: 80,
-    assignmentScorePass: 80,
-    accessLink: '',
-    startDate: new Date(),
-    endDate: (() => {
-      const date = new Date();
-      date.setMonth(date.getMonth() + 6); // Default to 6 months from now
-      return date;
-    })(),
-    imageUrl: undefined,
-    classroomTemplateId: undefined,
-    moduleIds: [],
-    integrations: [
-      {
-        classroomId: undefined,
-        subjectId: '',
-        curriculumId: '',
-        teacherId: null,
-        schedules: [],
-      },
-    ],
-  };
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    // defaultValues,
+    mode: 'onSubmit',
+  });
 
-  const defaultValues: FormData = isEdit
-    ? {
+  useEffect(() => {
+    if (isEdit && currentRow) {
+      form.reset({
         name: currentRow?.name || '',
         description: currentRow?.description || '',
         capacity: currentRow?.capacity || 30,
         attendancePassPercentage: currentRow?.attendancePassPercentage || 80,
         assessmentScorePass: currentRow?.assessmentScorePass || 80,
         assignmentScorePass: currentRow?.assignmentScorePass || 80,
-        accessLink: currentRow?.accessLink || '',
         startDate: currentRow?.startDate
           ? new Date(currentRow.startDate)
           : new Date(),
@@ -168,11 +174,15 @@ export function ClassroomsActionDialog() {
             })(),
         imageUrl: currentRow?.imageUrl || undefined,
         classroomTemplateId: currentRow?.classroomTemplateId || undefined,
+        sendNotifications: currentRow?.sendNotifications ?? undefined,
+        attendanceThreshold: currentRow?.attendanceThreshold ?? undefined,
+        reminderFrequency: currentRow?.reminderFrequency ?? undefined,
         moduleIds: currentRow?.modules?.map((m) => m.moduleId) || [],
         integrations: currentRow?.integrations?.length
           ? currentRow.integrations.map((integration) => {
               return {
                 ...integration,
+                accessLink: integration.accessLink || undefined,
                 schedules: integration.schedules?.map((schedule) => {
                   const startTime = parseHourAndMinutesUTC(schedule.startTime);
                   const endTime = parseHourAndMinutesUTC(schedule.endTime);
@@ -180,6 +190,7 @@ export function ClassroomsActionDialog() {
                     ...schedule,
                     startTime: startTime?.hours + ':' + startTime?.minutes,
                     endTime: endTime?.hours + ':' + endTime?.minutes,
+                    accessLink: integration.accessLink || undefined,
                   };
                 }),
               };
@@ -191,16 +202,14 @@ export function ClassroomsActionDialog() {
                 curriculumId: '',
                 teacherId: '',
                 schedules: [],
+                accessLink: '',
               },
             ],
-      }
-    : initialValues;
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues,
-    mode: 'onSubmit',
-  });
+      });
+    } else {
+      form.reset(initialValues);
+    }
+  }, [isEdit, currentRow]);
 
   const {
     fields: integrationFields,
@@ -213,7 +222,7 @@ export function ClassroomsActionDialog() {
 
   // Ensure there's always at least one integration
   useEffect(() => {
-    if (integrationFields.length === 0) {
+    if (currentRow?.integrations?.length === 0) {
       appendIntegration({
         classroomId: currentRow?.id || '',
         subjectId: '',
@@ -260,7 +269,6 @@ export function ClassroomsActionDialog() {
   );
 
   const onSubmit = (data: FormData) => {
-    console.log(data, { currentRow });
     if (isEdit && currentRow) {
       updateMutation.mutate({
         ...data,
@@ -337,6 +345,7 @@ export function ClassroomsActionDialog() {
 
     if (form.formState.defaultValues) {
       const diff = detailedDiff(form.formState.defaultValues, form.getValues());
+
       isDirty =
         Object.keys(diff.updated).length > 0 ||
         Object.keys(diff.added).length > 0 ||

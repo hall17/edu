@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
 import { HomeIcon, SettingsIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -15,15 +15,9 @@ import { useClassroomTemplatesContext } from '../ClassroomTemplatesContext';
 import { LoadingButton, UnsavedChangesDialog } from '@/components';
 import { DatePicker } from '@/components/DatePicker';
 import { DroppableImage } from '@/components/DroppableImage';
+import { ModuleCard } from '@/components/ModuleCard';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -102,31 +96,42 @@ export function ClassroomTemplatesActionDialog() {
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: currentRow?.name || '',
-      description: currentRow?.description || '',
-      capacity: currentRow?.capacity || undefined,
-      attendancePassPercentage:
-        currentRow?.attendancePassPercentage ?? undefined,
-      assessmentScorePass: currentRow?.assessmentScorePass ?? undefined,
-      assignmentScorePass: currentRow?.assignmentScorePass ?? undefined,
-      startDate: currentRow?.startDate
-        ? new Date(currentRow.startDate)
-        : new Date(),
-      endDate: currentRow?.endDate
-        ? new Date(currentRow.endDate)
-        : (() => {
-            const date = new Date();
-            date.setMonth(date.getMonth() + 6);
-            return date;
-          })(),
-      imageUrl: currentRow?.imageUrl || undefined,
-      moduleIds:
-        (currentRow as any)?.modules?.map((module: any) => module.module.id) ||
-        [],
-    },
     mode: 'onSubmit',
   });
+
+  useEffect(() => {
+    if (isEdit && currentRow) {
+      form.reset({
+        name: currentRow?.name || '',
+        description: currentRow?.description || '',
+        capacity: currentRow?.capacity || undefined,
+        attendancePassPercentage:
+          currentRow?.attendancePassPercentage ?? undefined,
+        assessmentScorePass: currentRow?.assessmentScorePass ?? undefined,
+        assignmentScorePass: currentRow?.assignmentScorePass ?? undefined,
+        startDate: currentRow?.startDate
+          ? new Date(currentRow.startDate)
+          : new Date(),
+        endDate: currentRow?.endDate
+          ? new Date(currentRow.endDate)
+          : (() => {
+              const date = new Date();
+              date.setMonth(date.getMonth() + 6);
+              return date;
+            })(),
+        imageUrl: currentRow?.imageUrl || undefined,
+        moduleIds:
+          (currentRow as any)?.modules?.map(
+            (module: any) => module.module.id
+          ) || [],
+        sendNotifications: currentRow?.sendNotifications ?? undefined,
+        attendanceThreshold: currentRow?.attendanceThreshold ?? undefined,
+        reminderFrequency: currentRow?.reminderFrequency ?? undefined,
+      });
+    } else {
+      form.reset();
+    }
+  }, [isEdit, currentRow]);
 
   const onSubmit = (data: FormData) => {
     if (!isEdit) {
@@ -354,7 +359,7 @@ export function ClassroomTemplatesActionDialog() {
                       )}
                     />
 
-                    <div className="gap-4 space-y-6 md:grid md:grid-cols-2 md:space-y-0">
+                    <div className="items-start gap-4 space-y-6 md:grid md:grid-cols-2 md:space-y-0">
                       <FormField
                         control={form.control}
                         name="startDate"
@@ -577,85 +582,44 @@ export function ClassroomTemplatesActionDialog() {
                             {t('classrooms.templateDialog.fields.modules')}
                           </FormLabel>
                           <FormControl>
-                            <div className="space-y-3">
-                              {modulesQuery?.data?.modules?.map((module) => {
-                                const isAvailable =
-                                  'branches' in module &&
-                                  module.branches.length > 0;
-                                const isSelected =
-                                  field.value?.includes(module.id) || false;
-                                const moduleDescription = t(
-                                  `moduleDescriptions.${module.code}`,
-                                  ''
-                                );
+                            <div className="space-y-2">
+                              {modulesQuery.data?.modules?.map(
+                                (module: any) => {
+                                  const isAvailable =
+                                    'branches' in module &&
+                                    module.branches.length > 0 &&
+                                    module.branches.some(
+                                      (branch: any) =>
+                                        branch.status === 'ACTIVE'
+                                    );
+                                  const isSelected =
+                                    field.value?.includes(module.id) || false;
 
-                                return (
-                                  <Card
-                                    key={module.id}
-                                    className={`relative py-4 transition-all duration-200 ${
-                                      !isAvailable
-                                        ? 'border-muted-foreground/20 opacity-70'
-                                        : isSelected
-                                          ? 'border-l-4 border-l-green-500'
-                                          : 'hover:shadow-md'
-                                    }`}
-                                  >
-                                    <CardHeader className="py-0">
-                                      <div className="flex items-start">
-                                        <div className="flex-1">
-                                          <CardTitle className="text-base">
-                                            {t(
-                                              `moduleNames.${module.code as ModuleCode}`
-                                            )}
-                                          </CardTitle>
-                                          {moduleDescription && (
-                                            <CardDescription className="mt-1 hidden text-sm md:block">
-                                              {moduleDescription}
-                                            </CardDescription>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      <CardAction className="flex flex-col items-end gap-2">
-                                        <Switch
-                                          disabled={!isAvailable}
-                                          checked={isSelected}
-                                          onCheckedChange={(checked) => {
-                                            if (checked) {
-                                              field.onChange([
-                                                ...(field.value || []),
-                                                module.id,
-                                              ]);
-                                            } else {
-                                              field.onChange(
-                                                field.value?.filter(
-                                                  (id) => id !== module.id
-                                                ) || []
-                                              );
-                                            }
-                                          }}
-                                          size="md"
-                                          className="data-[state=checked]:bg-green-500"
-                                        />
-                                        {!isAvailable && (
-                                          <div className="space-y-2 text-right">
-                                            <Badge variant="destructive">
-                                              {t(
-                                                'classrooms.templateDialog.moduleNotAvailable'
-                                              )}
-                                            </Badge>
-                                            <p className="text-muted-foreground text-xs">
-                                              {t(
-                                                'classrooms.templateDialog.moduleNotAvailableDesc'
-                                              )}
-                                            </p>
-                                          </div>
-                                        )}
-                                      </CardAction>
-                                    </CardHeader>
-                                  </Card>
-                                );
-                              })}
+                                  return (
+                                    <ModuleCard
+                                      key={module.id}
+                                      module={module}
+                                      isSelected={isSelected}
+                                      isAvailable={isAvailable}
+                                      onToggle={(checked) => {
+                                        if (checked) {
+                                          field.onChange([
+                                            ...(field.value || []),
+                                            module.id,
+                                          ]);
+                                        } else {
+                                          field.onChange(
+                                            field.value?.filter(
+                                              (id: number) => id !== module.id
+                                            ) || []
+                                          );
+                                        }
+                                      }}
+                                      t={t}
+                                    />
+                                  );
+                                }
+                              )}
                             </div>
                           </FormControl>
                           <FormMessage />

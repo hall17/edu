@@ -2,7 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
 import { useDialogState, useSearchFilters } from '@/hooks';
-import { Parent, queryClient, trpc } from '@/lib/trpc';
+import {
+  FindAllStudentsInput,
+  FindAllUsersInput,
+  Parent,
+  queryClient,
+  trpc,
+} from '@/lib/trpc';
 
 type ParentsDialogType =
   | 'invite'
@@ -21,9 +27,17 @@ function useProviderValue() {
     '/_authenticated/parents/'
   );
 
+  const [studentFilters, setStudentFilters] = useState<FindAllStudentsInput>({
+    parentId: null,
+  });
+
   const parentsQuery = useQuery(trpc.parent.findAll.queryOptions(filters));
 
   const queryKey = trpc.parent.findAll.queryKey(filters);
+
+  const studentsQuery = useQuery(
+    trpc.student.findAll.queryOptions(studentFilters)
+  );
 
   function createParent(parent: Parent) {
     queryClient.setQueryData(queryKey, (data: typeof parentsQuery.data) => {
@@ -76,6 +90,9 @@ function useProviderValue() {
     createParent,
     updateParent,
     deleteParent,
+    studentsQuery,
+    studentFilters,
+    setStudentFilters,
   };
 }
 

@@ -13,7 +13,6 @@ import { QuestionBankProvider } from './QuestionBankContext';
 import { Main } from '@/components/layout/Main';
 
 export function QuestionBankTypeView() {
-  console.log('QuestionBankTypeView');
   const { t } = useTranslation();
   const { type } = useParams({
     from: '/_authenticated/question-bank/type/$type',
@@ -21,7 +20,6 @@ export function QuestionBankTypeView() {
   const typeTranslation = t(
     `questionTypes.${type.toUpperCase() as QuestionType}`
   );
-  console.log(type);
 
   return (
     <QuestionBankProvider>

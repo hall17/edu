@@ -82,5 +82,8 @@ export const sessions = {
     cancel: 'İptal',
     update: 'Oturumu Güncelle',
     create: 'Oturum Oluştur',
+    incompleteAttendanceRecord: 'Katılım Kaydını Tamamla',
+    completeAttendanceRecord: 'Katılım Kaydı Tamamlandı',
+    completeAttendanceRecordSuccess: 'Katılım kaydı başarıyla tamamlandı',
   },
 };

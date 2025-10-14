@@ -3,8 +3,8 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender, UserStatus } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
@@ -19,6 +19,7 @@ import {
   CitySelector,
   CountrySelector,
   LoadingButton,
+  MultiSelect,
   PhoneInput,
   UnsavedChangesDialog,
 } from '@/components';
@@ -74,6 +75,7 @@ function getFormSchema(t: TFunction) {
       linkedinLink: z.string().url().max(255).optional(),
       status: z.nativeEnum(UserStatus),
       statusUpdateReason: z.string().max(255).optional(),
+      studentIds: z.array(z.string()),
     })
     .refine(
       (data) => {
@@ -120,9 +122,17 @@ type ParentForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 export function ParentsActionDialog() {
   const { t } = useTranslation();
-  const { currentRow, setOpenedDialog } = useParentsContext();
+  const {
+    currentRow,
+    setOpenedDialog,
+    createParent,
+    updateParent,
+    studentsQuery,
+    studentFilters,
+    setStudentFilters,
+  } = useParentsContext();
   const isEdit = !!currentRow;
-  const { createParent, updateParent } = useParentsContext();
+
   const createParentMutation = useMutation(
     trpc.parent.create.mutationOptions()
   );
@@ -157,6 +167,7 @@ export function ParentsActionDialog() {
         linkedinLink: currentRow?.linkedinLink ?? undefined,
         status: currentRow?.status ?? UserStatus.ACTIVE,
         statusUpdateReason: currentRow?.statusUpdateReason ?? undefined,
+        studentIds: currentRow?.students?.map((student) => student.id) ?? [],
       }
     : {
         nationalId: '',
@@ -179,6 +190,7 @@ export function ParentsActionDialog() {
         linkedinLink: undefined,
         status: UserStatus.ACTIVE,
         statusUpdateReason: undefined,
+        studentIds: [],
       };
 
   const form = useForm<ParentForm>({
@@ -236,11 +248,16 @@ export function ParentsActionDialog() {
       if (isEdit) {
         const diff = detailedDiff(defaultValues, values);
 
-        if (!Object.keys(diff.updated).length) {
+        if (
+          !Object.keys(diff.updated).length &&
+          !Object.keys(diff.added).length &&
+          !Object.keys(diff.deleted).length
+        ) {
           return;
         }
 
         const updateData = { ...diff.updated } as Record<string, unknown>;
+
         if (updateData.dateOfBirth) {
           updateData.dateOfBirth = (
             updateData.dateOfBirth as Date
@@ -250,6 +267,7 @@ export function ParentsActionDialog() {
         const response = await updateParentMutation.mutateAsync({
           id: currentRow.id,
           ...updateData,
+          studentIds: values.studentIds,
         } as any);
 
         toast.success(t('dialogs.action.success.updateParent'));
@@ -267,10 +285,9 @@ export function ParentsActionDialog() {
         toast.success(t('dialogs.action.success.createParent'));
         createParent(response as Parent);
       }
+      form.reset();
+      setOpenedDialog(null);
     } catch {}
-
-    form.reset();
-    setOpenedDialog(null);
   }
 
   const renderPersonalInformationSection = () => (
@@ -380,6 +397,45 @@ export function ParentsActionDialog() {
                   </SelectContent>
                 </Select>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="studentIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>{t('common.myChildren')}</FormLabel>
+                <FormControl>
+                  <MultiSelect
+                    options={
+                      studentsQuery.data?.students
+                        ?.map((student) => ({
+                          label: `${student.firstName} ${student.lastName} (${t('common.nationalId')} ${student.nationalId})`,
+                          value: student.id,
+                        }))
+                        .concat(
+                          currentRow?.students?.map((student) => ({
+                            label: `${student.firstName} ${student.lastName} (${t('common.nationalId')} ${student.nationalId})`,
+                            value: student.id,
+                          })) ?? []
+                        ) ?? []
+                    }
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    onSearchValueChange={(value) => {
+                      setStudentFilters({
+                        ...studentFilters,
+                        q: value,
+                      });
+                    }}
+                    defaultValue={field.value || []}
+                    placeholder={t('common.search')}
+                    searchable={true}
+                    maxCount={5}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -700,7 +756,7 @@ export function ParentsActionDialog() {
     <div className="space-y-2">
       {renderPersonalInformationSection()}
       {renderContactInformationSection()}
-      {renderStatusSection()}
+      {isEdit && renderStatusSection()}
       {renderSocialLinksSection()}
     </div>
   );

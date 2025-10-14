@@ -22,7 +22,6 @@ function useProviderValue() {
     from: '/_authenticated/classrooms/$classroomId/sessions',
   });
 
-  console.log('searchFilters', searchFilters);
   const filters = {
     ...searchFilters,
     classroomId,

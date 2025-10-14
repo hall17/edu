@@ -79,7 +79,7 @@ export const studentUpdateSignupStatusSchema = z.object({
 export const studentFindAllSchema = z
   .object({
     status: z.array(z.nativeEnum(UserStatus)).optional(),
-    parentId: z.string().optional(),
+    parentId: z.string().optional().nullable(),
     branchIds: z.array(z.string()).optional(),
   })
   .merge(DefaultFilterSchema);

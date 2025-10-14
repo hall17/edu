@@ -1,12 +1,13 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
 import { prisma } from '@api/libs/prisma';
+import { parentInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
+import { Prisma, Parent } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import { INVITATION_EXPIRATION_TIME, PAGE_SIZE } from '@api/utils/constants';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma, Parent } from '@api/prisma/generated/prisma/client';
 import { hash } from 'bcrypt';
 import { Service } from 'typedi';
 
@@ -17,6 +18,9 @@ import {
   ParentUpdateSuspendedDto,
 } from './parentModel';
 
+type ParentReturnType = Prisma.ParentGetPayload<{
+  include: typeof parentInclude;
+}>;
 @Service()
 export class ParentService {
   async findAll(requestedBy: TokenUser, filterDto: ParentFindAllDto) {
@@ -82,16 +86,7 @@ export class ParentService {
             }),
         where,
         orderBy,
-        include: {
-          students: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
-          },
-        },
+        include: parentInclude,
       }),
       prisma.parent.count({
         where,
@@ -100,7 +95,7 @@ export class ParentService {
 
     const parentsWithData = await Promise.all(
       parents.map(async (parent) => {
-        return this.createParentData(requestedBy, parent);
+        return this.createParentData(requestedBy, parent as ParentReturnType);
       })
     );
 
@@ -146,7 +141,7 @@ export class ParentService {
       throw new CustomError(HTTP_EXCEPTIONS.USER_NOT_FOUND);
     }
 
-    return this.createParentData(requestedBy, parent);
+    return this.createParentData(requestedBy, parent as ParentReturnType);
   }
 
   async create(requestedBy: TokenUser, dto: ParentCreateDto) {
@@ -187,9 +182,11 @@ export class ParentService {
     const token = generateToken(tokenData, INVITATION_EXPIRATION_TIME);
     const hashedToken = await hash(token, 10);
 
+    const { studentIds, ...rest } = dto;
+
     const parent = await prisma.parent.create({
       data: {
-        ...dto,
+        ...rest,
         nationalId: encryptedNationalId,
         password: crypto.randomUUID(),
         branchId: requestedBy.activeBranchId,
@@ -199,18 +196,28 @@ export class ParentService {
             token: hashedToken,
           },
         },
+        students: {
+          connect: studentIds.map((id) => {
+            return {
+              id,
+            };
+          }),
+        },
+      },
+      include: {
+        students: true,
       },
     });
 
-    await emailService.sendInvitationMail(
-      {
-        email: parent.email,
-        userType: 'parent',
-      },
-      token
-    );
+    // await emailService.sendInvitationMail(
+    //   {
+    //     email: parent.email,
+    //     userType: 'parent',
+    //   },
+    //   token
+    // );
 
-    return this.createParentData(requestedBy, parent);
+    return this.createParentData(requestedBy, parent as any);
   }
 
   async update(requestedBy: TokenUser, dto: ParentUpdateDto) {
@@ -229,7 +236,7 @@ export class ParentService {
         id: dto.id,
         branchId: requestedBy.activeBranchId,
       },
-      select: { id: true },
+      select: { id: true, students: true },
     });
 
     if (!parent) {
@@ -240,16 +247,63 @@ export class ParentService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
-    const updatedParent = await prisma.parent.update({
-      where: { id: dto.id },
-      data: {
-        ...dto,
-        statusUpdatedAt: dto.status ? new Date() : undefined,
-        statusUpdatedBy: dto.status ? requestedBy.id : undefined,
+    const { students, ...parentData } = parent;
+
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.parent.update({
+          where: { id: dto.id },
+          data: {
+            ...parentData,
+            statusUpdatedAt: dto.status ? new Date() : undefined,
+            statusUpdatedBy: dto.status ? requestedBy.id : undefined,
+          },
+        });
+
+        const addedStudentIds = dto.studentIds?.filter(
+          (id) => !students.some((student) => student.id === id)
+        );
+
+        const deletedStudentIds = students.filter(
+          (student) => !dto.studentIds?.includes(student.id)
+        );
+
+        if (addedStudentIds?.length) {
+          await Promise.all(
+            addedStudentIds.map(async (id) => {
+              await tx.student.update({
+                where: { id },
+                data: {
+                  parentId: dto.id,
+                },
+              });
+            })
+          );
+        }
+
+        if (deletedStudentIds?.length) {
+          await tx.student.updateMany({
+            where: {
+              id: { in: deletedStudentIds.map((student) => student.id) },
+            },
+            data: {
+              parentId: null,
+            },
+          });
+        }
       },
+      { timeout: 30000 }
+    );
+
+    const updatedParent = await prisma.parent.findUnique({
+      where: { id: dto.id },
+      include: parentInclude,
     });
 
-    return this.createParentData(requestedBy, updatedParent);
+    return this.createParentData(
+      requestedBy,
+      updatedParent as ParentReturnType
+    );
   }
 
   async delete(requestedBy: TokenUser, id: string) {
@@ -299,22 +353,16 @@ export class ParentService {
         statusUpdatedAt: dto.status ? new Date() : undefined,
         statusUpdatedBy: dto.status ? requestedBy.id : undefined,
       },
-      include: {
-        students: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-      },
+      include: parentInclude,
     });
 
-    return this.createParentData(requestedBy, parent);
+    return this.createParentData(requestedBy, parent as ParentReturnType);
   }
 
-  private async createParentData(requestedBy: TokenUser, parent: Parent) {
+  private async createParentData(
+    requestedBy: TokenUser,
+    parent: ParentReturnType
+  ) {
     const { password: _, ...parentWithoutPassword } = parent;
 
     parentWithoutPassword.nationalId = parentWithoutPassword.nationalId
@@ -332,6 +380,6 @@ export class ParentService {
       parentWithoutPassword.profilePictureUrl = url;
     }
 
-    return parentWithoutPassword;
+    return parentWithoutPassword as ParentReturnType;
   }
 }

@@ -113,10 +113,12 @@ export type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export type User = RouterOutput['user']['findAll']['users'][number];
 export type Student = RouterOutput['student']['findAll']['students'][number];
+export type FindAllStudentsInput = RouterInput['student']['findAll'];
 export type Teacher = User; // Teachers are users with teacher role
 export type Parent = RouterOutput['parent']['findAll']['parents'][number];
 export type FindAllUsersInput = RouterInput['user']['findAll'];
 export type Subject = RouterOutput['subject']['findAll']['subjects'][number];
+export type FindAllSubjectsInput = RouterInput['subject']['findAll'];
 export type Curriculum =
   RouterOutput['curriculum']['findAll']['curriculums'][number];
 export type Lesson = RouterOutput['lesson']['findAll']['lessons'][number];

@@ -4,8 +4,8 @@ import {
   UserType,
   CountryCode,
 } from '@edusama/common';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Gender } from '@edusama/server';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   IconCamera,
   IconCheck,

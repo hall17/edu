@@ -86,7 +86,6 @@ export function ScheduleDialog({
   }
 
   function handleSaveChanges() {
-    console.log('schedules', schedules);
     form.setValue(`integrations.${integrationIndex}.schedules`, schedules);
     onOpenChange(false);
   }

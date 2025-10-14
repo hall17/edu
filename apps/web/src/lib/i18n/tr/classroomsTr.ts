@@ -150,6 +150,7 @@ export const classrooms = {
       totalTimeHoursOnly: 'toplam {{hours}} saat',
       totalTimeMinutesOnly: 'toplam {{minutes}} dakika',
       subjectAlreadySelected: 'Bu konu başka bir entegrasyonda zaten seçili',
+      accessLink: 'Erişim Bağlantısı',
     },
   },
   templateDialog: {

@@ -151,6 +151,7 @@ export const classrooms = {
         'total {{minutes}} minute{{minutes, plural, one {} other {s}}}',
       subjectAlreadySelected:
         'This subject is already selected in another integration',
+      accessLink: 'Access Link',
     },
   },
   templateDialog: {

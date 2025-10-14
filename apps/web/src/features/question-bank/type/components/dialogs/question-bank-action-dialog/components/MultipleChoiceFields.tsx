@@ -77,11 +77,7 @@ export function MultipleChoiceFields({
                 if (value === 'SINGLE_ANSWER') {
                   const firstCorrectAnswer =
                     watchedQuestionData.correctAnswers?.[0];
-                  console.log(
-                    'firstCorrectAnswer',
-                    firstCorrectAnswer,
-                    watchedQuestionData
-                  );
+
                   form.setValue(
                     'questionData.correctAnswers',
                     firstCorrectAnswer === undefined
