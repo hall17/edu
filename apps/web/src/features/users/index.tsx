@@ -1,5 +1,5 @@
-import { IconShield, IconUsers } from '@tabler/icons-react';
 import { Outlet } from '@tanstack/react-router';
+import { Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Main } from '@/components/layout/Main';
@@ -10,12 +10,12 @@ export function Users() {
   const sidebarNavItems = [
     {
       title: t('users.tabs.users'),
-      icon: <IconUsers size={18} />,
+      icon: <User size={18} />,
       href: '/users',
     },
     {
       title: t('users.tabs.roles'),
-      icon: <IconShield size={18} />,
+      icon: <Shield size={18} />,
       href: '/users/roles',
     },
   ];

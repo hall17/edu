@@ -1,16 +1,8 @@
 import { StudentStatus } from '@edusama/server';
-import {
-  IconBan,
-  IconCheck,
-  IconEdit,
-  IconEye,
-  IconLock,
-  IconSend,
-  IconTrash,
-} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState, Row } from '@tanstack/react-table';
+import { Ban, Check, Edit, Eye, Lock, Send, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -178,7 +170,7 @@ export function useColumns(): ColumnDef<Student>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <IconEye className="size-5" />,
+                icon: <Eye className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -186,7 +178,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <IconEdit className="size-5" />,
+                icon: <Edit className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -194,7 +186,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 tooltip: t('common.edit'),
               },
               {
-                icon: <IconSend className="size-5" />,
+                icon: <Send className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('resendInvitation');
@@ -203,7 +195,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 hidden: row.original.status !== 'INVITED',
               },
               {
-                icon: <IconLock className="size-5" />,
+                icon: <Lock className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('changePassword');
@@ -212,9 +204,9 @@ export function useColumns(): ColumnDef<Student>[] {
               },
               {
                 icon: isActive ? (
-                  <IconBan className="size-5" />
+                  <Ban className="size-5" />
                 ) : (
-                  <IconCheck className="size-5" />
+                  <Check className="size-5" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -227,7 +219,7 @@ export function useColumns(): ColumnDef<Student>[] {
               },
 
               {
-                icon: <IconTrash className="size-5" />,
+                icon: <Trash2 className="size-5" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

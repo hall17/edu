@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData } from '../ClassroomsActionDialog';
+import { FormData } from '../getFormSchema';
 
 import { ModuleCard } from '@/components/ModuleCard';
 import {
@@ -13,7 +13,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { TabsContent } from '@/components/ui/tabs';
 import { trpc } from '@/lib/trpc';
 
 interface ModulesTabProps {
@@ -40,7 +39,7 @@ export function ModulesTab({ form }: ModulesTabProps) {
   );
 
   return (
-    <TabsContent value="modules" className="space-y-2">
+    <div className="space-y-4">
       <FormField
         control={form.control}
         name="moduleIds"
@@ -50,7 +49,7 @@ export function ModulesTab({ form }: ModulesTabProps) {
               {t('classrooms.actionDialog.fields.modules')}
             </FormLabel>
             <FormControl>
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-x-2 gap-y-2">
                 {modulesQuery.data?.modules?.map((module: any) => {
                   const isAvailable =
                     'branches' in module &&
@@ -87,6 +86,6 @@ export function ModulesTab({ form }: ModulesTabProps) {
           </FormItem>
         )}
       />
-    </TabsContent>
+    </div>
   );
 }

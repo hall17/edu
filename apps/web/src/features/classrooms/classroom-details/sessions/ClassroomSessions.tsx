@@ -1,6 +1,7 @@
+import { addMinutes, format } from 'date-fns';
 import dayjs from 'dayjs';
 import { Edit, Eye, Plus, Search, X } from 'lucide-react';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomDetailsContext } from '../ClassroomDetailsContext';
@@ -12,6 +13,9 @@ import {
 import { ClassroomSessionDialogs } from './dialogs';
 
 import { Loading, MultiSelect, SearchInput } from '@/components';
+import { Calendar } from '@/components/calendar/calendar';
+import { IEvent } from '@/components/calendar/interfaces';
+import { CalendarSkeleton } from '@/components/calendar/skeletons/calendar-skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,6 +47,7 @@ function ClassroomSessionsContent() {
     classroomIntegrationSessions,
     pagination,
     classroomIntegrationSessionsQuery,
+    setShowDeleteDialog,
   } = useClassroomSessionsContext();
   const { classroom } = useClassroomDetailsContext();
 
@@ -64,6 +69,55 @@ function ClassroomSessionsContent() {
   return (
     <>
       <div className="space-y-6">
+        <Calendar
+          availableViews={['agenda', 'week', 'month']}
+          view="week"
+          events={
+            (classroomIntegrationSessions?.map((session) => ({
+              id: session.id,
+              type: 'session',
+              data: session,
+              title: session.classroomIntegration?.subject?.name || '',
+              startDate: session.startDate,
+              endDate: session.endDate,
+              color: 'green',
+              description: session.description || '',
+              user: session.teacher as any,
+            })) as IEvent[]) || ([] as IEvent[])
+          }
+          addEventButtonText={t('classrooms.sessions.addNew')}
+          onClickAddEvent={(time) => {
+            setOpenedDialog('create');
+            setCurrentRow({
+              startDate: time.toLocaleString(),
+              endDate: addMinutes(time, 30).toLocaleString(),
+            } as any);
+          }}
+          onClickEditEvent={(eventId) => {
+            setCurrentRow(
+              classroomIntegrationSessions?.find(
+                (session) => session.id === eventId
+              ) as any
+            );
+            setOpenedDialog('edit');
+          }}
+          onClickRemoveEvent={(eventId) => {
+            setCurrentRow(
+              classroomIntegrationSessions?.find(
+                (session) => session.id === eventId
+              ) as any
+            );
+            setShowDeleteDialog(true);
+          }}
+          onClickEventCard={(eventId) => {
+            setCurrentRow(
+              classroomIntegrationSessions?.find(
+                (session) => session.id === eventId
+              ) as any
+            );
+            setOpenedDialog('view');
+          }}
+        />
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">

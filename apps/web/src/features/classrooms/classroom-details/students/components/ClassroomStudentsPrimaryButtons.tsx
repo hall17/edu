@@ -1,4 +1,4 @@
-import { IconPlus } from '@tabler/icons-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomStudentsContext } from '../ClassroomStudentsContext';
@@ -16,7 +16,7 @@ export function ClassroomStudentsPrimaryButtons() {
         onClick={() => setOpenedDialog('enrollment')}
         className="flex items-center space-x-2"
       >
-        <IconPlus className="size-4" />
+        <Plus className="size-4" />
         <span>{t('students.actions.enroll')}</span>
       </Button>
     </div>

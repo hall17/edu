@@ -86,4 +86,13 @@ export const sessions = {
     completeAttendanceRecord: 'Katılım Kaydı Tamamlandı',
     completeAttendanceRecordSuccess: 'Katılım kaydı başarıyla tamamlandı',
   },
+  deleteDialog: {
+    title: 'Oturumu Sil',
+    description:
+      'Bu oturumu silmek istediğinizden emin misiniz? Bu eylem geri alınamaz.',
+    confirmButtonText: 'Oturumu Sil',
+    warningTitle: 'Uyarı',
+    warningDescription:
+      'Bu oturumu silmek onu sistemden kalıcı olarak kaldıracaktır. Bu eylem geri alınamaz.',
+  },
 };

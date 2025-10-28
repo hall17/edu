@@ -1,4 +1,4 @@
-import { IconPlus } from '@tabler/icons-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useSubjectsContext } from '../SubjectsContext';
@@ -13,7 +13,7 @@ export function SubjectsPrimaryButtons() {
     <div className="flex gap-2">
       <Button className="space-x-1" onClick={() => setOpenedDialog('add')}>
         <span>{t('subjects.buttons.addSubject')}</span>
-        <IconPlus size={18} />
+        <Plus size={18} />
       </Button>
     </div>
   );

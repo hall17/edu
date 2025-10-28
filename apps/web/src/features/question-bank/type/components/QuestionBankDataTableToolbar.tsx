@@ -1,6 +1,6 @@
 import { QuestionDifficulty, QuestionType } from '@edusama/server';
-import { IconPlus } from '@tabler/icons-react';
 import { Table } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useQuestionBankContext } from '../QuestionBankContext';

@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconMailPlus, IconSend } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { MailPlus, Send } from 'lucide-react';
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -91,7 +91,7 @@ export function UsersInviteDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-left">
           <DialogTitle className="flex items-center gap-2">
-            <IconMailPlus /> {t('dialogs.invite.titleUser')}
+            <MailPlus /> {t('dialogs.invite.titleUser')}
           </DialogTitle>
           <DialogDescription>
             {t('users.inviteDialog.description')}
@@ -147,7 +147,7 @@ export function UsersInviteDialog() {
             <Button variant="outline">{t('dialogs.invite.form.cancel')}</Button>
           </DialogClose>
           <Button type="submit" form="user-invite-form">
-            {t('dialogs.invite.form.invite')} <IconSend />
+            {t('dialogs.invite.form.invite')} <Send />
           </Button>
         </DialogFooter>
       </DialogContent>

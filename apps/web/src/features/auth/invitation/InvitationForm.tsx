@@ -6,14 +6,6 @@ import {
 } from '@edusama/common';
 import { Gender } from '@edusama/server';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  IconCamera,
-  IconCheck,
-  IconEdit,
-  IconTrash,
-  IconUpload,
-  IconX,
-} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {
   useNavigate,
@@ -21,6 +13,7 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import { TFunction } from 'i18next';
+import { Camera, Check, Edit, Trash, Trash2, Upload, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FieldErrors, useForm, useWatch } from 'react-hook-form';
@@ -341,7 +334,7 @@ export function InvitationForm({
                                                 inputRef.current?.click();
                                               }}
                                             >
-                                              <IconEdit className="h-4 w-4" />
+                                              <Edit className="h-4 w-4" />
                                             </Button>
                                             <Button
                                               type="button"
@@ -353,18 +346,18 @@ export function InvitationForm({
                                                 removeImage();
                                               }}
                                             >
-                                              <IconTrash className="h-4 w-4" />
+                                              <Trash className="h-4 w-4" />
                                             </Button>
                                           </div>
                                         ) : (
-                                          <IconCamera className="h-6 w-6 text-white" />
+                                          <Camera className="h-6 w-6 text-white" />
                                         )}
                                       </div>
 
                                       {/* Drag Active Overlay */}
                                       {isAvatarDragActive && (
                                         <div className="bg-primary/20 ring-primary absolute inset-0 flex items-center justify-center rounded-full ring-2">
-                                          <IconUpload className="text-primary h-6 w-6" />
+                                          <Upload className="text-primary h-6 w-6" />
                                         </div>
                                       )}
                                     </div>
@@ -423,7 +416,7 @@ export function InvitationForm({
                                         className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/20 p-0 text-white backdrop-blur-sm hover:bg-black/40"
                                         onClick={() => setIsPreviewOpen(false)}
                                       >
-                                        <IconX className="h-5 w-5" />
+                                        <X className="h-5 w-5" />
                                       </Button>
 
                                       {/* Image info overlay */}
@@ -455,7 +448,7 @@ export function InvitationForm({
                             {field.value && (
                               <div className="space-y-2 text-center">
                                 <div className="flex items-center gap-2">
-                                  <IconCheck className="h-4 w-4 text-green-600" />
+                                  <Check className="h-4 w-4 text-green-600" />
                                   <p className="text-sm font-medium text-green-700 dark:text-green-400">
                                     {field.value.name}
                                   </p>

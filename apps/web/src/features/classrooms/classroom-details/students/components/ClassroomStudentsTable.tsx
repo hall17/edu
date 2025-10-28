@@ -1,5 +1,4 @@
 import { EnrollmentStatus } from '@edusama/server';
-import { IconEye, IconTrash, IconEdit } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {
   ColumnFiltersState,
@@ -18,6 +17,7 @@ import {
 import { ColumnDef } from '@tanstack/react-table';
 import { Row } from '@tanstack/react-table';
 import dayjs from 'dayjs';
+import { Eye, Trash2, Edit } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -467,7 +467,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('view');
             }}
           >
-            <IconEye className="size-5" />
+            <Eye className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('students.table.actions.view')}</TooltipContent>
@@ -482,7 +482,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('enrollmentStatus');
             }}
           >
-            <IconEdit className="size-5" />
+            <Edit className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -499,7 +499,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <IconTrash className="size-5" />
+            <Trash2 className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('students.table.actions.delete')}</TooltipContent>

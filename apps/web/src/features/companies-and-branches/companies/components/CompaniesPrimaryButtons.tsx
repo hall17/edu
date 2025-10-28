@@ -1,4 +1,4 @@
-import { IconPlus } from '@tabler/icons-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useCompaniesContext } from '../CompaniesContext';
@@ -13,7 +13,7 @@ export function CompaniesPrimaryButtons() {
     <div className="flex gap-2">
       <Button className="space-x-1" onClick={() => setOpenedDialog('add')}>
         <span>{t('companiesAndBranches.buttons.addCompany')}</span>{' '}
-        <IconPlus size={18} />
+        <Plus size={18} />
       </Button>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Theme } from '@edusama/server';
-import { IconCheck, IconMoon, IconSun } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { Check, Moon, Sun } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,28 +42,28 @@ export function ThemeSwitch() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
-          <IconSun className="size-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-          <IconMoon className="absolute size-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <Sun className="size-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute size-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => handleThemeChange(Theme.LIGHT)}>
           {t(`themes.${Theme.LIGHT}`)}
-          <IconCheck
+          <Check
             size={14}
             className={cn('ml-auto', theme !== 'LIGHT' && 'hidden')}
           />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleThemeChange(Theme.DARK)}>
           {t(`themes.${Theme.DARK}`)}
-          <IconCheck
+          <Check
             size={14}
             className={cn('ml-auto', theme !== 'DARK' && 'hidden')}
           />
         </DropdownMenuItem>
         {/* <DropdownMenuItem onClick={() => setTheme('SYSTEM')}>
           System
-          <IconCheck
+          <Check
             size={14}
             className={cn('ml-auto', theme !== 'SYSTEM' && 'hidden')}
           />

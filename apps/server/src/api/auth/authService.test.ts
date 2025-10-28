@@ -1,12 +1,12 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma as prismaMock } from '@api/libs/__mocks__/prisma';
+import { User } from '@api/prisma/generated/prisma/client';
 import { TokenUser } from '@api/types';
 import { CustomError } from '@api/types';
 import {
   ACCESS_TOKEN_EXPIRES_IN,
   REFRESH_TOKEN_EXPIRES_IN,
 } from '@api/utils/constants';
-import { User } from '@api/prisma/generated/prisma/client';
 import { sign } from 'jsonwebtoken';
 import Container from 'typedi';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

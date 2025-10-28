@@ -1,5 +1,5 @@
-import { IconCalendar, IconUsers } from '@tabler/icons-react';
 import { Outlet, useNavigate } from '@tanstack/react-router';
+import { Calendar, Users } from 'lucide-react';
 import { House } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,12 +19,12 @@ export function ClassroomDetailsMain() {
     },
     {
       title: t('classrooms.details.tabs.students'),
-      icon: <IconUsers size={18} />,
+      icon: <Users size={18} />,
       href: '/classrooms/$classroomId/students',
     },
     {
       title: t('classrooms.details.tabs.sessions'),
-      icon: <IconCalendar size={18} />,
+      icon: <Calendar size={18} />,
       href: '/classrooms/$classroomId/sessions',
     },
   ];

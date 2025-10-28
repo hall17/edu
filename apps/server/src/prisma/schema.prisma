@@ -256,29 +256,30 @@ model Module {
 }
 
 model User {
-  id                String     @id @default(uuid())
-  userId            String?    @unique
-  status            UserStatus @default(ACTIVE)
-  nationalId        String?    @unique @db.VarChar(250)
-  firstName         String     @db.VarChar(50)
-  lastName          String     @db.VarChar(50)
-  email             String     @unique @db.VarChar(100)
-  password          String     @db.VarChar(255)
-  gender            Gender?
-  dateOfBirth       DateTime?  @db.Date
-  profilePictureUrl String?    @db.VarChar(255)
-  phoneCountryCode  String?    @default("90") @db.VarChar(5)
-  phoneNumber       String?    @db.VarChar(15)
-  countryCode       String?    @default("TR") @db.VarChar(2)
-  city              String?    @db.VarChar(50)
-  state             String?    @db.VarChar(50)
-  address           String?    @db.VarChar(255)
-  zipCode           String?    @db.VarChar(10)
-  about             String?    @db.VarChar(255)
-  facebookLink      String?    @db.VarChar(255)
-  twitterLink       String?    @db.VarChar(255)
-  instagramLink     String?    @db.VarChar(255)
-  linkedinLink      String?    @db.VarChar(255)
+  id                 String     @id @default(uuid())
+  userId             String?    @unique
+  status             UserStatus @default(ACTIVE)
+  nationalId         String?    @unique @db.VarChar(250)
+  firstName          String     @db.VarChar(50)
+  lastName           String     @db.VarChar(50)
+  email              String     @unique @db.VarChar(100)
+  password           String     @db.VarChar(255)
+  gender             Gender?
+  dateOfBirth        DateTime?  @db.Date
+  profilePictureUrl  String?    @db.VarChar(255)
+  phoneCountryCode   String?    @default("90") @db.VarChar(5)
+  phoneNumber        String?    @db.VarChar(15)
+  countryCode        String?    @default("TR") @db.VarChar(2)
+  city               String?    @db.VarChar(50)
+  state              String?    @db.VarChar(50)
+  address            String?    @db.VarChar(255)
+  zipCode            String?    @db.VarChar(10)
+  about              String?    @db.VarChar(255)
+  facebookLink       String?    @db.VarChar(255)
+  twitterLink        String?    @db.VarChar(255)
+  instagramLink      String?    @db.VarChar(255)
+  linkedinLink       String?    @db.VarChar(255)
+  teacherMeetingLink String?    @db.VarChar(255)
 
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
@@ -465,6 +466,8 @@ model Branch {
   contact         String?      @db.VarChar(255)
   canBeDeleted    Boolean      @default(true)
   maximumStudents Int          @default(250)
+  zoomApiKey      String?      @db.VarChar(255)
+  zoomApiSecret   String?      @db.VarChar(255)
 
   companyId Int
 

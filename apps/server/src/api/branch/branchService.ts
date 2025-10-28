@@ -1,13 +1,13 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { prisma } from '@api/libs/prisma';
 import { branchInclude } from '@api/libs/prisma/selections';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@api/prisma/generated/prisma/client';
 import dayjs from 'dayjs';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { PAGE_SIZE } from '../../utils/constants';
 
 import {

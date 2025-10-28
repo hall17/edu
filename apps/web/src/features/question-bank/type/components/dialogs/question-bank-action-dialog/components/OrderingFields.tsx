@@ -5,7 +5,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -76,7 +76,7 @@ export function OrderingFields({
             }}
             className="flex items-center gap-2"
           >
-            <IconPlus size={16} />
+            <Plus size={16} />
             {t('questionBank.form.addOption')}
           </Button>
         </div>
@@ -122,7 +122,7 @@ export function OrderingFields({
                                       {...provided.dragHandleProps}
                                       className="flex h-8 w-6 cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
                                     >
-                                      <IconGripVertical size={16} />
+                                      <GripVertical size={16} />
                                     </div>
                                     <FormLabel
                                       required
@@ -161,7 +161,7 @@ export function OrderingFields({
                               }}
                               className="text-red-500 hover:bg-red-50 hover:text-red-700"
                             >
-                              <IconTrash size={16} />
+                              <Trash2 size={16} />
                             </Button>
                           </CardAction>
                         </CardHeader>

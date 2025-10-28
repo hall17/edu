@@ -1,11 +1,5 @@
-import {
-  IconArrowRightDashed,
-  IconChevronRight,
-  IconDeviceLaptop,
-  IconMoon,
-  IconSun,
-} from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
+import { ArrowRight, ChevronRight, Laptop, Moon, Sun } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -58,7 +52,7 @@ export function CommandMenu() {
                       }}
                     >
                       <div className="mr-2 flex h-4 w-4 items-center justify-center">
-                        <IconArrowRightDashed className="text-muted-foreground/80 size-2" />
+                        <ArrowRight className="text-muted-foreground/80 size-2" />
                       </div>
                       {navItem.title}
                     </CommandItem>
@@ -73,9 +67,9 @@ export function CommandMenu() {
                     }}
                   >
                     <div className="mr-2 flex h-4 w-4 items-center justify-center">
-                      <IconArrowRightDashed className="text-muted-foreground/80 size-2" />
+                      <ArrowRight className="text-muted-foreground/80 size-2" />
                     </div>
-                    {navItem.title} <IconChevronRight /> {subItem.title}
+                    {navItem.title} <ChevronRight /> {subItem.title}
                   </CommandItem>
                 ));
               })}
@@ -84,14 +78,14 @@ export function CommandMenu() {
           <CommandSeparator />
           <CommandGroup heading={t('commandMenu.theme')}>
             <CommandItem onSelect={() => runCommand(() => setTheme('LIGHT'))}>
-              <IconSun /> <span>{t('commandMenu.light')}</span>
+              <Sun /> <span>{t('commandMenu.light')}</span>
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => setTheme('DARK'))}>
-              <IconMoon className="scale-90" />
+              <Moon className="scale-90" />
               <span>{t('commandMenu.dark')}</span>
             </CommandItem>
             {/* <CommandItem onSelect={() => runCommand(() => setTheme('system'))}>
-              <IconDeviceLaptop />
+              <Laptop />
               <span>{t('commandMenu.system')}</span>
             </CommandItem> */}
           </CommandGroup>

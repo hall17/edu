@@ -1,7 +1,7 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
-import { CustomError, TokenUser } from '@api/types';
 import { Prisma } from '@api/prisma/generated/prisma/client';
+import { CustomError, TokenUser } from '@api/types';
 import { Service } from 'typedi';
 
 import { PAGE_SIZE } from '../../utils/constants';

@@ -1,4 +1,3 @@
-import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { Row } from '@tanstack/react-table';
 import {
   ColumnDef,
@@ -15,6 +14,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -371,7 +371,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('view');
             }}
           >
-            <IconEye className="size-5" />
+            <Eye className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.view')}</TooltipContent>
@@ -386,7 +386,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('edit');
             }}
           >
-            <IconEdit className="size-5" />
+            <Pencil className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.edit')}</TooltipContent>
@@ -401,7 +401,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <IconTrash className="size-5" />
+            <Trash2 className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.delete')}</TooltipContent>

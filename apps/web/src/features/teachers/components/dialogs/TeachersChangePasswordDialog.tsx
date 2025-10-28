@@ -1,5 +1,5 @@
-import { IconAlertCircle, IconMail } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { AlertCircle, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -50,7 +50,7 @@ export function TeachersChangePasswordDialog() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <IconMail className="h-5 w-5" />
+            <Mail className="h-5 w-5" />
             {t('dialogs.changePassword.titleTeacher')}
           </DialogTitle>
           <DialogDescription>
@@ -79,7 +79,7 @@ export function TeachersChangePasswordDialog() {
           </div>
 
           <Alert>
-            <IconAlertCircle className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4" />
             <AlertTitle>{t('dialogs.changePassword.warningTitle')}</AlertTitle>
             <AlertDescription>
               {t('dialogs.changePassword.warningDescriptionTeacher')}
@@ -106,7 +106,7 @@ export function TeachersChangePasswordDialog() {
             isLoading={sendResetPasswordEmailMutation.isPending}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            <IconMail className="mr-2 h-4 w-4" />
+            <Mail className="mr-2 h-4 w-4" />
             {t('dialogs.changePassword.confirmButtonText')}
           </LoadingButton>
         </DialogFooter>

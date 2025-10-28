@@ -1,4 +1,4 @@
-import { IconPlus, IconTemplate, IconList } from '@tabler/icons-react';
+import { Plus, Layout, List } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomsContext } from '../ClassroomsContext';
@@ -13,7 +13,7 @@ export function ClassroomsPrimaryButtons() {
     <div className="flex gap-2">
       <Button className="space-x-1" onClick={() => setOpenedDialog('add')}>
         <span>{t('classrooms.buttons.addClassroom')}</span>
-        <IconPlus size={18} />
+        <Plus size={18} />
       </Button>
     </div>
   );

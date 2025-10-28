@@ -86,4 +86,13 @@ export const sessions = {
     completeAttendanceRecord: 'Attendance Record Completed',
     completeAttendanceRecordSuccess: 'Attendance record completed successfully',
   },
+  deleteDialog: {
+    title: 'Delete Session',
+    description:
+      'Are you sure you want to delete this session? This action cannot be undone.',
+    confirmButtonText: 'Delete Session',
+    warningTitle: 'Warning',
+    warningDescription:
+      'Deleting this session will permanently remove it from the system. This cannot be undone.',
+  },
 } as const;

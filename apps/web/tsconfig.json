@@ -11,7 +11,7 @@
       // "../../node_modules/@prisma/client/index.d.ts",
       // "../../node_modules/@prisma/client/runtime/library.d.ts"
     ],
-    // "allowJs": true,
+    "allowJs": false,
     "noImplicitAny": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -32,8 +32,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@edusama/server": ["../server/src"],
-      "@api/*": ["../server/src/*"],
-      "@tabler/icons-react": ["@tabler/icons-react/dist/esm/icons/index.mjs"]
+      "@api/*": ["../server/src/*"]
       // "@prisma/client": ["../../node_modules/@prisma/client/*"]
       // ".prisma/client/index-browser": [
       //   "../../node_modules/.prisma/client/index-browser.js"
@@ -42,5 +41,11 @@
       // "@contracts/*": ["../../packages/contracts/src/*"]
     }
   },
-  "include": ["src", "vite.config.ts", "../server/src/types/express.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "vite.config.ts",
+    "../server/src/types/express.d.ts"
+  ],
+  "exclude": ["node_modules"]
 }

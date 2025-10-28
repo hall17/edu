@@ -1,11 +1,11 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { prisma } from '@api/libs/prisma';
 import { lessonInclude } from '@api/libs/prisma/selections';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Prisma } from '@api/prisma/generated/prisma/client';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { PAGE_SIZE } from '../../utils/constants';
 import { hasPermission } from '../../utils/hasPermission';
 

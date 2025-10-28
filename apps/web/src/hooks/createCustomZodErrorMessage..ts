@@ -5,12 +5,10 @@ export function createCustomZodErrorMessage(
   iss: z.core.$ZodIssue,
   t: TFunction
 ) {
-  console.log('iss', iss);
   switch (iss.code) {
     case 'invalid_format':
     case 'invalid_type':
     case 'invalid_value':
-      console.log('iss.input', iss.input);
       if (!iss.input) {
         return {
           message: t('common.requiredField'),

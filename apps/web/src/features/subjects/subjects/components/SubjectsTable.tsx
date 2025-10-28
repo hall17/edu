@@ -1,5 +1,4 @@
 import { SubjectStatus } from '@edusama/server';
-import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import {
   ColumnFiltersState,
@@ -7,6 +6,7 @@ import {
   Row,
   VisibilityState,
 } from '@tanstack/react-table';
+import { Edit, Eye, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -135,7 +135,7 @@ export function useColumns(): ColumnDef<Subject>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <IconEye className="size-5" />,
+                icon: <Eye className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -143,7 +143,7 @@ export function useColumns(): ColumnDef<Subject>[] {
                 tooltip: t('students.table.actions.view'),
               },
               {
-                icon: <IconEdit className="size-5" />,
+                icon: <Edit className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -151,7 +151,7 @@ export function useColumns(): ColumnDef<Subject>[] {
                 tooltip: t('students.table.actions.edit'),
               },
               {
-                icon: <IconTrash className="size-5" />,
+                icon: <Trash2 className="size-5" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

@@ -1,5 +1,5 @@
-import { IconAlertCircle } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
+import { AlertCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { AuthLayout } from '../AuthLayout';
@@ -22,7 +22,7 @@ export function InvitationExpired() {
       <Card>
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-            <IconAlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+            <AlertCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
           </div>
           <CardTitle className="text-red-700 dark:text-red-400">
             {t('auth.invitation.expired.title')}

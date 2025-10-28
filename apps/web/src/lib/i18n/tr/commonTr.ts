@@ -360,6 +360,8 @@ export const common = {
     actions: 'İşlemler',
     remove: 'Kaldır',
     resetFilters: 'Filtreleri Sıfırla',
+    reset: 'Sıfırla',
+    next: 'Sonraki',
     pagination: {
       showing: 'Gösteriliyor',
       of: '/',
@@ -544,6 +546,8 @@ export const common = {
       successMessageTeacher: 'Öğretmen başarıyla silindi',
       successMessageParent: 'Veli başarıyla silindi',
       successMessageUser: 'Kullanıcı başarıyla silindi',
+      successMessageClassroomSession: 'Oturum başarıyla silindi',
+      errorMessageClassroomSession: 'Oturum silinemedi. Lütfen tekrar deneyin.',
     },
     suspend: {
       titleStudent: 'Öğrenciyi Askıya Al',

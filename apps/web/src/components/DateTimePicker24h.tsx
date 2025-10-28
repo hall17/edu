@@ -1,6 +1,6 @@
-import { CalendarIcon } from '@radix-ui/react-icons';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';

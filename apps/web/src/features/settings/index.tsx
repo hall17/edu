@@ -1,12 +1,5 @@
-import {
-  IconBrowserCheck,
-  IconDeviceLaptop,
-  IconNotification,
-  IconPalette,
-  IconTool,
-  IconUser,
-} from '@tabler/icons-react';
 import { Outlet } from '@tanstack/react-router';
+import { Monitor, Laptop, Bell, Palette, Wrench, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { SidebarNav } from './components/SidebarNav';
@@ -24,22 +17,22 @@ export function Settings() {
   const sidebarNavItems = [
     {
       title: t('settings.profile.title'),
-      icon: <IconUser size={18} />,
+      icon: <User size={18} />,
       href: '/settings',
     },
     {
       title: t('settings.inventory.title'),
-      icon: <IconDeviceLaptop size={18} />,
+      icon: <Laptop size={18} />,
       href: '/settings/inventory',
     },
     {
       title: t('settings.security.title'),
-      icon: <IconTool size={18} />,
+      icon: <Wrench size={18} />,
       href: '/settings/security',
     },
     {
       title: t('settings.preferences.title'),
-      icon: <IconPalette size={18} />,
+      icon: <Palette size={18} />,
       href: '/settings/preferences',
     },
 

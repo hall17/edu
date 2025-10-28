@@ -1,11 +1,4 @@
 import { RoleStatus } from '@edusama/server';
-import {
-  IconEdit,
-  IconEye,
-  IconPlayerPause,
-  IconPlayerPlay,
-  IconTrash,
-} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import {
@@ -24,7 +17,7 @@ import {
 } from '@tanstack/react-table';
 import { Row } from '@tanstack/react-table';
 import { TFunction } from 'i18next';
-import { Ban, Check } from 'lucide-react';
+import { Ban, Check, Eye, Pause, Pencil, Play, Trash2 } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -438,7 +431,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('view');
             }}
           >
-            <IconEye className="size-5" />
+            <Eye className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('roles.table.actions.view')}</TooltipContent>
@@ -453,7 +446,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('edit');
             }}
           >
-            <IconEdit className="size-5" />
+            <Pencil className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('roles.table.actions.edit')}</TooltipContent>
@@ -498,7 +491,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('delete');
             }}
           >
-            <IconTrash className="size-5" />
+            <Trash2 className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

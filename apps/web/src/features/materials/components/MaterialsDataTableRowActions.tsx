@@ -1,5 +1,5 @@
-import { IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { Row } from '@tanstack/react-table';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useMaterialsContext } from '../MaterialsContext';
@@ -34,7 +34,7 @@ export function MaterialsDataTableRowActions({
               setOpen('view-curriculum');
             }}
           >
-            <IconEye className="size-5" />
+            <Eye className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('materials.table.actions.view')}</TooltipContent>
@@ -49,7 +49,7 @@ export function MaterialsDataTableRowActions({
               setOpen('edit-curriculum');
             }}
           >
-            <IconEdit className="size-5" />
+            <Pencil className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('materials.table.actions.edit')}</TooltipContent>
@@ -64,7 +64,7 @@ export function MaterialsDataTableRowActions({
               setOpen('delete-curriculum');
             }}
           >
-            <IconTrash className="size-5" />
+            <Trash2 className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('materials.table.actions.delete')}</TooltipContent>

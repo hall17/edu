@@ -1,5 +1,4 @@
 import { ClassroomStatus } from '@edusama/server';
-import { IconEdit, IconEye, IconTrash, IconUsers } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -18,6 +17,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { Edit, Eye, Trash2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -477,7 +477,7 @@ export function ClassroomsDataTableRowActions({
               sessionStorage.setItem('previousUrl', window.location.pathname);
             }}
           >
-            <IconEye className="size-5" />
+            <Eye className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.view')}</TooltipContent>
@@ -492,7 +492,7 @@ export function ClassroomsDataTableRowActions({
               setOpenedDialog('edit');
             }}
           >
-            <IconEdit className="size-5" />
+            <Edit className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.edit')}</TooltipContent>
@@ -507,7 +507,7 @@ export function ClassroomsDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <IconTrash className="size-5" />
+            <Trash2 className="size-5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.delete')}</TooltipContent>

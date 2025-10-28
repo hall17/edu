@@ -1,4 +1,4 @@
-import { IconPlus } from '@tabler/icons-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useCurriculumsContext } from '../CurriculumsContext';
@@ -13,7 +13,7 @@ export function CurriculumsPrimaryButtons() {
     <div>
       <Button className="space-x-1" onClick={() => setOpenedDialog('add')}>
         <span>{t('curriculums.buttons.addCurriculum')}</span>
-        <IconPlus size={18} />
+        <Plus size={18} />
       </Button>
     </div>
   );

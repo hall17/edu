@@ -1,7 +1,7 @@
-import { IconEye } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useAttendanceContext } from '../AttendanceContext';
@@ -174,7 +174,7 @@ function useColumns(): ColumnDef<ClassroomIntegration>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <IconEye className="size-5" />,
+                icon: <Eye className="size-5" />,
                 onClick: () => {
                   navigate({
                     to: '/classrooms/$classroomId/sessions',

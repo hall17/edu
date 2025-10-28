@@ -1,15 +1,15 @@
 import {
-  IconCalendarCheck,
-  IconDeviceLaptop,
-  IconHelp,
-  IconLayoutDashboard,
-  IconLock,
-  IconPackages,
-  IconPalette,
-  IconSettings,
-  IconUserCog,
-  IconUsers,
-} from '@tabler/icons-react';
+  CalendarCheck,
+  Laptop,
+  HelpCircle,
+  LayoutDashboard,
+  Lock,
+  Package,
+  Palette,
+  Settings,
+  UserCog,
+  Users,
+} from 'lucide-react';
 import {
   FilesIcon,
   GitBranch,
@@ -44,7 +44,7 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.dashboard'),
               url: '/',
-              icon: IconLayoutDashboard,
+              icon: LayoutDashboard,
             },
             // {
             //   title: t('sidebar.navigation.tasks'),
@@ -66,17 +66,17 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.students'),
               url: '/students',
-              icon: IconUsers,
+              icon: Users,
             },
             {
               title: t('sidebar.navigation.teachers'),
               url: '/teachers',
-              icon: IconUserCog,
+              icon: UserCog,
             },
             {
               title: t('sidebar.navigation.parents'),
               url: '/parents',
-              icon: IconUsers,
+              icon: Users,
             },
             {
               title: t('sidebar.navigation.classrooms'),
@@ -86,7 +86,7 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.attendance'),
               url: '/attendance',
-              icon: IconCalendarCheck,
+              icon: CalendarCheck,
             },
             {
               title: t('sidebar.navigation.subjectsCurriculums'),
@@ -101,7 +101,7 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.assessments'),
               url: '/assessments',
-              icon: IconCalendarCheck,
+              icon: CalendarCheck,
             },
             // {
             //   title: t('sidebar.navigation.materials'),
@@ -139,7 +139,7 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.modules'),
               url: '/modules',
-              icon: IconPackages,
+              icon: Package,
             },
             {
               title: t('sidebar.navigation.branchSettings'),
@@ -220,27 +220,27 @@ export function useSidebarData() {
           items: [
             {
               title: t('sidebar.navigation.settings'),
-              icon: IconSettings,
+              icon: Settings,
               items: [
                 {
                   title: t('sidebar.navigation.profile'),
                   url: '/settings',
-                  icon: IconUserCog,
+                  icon: UserCog,
                 },
                 {
                   title: t('sidebar.navigation.inventory'),
                   url: '/settings/inventory',
-                  icon: IconDeviceLaptop,
+                  icon: Laptop,
                 },
                 {
                   title: t('sidebar.navigation.security'),
                   url: '/settings/security',
-                  icon: IconLock,
+                  icon: Lock,
                 },
                 {
                   title: t('sidebar.navigation.preferences'),
                   url: '/settings/preferences',
-                  icon: IconPalette,
+                  icon: Palette,
                 },
                 // {
                 //   title: 'Notifications',
@@ -257,7 +257,7 @@ export function useSidebarData() {
             {
               title: t('sidebar.navigation.helpCenter'),
               url: '/help-center',
-              icon: IconHelp,
+              icon: HelpCircle,
             },
           ],
         },

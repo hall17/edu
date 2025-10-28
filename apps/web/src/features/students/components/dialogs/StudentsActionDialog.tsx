@@ -5,10 +5,10 @@ import {
 } from '@edusama/common';
 import { Gender, StudentStatus } from '@edusama/server';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconFileTypeXls, IconUserFilled } from '@tabler/icons-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
 import { TFunction } from 'i18next';
+import { FileSpreadsheet, User } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -915,11 +915,11 @@ export function StudentsActionDialog() {
             >
               <TabsList className="mb-4 w-full">
                 <TabsTrigger value="single-import">
-                  <IconUserFilled className="mr-2 size-6" />
+                  <User className="mr-2 size-6" />
                   {t('students.actionDialog.tabs.singleStudent')}
                 </TabsTrigger>
                 <TabsTrigger value="excel-import">
-                  <IconFileTypeXls className="mr-2 size-6" />
+                  <FileSpreadsheet className="mr-2 size-6" />
                   {t('students.actionDialog.tabs.excelImport')}
                 </TabsTrigger>
               </TabsList>

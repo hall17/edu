@@ -1,6 +1,5 @@
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { IconEye, IconFileText } from '@tabler/icons-react';
 import { Row } from '@tanstack/react-table';
+import { Eye, FileText, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -37,18 +36,18 @@ export function DataTableRowActions<TData>({
           variant="ghost"
           className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
-          <DotsHorizontalIcon className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem onClick={handleViewDetails}>
-          <IconEye className="mr-2 h-4 w-4" />
+          <Eye className="mr-2 h-4 w-4" />
           View Details
         </DropdownMenuItem>
         {(device.assignmentNotes || device.returnNotes) && (
           <DropdownMenuItem onClick={handleViewNotes}>
-            <IconFileText className="mr-2 h-4 w-4" />
+            <FileText className="mr-2 h-4 w-4" />
             View Notes
           </DropdownMenuItem>
         )}

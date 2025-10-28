@@ -1,10 +1,10 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { prisma } from '@api/libs/prisma';
 import { companyInclude } from '@api/libs/prisma/selections';
-import { CustomError, TokenUser } from '@api/types';
 import { Prisma } from '@api/prisma/generated/prisma/client';
+import { CustomError, TokenUser } from '@api/types';
 import { Service } from 'typedi';
 
-import { prisma } from '@api/libs/prisma';
 import { PAGE_SIZE } from '../../utils/constants';
 
 import {

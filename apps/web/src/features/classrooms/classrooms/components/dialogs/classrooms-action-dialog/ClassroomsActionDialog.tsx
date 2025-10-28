@@ -1,19 +1,15 @@
-import { MODULE_CODES, ModuleCode } from '@edusama/common';
-import { DayOfWeek } from '@edusama/server';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
-import { TFunction } from 'i18next';
-import { HomeIcon, PuzzleIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
-import { BasicTab } from './components/BasicTab';
+import { BasicStep } from './components/BasicStep';
 import { IntegrationsTab } from './components/IntegrationsTab';
 import { ModulesTab } from './components/ModulesTab';
+import { FormData, getFormSchema } from './getFormSchema';
 
 import { LoadingButton, UnsavedChangesDialog } from '@/components';
 import { Button } from '@/components/ui/button';
@@ -25,86 +21,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { defineStepper } from '@/components/ui/stepper';
 import { useClassroomsContext } from '@/features/classrooms/classrooms/ClassroomsContext';
+import i18n from '@/lib/i18n';
 import { trpc } from '@/lib/trpc';
 import { parseHourAndMinutesUTC } from '@/utils/parseHourAndMinutesUTC';
 
-function getFormSchema(t: TFunction) {
-  return z
-    .object({
-      name: z.string().min(1).max(100),
-      description: z.string().max(500).optional(),
-      capacity: z.number().int().min(1).max(1000),
-      attendancePassPercentage: z.number().int().min(0).max(100),
-      assessmentScorePass: z.number().int().min(0).max(100),
-      assignmentScorePass: z.number().int().min(0).max(100),
-      sendNotifications: z.boolean().optional(),
-      attendanceThreshold: z.number().int().min(0).max(100).optional(),
-      reminderFrequency: z.number().int().optional(),
-      startDate: z.date(),
-      endDate: z.date(),
-      imageUrl: z.string().optional(),
-      classroomTemplateId: z.string().uuid().optional(),
-      moduleIds: z.array(z.number().int()).optional(),
-      integrations: z
-        .array(
-          z.object({
-            id: z.string().uuid().optional(),
-            classroomId: z.uuid().optional(),
-            subjectId: z.uuid(),
-            curriculumId: z.uuid(),
-            teacherId: z.uuid().optional().nullable(),
-            accessLink: z.string().url().max(255).optional().or(z.literal('')),
-            schedules: z
-              .array(
-                z.object({
-                  dayOfWeek: z.nativeEnum(DayOfWeek),
-                  startTime: z
-                    .string()
-                    .regex(
-                      /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                      'Invalid time format (HH:MM)'
-                    ),
-                  endTime: z
-                    .string()
-                    .regex(
-                      /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                      'Invalid time format (HH:MM)'
-                    ),
-                })
-              )
-              .optional(),
-          })
-        )
-        .refine(
-          (integrations) => {
-            const subjectIds = integrations.map(
-              (integration) => integration.subjectId
-            );
-            const uniqueSubjectIds = new Set(subjectIds);
-            return subjectIds.length === uniqueSubjectIds.size;
-          },
-          {
-            message: t(
-              'classrooms.actionDialog.integrations.subjectAlreadySelected'
-            ),
-            path: ['integrations'],
-          }
-        ),
-    })
-    .refine((data) => data.endDate > data.startDate, {
-      message: t('common.endDateMustBeAfterStartDate'),
-      path: ['endDate'],
-    });
-}
-
-export type FormData = z.infer<ReturnType<typeof getFormSchema>>;
 export type Schedule = NonNullable<
   FormData['integrations'][number]['schedules']
 >[number];
 
-const initialValues: FormData = {
+export const initialValues: FormData = {
   name: '',
   description: '',
   capacity: 30,
@@ -132,6 +59,26 @@ const initialValues: FormData = {
   ],
 };
 
+type StepperStepId = 'basic' | 'modules' | 'integrations';
+
+const { Stepper, useStepper } = defineStepper(
+  {
+    id: 'basic',
+    title: i18n.t('classrooms.actionDialog.tabs.basic'),
+    Component: BasicStep,
+  },
+  {
+    id: 'modules',
+    title: i18n.t('classrooms.actionDialog.tabs.modules'),
+    Component: ModulesTab,
+  },
+  {
+    id: 'integrations',
+    title: i18n.t('classrooms.actionDialog.tabs.integrations'),
+    Component: IntegrationsTab,
+  }
+);
+
 export function ClassroomsActionDialog() {
   const { t } = useTranslation();
   const { currentRow, createClassroom, updateClassroom, setOpenedDialog } =
@@ -141,15 +88,21 @@ export function ClassroomsActionDialog() {
 
   const isEdit = !!currentRow;
 
-  const templatesQuery = useQuery(
-    trpc.classroomTemplate.findAll.queryOptions({ all: true })
-  );
+  const schemasById = useMemo(() => {
+    const { schema, basicSchema, modulesSchema, integrationsSchema } =
+      getFormSchema(t);
+    return {
+      schema: schema,
+      basic: basicSchema,
+      modules: modulesSchema,
+      integrations: integrationsSchema,
+    };
+  }, [t]);
 
-  const formSchema = useMemo(() => getFormSchema(t), [t]);
+  const formSchema = schemasById.schema;
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    // defaultValues,
     mode: 'onSubmit',
   });
 
@@ -285,59 +238,6 @@ export function ClassroomsActionDialog() {
     }
   };
 
-  function handleSelectedClassroomTemplateChange(templateId: string) {
-    if (!templateId) {
-      form.setValue('classroomTemplateId', undefined);
-
-      Object.entries(initialValues).forEach(([key, value]) => {
-        form.setValue(key as keyof FormData, value, { shouldValidate: false });
-      });
-
-      return;
-    }
-
-    form.setValue('classroomTemplateId', templateId);
-
-    const selectedTemplate = templatesQuery.data?.classroomTemplates?.find(
-      (template) => template.id === templateId
-    );
-
-    if (selectedTemplate) {
-      form.setValue('name', selectedTemplate.name);
-      form.setValue('description', selectedTemplate.description || '');
-      form.setValue('capacity', selectedTemplate.capacity);
-      form.setValue(
-        'attendancePassPercentage',
-        selectedTemplate.attendancePassPercentage
-      );
-      form.setValue(
-        'assessmentScorePass',
-        selectedTemplate.assessmentScorePass
-      );
-      form.setValue(
-        'assignmentScorePass',
-        selectedTemplate.assignmentScorePass
-      );
-      form.setValue(
-        'startDate',
-        selectedTemplate.startDate
-          ? new Date(selectedTemplate.startDate)
-          : new Date()
-      );
-      form.setValue(
-        'endDate',
-        selectedTemplate.endDate
-          ? new Date(selectedTemplate.endDate)
-          : new Date()
-      );
-      form.setValue('imageUrl', selectedTemplate.imageUrl || undefined);
-      form.setValue(
-        'moduleIds',
-        selectedTemplate.modules?.map((m: any) => m.moduleId) || []
-      );
-    }
-  }
-
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   function handleDialogClose(state: boolean) {
@@ -372,108 +272,143 @@ export function ClassroomsActionDialog() {
     setShowConfirmDialog(false);
   }
 
+  const methods = useStepper();
+
+  console.log('methods', methods);
+
+  async function goToStep(stepId: StepperStepId) {
+    const currentStepIndex = methods.all.findIndex(
+      (s) => s.id === methods.current.id
+    );
+    const stepIndex = methods.all.findIndex((s) => s.id === stepId);
+
+    if (currentStepIndex < stepIndex) {
+      const schema =
+        schemasById[methods.current.id as keyof typeof schemasById];
+      const schemaParsed = await schema.safeParseAsync(form.getValues());
+      console.log('schemaParsed', schemaParsed);
+      if (!schemaParsed.success) {
+        toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
+        schemaParsed.error.issues.forEach((issue) => {
+          form.setError(issue.path[0] as keyof FormData, {
+            message: issue.message,
+          });
+        });
+        return false;
+      }
+    }
+
+    methods.goTo(stepId);
+  }
+
   return (
     <Dialog open onOpenChange={handleDialogClose}>
-      <DialogContent className="xs:max-w-[80%] max-h-[90vh] sm:max-w-[70%]">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit
-              ? t('classrooms.actionDialog.editTitle')
-              : t('classrooms.actionDialog.createTitle')}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? t('classrooms.actionDialog.editDescription')
-              : t('classrooms.actionDialog.createDescription')}
-          </DialogDescription>
-        </DialogHeader>
+      <Stepper.Provider labelOrientation="vertical">
+        <DialogContent className="xs:max-w-[80%] max-h-[90vh] sm:max-w-[70%]">
+          <DialogHeader>
+            <DialogTitle>
+              {isEdit
+                ? t('classrooms.actionDialog.editTitle')
+                : t('classrooms.actionDialog.createTitle')}
+            </DialogTitle>
+            <DialogDescription>
+              {isEdit
+                ? t('classrooms.actionDialog.editDescription')
+                : t('classrooms.actionDialog.createDescription')}
+            </DialogDescription>
+          </DialogHeader>
 
-        <Form {...form}>
-          <form
-            id="classrooms-action-form"
-            noValidate
-            onSubmit={form.handleSubmit(onSubmit, () => {
-              toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
-            })}
-            className="flex-1 space-y-6"
-          >
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="space-y-4"
+          <Form {...form}>
+            <form
+              id="classrooms-action-form"
+              noValidate
+              onSubmit={form.handleSubmit(onSubmit, (err) => {
+                console.log('err', err);
+                toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
+              })}
+              className="flex-1 space-y-6"
             >
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="basic" className="flex items-center gap-2">
-                  <HomeIcon className="h-4 w-4" />
-                  <span className="xs:block hidden">
-                    {t('classrooms.actionDialog.tabs.basic')}
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="modules"
-                  className="flex items-center gap-2"
-                >
-                  <SettingsIcon className="h-4 w-4" />
-                  <span className="xs:block hidden">
-                    {t('classrooms.actionDialog.tabs.modules')}
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="integrations"
-                  className="flex items-center gap-2"
-                >
-                  <PuzzleIcon className="h-4 w-4" />
-                  <span className="xs:block hidden">
-                    {t('classrooms.actionDialog.tabs.integrations')}
-                  </span>
-                </TabsTrigger>
-              </TabsList>
+              <Stepper.Navigation>
+                {methods.all.map((step) => (
+                  <Stepper.Step
+                    key={step.id}
+                    of={step.id}
+                    type="button"
+                    onClick={() => {
+                      goToStep(step.id as StepperStepId);
+                    }}
+                  >
+                    <Stepper.Title>{step.title}</Stepper.Title>
+                  </Stepper.Step>
+                ))}
+              </Stepper.Navigation>
+              {methods.switch({
+                basic: ({ Component }) => <Component form={form} />,
+                modules: ({ Component }) => <Component form={form} />,
+                integrations: ({ Component }) => (
+                  <Component
+                    form={form}
+                    appendIntegration={appendIntegration}
+                    handleRemoveIntegration={handleRemoveIntegration}
+                  />
+                ),
+              })}
+              <Stepper.Controls>
+                {!methods.isLast && !methods.isFirst && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={methods.prev}
+                    disabled={methods.isFirst}
+                  >
+                    {t('common.previous')}
+                  </Button>
+                )}
+                {!methods.isLast && (
+                  <Button
+                    type="button"
+                    onClick={async () => {
+                      if (methods.isLast) {
+                        // validate from before submit
+                        const valid = await form.trigger();
+                        if (!valid) {
+                          toast.error(
+                            t('common.pleaseEnsureAllFieldsAreValid')
+                          );
+                          return false;
+                        }
+                      }
+                      const currentStepIndex = methods.all.findIndex(
+                        (s) => s.id === methods.current.id
+                      );
+                      const nextStep = methods.all[currentStepIndex + 1];
+                      goToStep(nextStep.id as StepperStepId);
+                    }}
+                  >
+                    {t('common.next')}
+                  </Button>
+                )}
+                {(isEdit || methods.isLast) && (
+                  <LoadingButton
+                    isLoading={isLoading}
+                    type="submit"
+                    form="classrooms-action-form"
+                  >
+                    {isEdit ? t('common.saveChanges') : t('common.create')}
+                  </LoadingButton>
+                )}
+              </Stepper.Controls>
+            </form>
+          </Form>
+        </DialogContent>
 
-              <BasicTab
-                form={form}
-                templatesQuery={templatesQuery}
-                handleSelectedClassroomTemplateChange={
-                  handleSelectedClassroomTemplateChange
-                }
-              />
-
-              <ModulesTab form={form} />
-
-              <IntegrationsTab
-                form={form}
-                appendIntegration={appendIntegration}
-                handleRemoveIntegration={handleRemoveIntegration}
-              />
-            </Tabs>
-          </form>
-        </Form>
-
-        {/* Form Actions */}
-        <div className="flex justify-end gap-2 pt-6">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => handleDialogClose(false)}
-            disabled={isLoading}
-          >
-            {t('common.cancel')}
-          </Button>
-          <LoadingButton
-            type="submit"
-            form="classrooms-action-form"
-            disabled={isLoading}
-          >
-            {isEdit ? t('common.saveChanges') : t('common.create')}
-          </LoadingButton>
-        </div>
-      </DialogContent>
-
-      <UnsavedChangesDialog
-        open={showConfirmDialog}
-        onOpenChange={setShowConfirmDialog}
-        onConfirm={handleConfirmClose}
-        onCancel={handleCancelClose}
-      />
+        <UnsavedChangesDialog
+          open={showConfirmDialog}
+          onOpenChange={setShowConfirmDialog}
+          onConfirm={handleConfirmClose}
+          onCancel={handleCancelClose}
+        />
+      </Stepper.Provider>
     </Dialog>
   );
 }

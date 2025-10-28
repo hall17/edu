@@ -24,7 +24,7 @@ import {
 import { getAttendanceRecordStatusBadgeColor } from '@/utils';
 
 export function ClassroomSessionViewDialog() {
-  const { openedDialog, setOpenedDialog, currentRow } =
+  const { openedDialog, setOpenedDialog, currentRow, setShowDeleteDialog } =
     useClassroomSessionsContext();
   const { classroom } = useClassroomDetailsContext();
   const { t } = useTranslation();
@@ -249,13 +249,23 @@ export function ClassroomSessionViewDialog() {
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
           <Button
             type="button"
             variant="outline"
             onClick={() => setOpenedDialog(null)}
           >
             {t('common.close')}
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            {t('common.delete')}
+          </Button>
+          <Button type="button" onClick={() => setOpenedDialog('edit')}>
+            {t('common.edit')}
           </Button>
         </div>
       </DialogContent>

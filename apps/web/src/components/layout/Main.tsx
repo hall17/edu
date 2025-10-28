@@ -1,4 +1,3 @@
-import { IconArrowLeft } from '@tabler/icons-react';
 import { Outlet } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 import { ArrowLeft } from 'lucide-react';

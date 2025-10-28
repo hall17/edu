@@ -10,6 +10,7 @@ import {
 } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
 import smsService from '@api/libs/smsService';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, Token, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import {
@@ -26,7 +27,6 @@ import {
   USER_TYPES,
   UserType,
 } from '@edusama/common';
-import { Prisma } from '@api/prisma/generated/prisma/client';
 import { compare, hash } from 'bcrypt';
 import { Request } from 'express';
 import { sign } from 'jsonwebtoken';

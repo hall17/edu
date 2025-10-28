@@ -1,15 +1,8 @@
 import { UserStatus } from '@edusama/server';
-import {
-  IconBan,
-  IconCheck,
-  IconEdit,
-  IconEye,
-  IconLock,
-  IconTrash,
-} from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
+import { Ban, Check, Edit, Eye, Lock, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -216,7 +209,7 @@ export function useColumns(): ColumnDef<User>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <IconEye className="size-5" />,
+                icon: <Eye className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -224,7 +217,7 @@ export function useColumns(): ColumnDef<User>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <IconEdit className="size-5" />,
+                icon: <Edit className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -232,7 +225,7 @@ export function useColumns(): ColumnDef<User>[] {
                 tooltip: t('common.edit'),
               },
               {
-                icon: <IconLock className="size-5" />,
+                icon: <Lock className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('changePassword');
@@ -241,9 +234,9 @@ export function useColumns(): ColumnDef<User>[] {
               },
               {
                 icon: isActive ? (
-                  <IconBan className="size-5" />
+                  <Ban className="size-5" />
                 ) : (
-                  <IconCheck className="size-5" />
+                  <Check className="size-5" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -256,7 +249,7 @@ export function useColumns(): ColumnDef<User>[] {
               },
 
               {
-                icon: <IconTrash className="size-5" />,
+                icon: <Trash2 className="size-5" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

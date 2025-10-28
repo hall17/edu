@@ -397,6 +397,8 @@ export const common = {
     actions: 'Actions',
     remove: 'Remove',
     resetFilters: 'Reset Filters',
+    reset: 'Reset',
+    next: 'Next',
     pagination: {
       showing: 'Showing',
       of: 'of',
@@ -581,6 +583,9 @@ export const common = {
       successMessageTeacher: 'Teacher deleted successfully',
       successMessageParent: 'Parent deleted successfully',
       successMessageUser: 'User deleted successfully',
+      successMessageClassroomSession: 'Session deleted successfully',
+      errorMessageClassroomSession:
+        'Failed to delete session. Please try again.',
     },
     suspend: {
       titleStudent: 'Suspend Student',

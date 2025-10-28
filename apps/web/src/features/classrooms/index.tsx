@@ -1,10 +1,10 @@
-import { IconSchool, IconTemplate } from '@tabler/icons-react';
 import {
   Outlet,
   useLocation,
   useNavigate,
   useParams,
 } from '@tanstack/react-router';
+import { GraduationCap, LayoutTemplate } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { ClassroomDetailsMain } from './classroom-details/ClassroomDetails';
@@ -27,12 +27,12 @@ function ClassroomMain() {
   const sidebarNavItems = [
     {
       title: t('classrooms.tabs.classrooms'),
-      icon: <IconSchool size={18} />,
+      icon: <GraduationCap size={18} />,
       href: '/classrooms',
     },
     {
       title: t('classrooms.tabs.templates'),
-      icon: <IconTemplate size={18} />,
+      icon: <LayoutTemplate size={18} />,
       href: '/classrooms/templates',
     },
   ];

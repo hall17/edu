@@ -1,13 +1,13 @@
 import { DeviceCondition, DeviceStatus, DeviceType } from '@edusama/server';
 import {
-  IconDeviceDesktop,
-  IconDeviceLaptop,
-  IconDeviceMobile,
-  IconDeviceTablet,
-  IconObjectScan,
-  IconPrinter,
-  IconRouter,
-} from '@tabler/icons-react';
+  Monitor,
+  Laptop,
+  Smartphone,
+  Tablet,
+  Printer,
+  Router,
+  Scan,
+} from 'lucide-react';
 
 export const statusTypes = new Map<DeviceStatus, string>([
   [
@@ -59,31 +59,31 @@ export const deviceCategories: {
   {
     label: 'Desktop',
     value: 'DESKTOP',
-    icon: IconDeviceDesktop,
+    icon: Monitor,
   },
   {
     label: 'Laptop',
     value: 'LAPTOP',
-    icon: IconDeviceLaptop,
+    icon: Laptop,
   },
   {
     label: 'Mobile',
     value: 'SMARTPHONE',
-    icon: IconDeviceMobile,
+    icon: Smartphone,
   },
   {
     label: 'Tablet',
     value: 'TABLET',
-    icon: IconDeviceTablet,
+    icon: Tablet,
   },
   {
     label: 'Printer',
     value: 'PRINTER',
-    icon: IconPrinter,
+    icon: Printer,
   },
   {
     label: 'Other',
     value: 'OTHER',
-    icon: IconObjectScan,
+    icon: Scan,
   },
 ] as const;

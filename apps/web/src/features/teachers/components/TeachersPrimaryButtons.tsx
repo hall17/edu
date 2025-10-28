@@ -1,4 +1,4 @@
-import { IconMailPlus, IconUserPlus } from '@tabler/icons-react';
+import { MailPlus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useTeachersContext } from '../TeachersContext';
@@ -16,11 +16,10 @@ export function TeachersPrimaryButtons() {
         onClick={() => setOpenedDialog('invite')}
       >
         <span>{t('teachers.buttons.inviteTeacher')}</span>{' '}
-        <IconMailPlus size={18} />
+        <MailPlus size={18} />
       </Button>
       <Button className="space-x-1" onClick={() => setOpenedDialog('add')}>
-        <span>{t('teachers.buttons.addTeacher')}</span>{' '}
-        <IconUserPlus size={18} />
+        <span>{t('teachers.buttons.addTeacher')}</span> <UserPlus size={18} />
       </Button>
     </div>
   );

@@ -18,6 +18,7 @@ import { DateTimePicker24h } from '@/components/DateTimePicker24h';
 import { MultiSelect } from '@/components/MultiSelect';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { DayPicker } from '@/components/ui/day-picker';
 import {
   Dialog,
   DialogContent,
@@ -188,6 +189,10 @@ export function ClassroomSessionCreateDialog() {
   const watchedClassroomIntegrationId = form.watch('classroomIntegrationId');
 
   const selectedClassroomIntegration = useMemo(() => {
+    const integration = classroom?.integrations?.find(
+      (integration) => integration.id === watchedClassroomIntegrationId
+    );
+    form.setValue('teacherId', integration?.teacherId || '');
     return classroom?.integrations?.find(
       (integration) => integration.id === watchedClassroomIntegrationId
     );
@@ -196,9 +201,10 @@ export function ClassroomSessionCreateDialog() {
   const isAllSelected = studentsSorted
     ? watchedAttendanceRecords?.length === studentsSorted.length
     : false;
-
+  console.log('form', form.getValues());
   // Populate form when editing
   useEffect(() => {
+    console.log('currentRow', currentRow);
     if (isEdit && currentRow) {
       form.reset({
         classroomIntegrationId: currentRow.classroomIntegrationId || '',
@@ -218,8 +224,12 @@ export function ClassroomSessionCreateDialog() {
         isAttendanceRecordCompleted:
           currentRow.isAttendanceRecordCompleted || false,
       });
-    } else if (isCreate) {
-      form.reset(defaultValues);
+    } else {
+      form.reset({
+        ...defaultValues,
+        startDate: currentRow?.startDate,
+        endDate: currentRow?.endDate,
+      });
     }
   }, [isEdit, isCreate, currentRow, form]);
 
@@ -364,7 +374,9 @@ export function ClassroomSessionCreateDialog() {
                         </FormLabel>
                         <Select
                           value={field.value}
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
                         >
                           <FormControl className="w-full">
                             <SelectTrigger>

@@ -3,7 +3,7 @@ import { PlusIcon } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData } from '../ClassroomsActionDialog';
+import { FormData } from '../getFormSchema';
 
 import { IntegrationCard } from './IntegrationCard';
 
@@ -37,7 +37,7 @@ export function IntegrationsTab({
   );
 
   return (
-    <TabsContent value="integrations" className="space-y-4">
+    <div className="space-y-4">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
@@ -82,6 +82,6 @@ export function IntegrationsTab({
           ))}
         </div>
       </div>
-    </TabsContent>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -105,7 +105,7 @@ export function SubjectsSuspendDialog() {
           </div>
 
           <Alert>
-            <IconAlertTriangle className="h-4 w-4" />
+            <AlertTriangle className="h-4 w-4" />
             <AlertTitle>{t('subjects.suspendDialog.warningTitle')}</AlertTitle>
             <AlertDescription>
               {t('subjects.suspendDialog.warningDescription')}

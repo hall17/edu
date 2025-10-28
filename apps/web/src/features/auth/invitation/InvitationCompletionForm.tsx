@@ -1,6 +1,6 @@
 import { UserType } from '@edusama/common';
-import { IconCircleCheck } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
+import { CircleCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ export function InvitationCompletionForm({
     <Card>
       <CardHeader className="text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-          <IconCircleCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
+          <CircleCheck className="h-8 w-8 text-green-600 dark:text-green-400" />
         </div>
         <CardTitle className="text-green-700 dark:text-green-400">
           {t('auth.invitation.form.awaitingApproval.title')}

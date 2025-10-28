@@ -1,13 +1,7 @@
 import { ScheduleType, ScoringType } from '@edusama/server';
-import {
-  IconBan,
-  IconCheck,
-  IconEdit,
-  IconEye,
-  IconTrash,
-} from '@tabler/icons-react';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
+import { Ban, Check, Edit, Eye, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useAssessmentsContext } from '../AssessmentsContext';
@@ -180,7 +174,7 @@ export function useColumns(): ColumnDef<Assessment>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <IconEye className="size-5" />,
+                icon: <Eye className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -188,7 +182,7 @@ export function useColumns(): ColumnDef<Assessment>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <IconEdit className="size-5" />,
+                icon: <Edit className="size-5" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -197,9 +191,9 @@ export function useColumns(): ColumnDef<Assessment>[] {
               },
               {
                 icon: isActive ? (
-                  <IconBan className="size-5" />
+                  <Ban className="size-5" />
                 ) : (
-                  <IconCheck className="size-5" />
+                  <Check className="size-5" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -211,7 +205,7 @@ export function useColumns(): ColumnDef<Assessment>[] {
                 tooltip: isActive ? t('common.suspend') : t('common.activate'),
               },
               {
-                icon: <IconTrash className="size-5" />,
+                icon: <Trash2 className="size-5" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

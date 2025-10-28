@@ -5,7 +5,7 @@ import {
   Droppable,
   DropResult,
 } from '@hello-pangea/dnd';
-import { IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -107,7 +107,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                     }}
                     className="flex items-center gap-2"
                   >
-                    <IconPlus size={14} />
+                    <Plus size={14} />
                     {t('questionBank.form.addOption')}
                   </Button>
                 </div>
@@ -157,7 +157,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                                 {...provided.dragHandleProps}
                                                 className="flex h-8 w-6 cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
                                               >
-                                                <IconGripVertical size={16} />
+                                                <GripVertical size={16} />
                                               </div>
                                               <FormControl className="flex-1">
                                                 <Input
@@ -189,7 +189,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                         }}
                                         className="text-red-500 hover:bg-red-50 hover:text-red-700"
                                       >
-                                        <IconTrash size={16} />
+                                        <Trash2 size={16} />
                                       </Button>
                                     </CardAction>
                                   </CardHeader>
@@ -226,7 +226,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                     }}
                     className="flex items-center gap-2"
                   >
-                    <IconPlus size={14} />
+                    <Plus size={14} />
                     {t('questionBank.form.addOption')}
                   </Button>
                 </div>
@@ -276,7 +276,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                                 {...provided.dragHandleProps}
                                                 className="flex h-8 w-6 cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
                                               >
-                                                <IconGripVertical size={16} />
+                                                <GripVertical size={16} />
                                               </div>
                                               <FormControl className="flex-1">
                                                 <Input
@@ -308,7 +308,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                         }}
                                         className="text-red-500 hover:bg-red-50 hover:text-red-700"
                                       >
-                                        <IconTrash size={16} />
+                                        <Trash2 size={16} />
                                       </Button>
                                     </CardAction>
                                   </CardHeader>
@@ -445,7 +445,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                   {...provided.dragHandleProps}
                                   className="flex cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
                                 >
-                                  <IconGripVertical size={16} />
+                                  <GripVertical size={16} />
                                 </div>
                                 {item.option ||
                                   t('questionBank.form.optionText', {
@@ -517,7 +517,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
                                           {...provided.dragHandleProps}
                                           className="flex cursor-grab items-center justify-center text-gray-400 hover:text-gray-600 active:cursor-grabbing"
                                         >
-                                          <IconGripVertical size={16} />
+                                          <GripVertical size={16} />
                                         </div>
                                         {matchedOption ||
                                           t('questionBank.form.optionText', {

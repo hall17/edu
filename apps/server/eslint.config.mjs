@@ -11,7 +11,7 @@ import baseConfig from '@edusama/eslint-config-custom/base';
 export default [
   {
     name: 'ignores',
-    ignores: ['*TsRest*.ts'],
+    ignores: ['*TsRest*.ts', 'src/prisma/generated/**'],
   },
   ...baseConfig,
 ];

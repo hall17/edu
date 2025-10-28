@@ -1,6 +1,5 @@
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { IconTrash } from '@tabler/icons-react';
 import { Row } from '@tanstack/react-table';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
 
 import { useTasks } from '../context/TasksContext';
 import { labels } from '../data/data';
@@ -39,7 +38,7 @@ export function DataTableRowActions<TData>({
           variant="ghost"
           className="data-[state=open]:bg-muted flex h-8 w-8 p-0"
         >
-          <DotsHorizontalIcon className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
@@ -76,7 +75,7 @@ export function DataTableRowActions<TData>({
         >
           Delete
           <DropdownMenuShortcut>
-            <IconTrash size={16} />
+            <Trash2 size={16} />
           </DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

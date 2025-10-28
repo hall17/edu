@@ -1,5 +1,5 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
+import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -38,7 +38,7 @@ export function UsersDeleteDialog() {
       isLoading={deleteUserMutation.isPending}
       title={
         <span className="text-destructive">
-          <IconAlertTriangle
+          <AlertTriangle
             className="stroke-destructive mr-1 inline-block"
             size={18}
           />{' '}

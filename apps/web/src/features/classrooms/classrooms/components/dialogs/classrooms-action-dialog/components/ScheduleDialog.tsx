@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData, Schedule } from '../ClassroomsActionDialog';
+import { Schedule } from '../ClassroomsActionDialog';
+import { FormData } from '../getFormSchema';
 
 import { TimeInput } from '@/components/TimeInput';
 import { TimeWheelPicker } from '@/components/TimeWheelPicker';

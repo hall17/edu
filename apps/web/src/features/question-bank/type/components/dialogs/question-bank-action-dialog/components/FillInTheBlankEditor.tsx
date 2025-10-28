@@ -1,4 +1,4 @@
-import { IconTrash } from '@tabler/icons-react';
+import { Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -163,7 +163,7 @@ export function FillInTheBlankEditor({
                   onClick={() => removeBlank(index)}
                   className="text-red-500 hover:bg-red-50 hover:text-red-700"
                 >
-                  <IconTrash size={16} />
+                  <Trash2 size={16} />
                 </Button>
               </div>
             ))}

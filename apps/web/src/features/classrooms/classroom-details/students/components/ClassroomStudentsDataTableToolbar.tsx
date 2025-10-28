@@ -1,5 +1,5 @@
-import { IconX } from '@tabler/icons-react';
 import { Table } from '@tanstack/react-table';
+import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomStudentsContext } from '../ClassroomStudentsContext';
@@ -42,7 +42,7 @@ export function ClassroomStudentsDataTableToolbar({
             className="h-8 px-2 lg:px-3"
           >
             {t('table.actions.clearFilters')}
-            <IconX className="ml-2 size-4" />
+            <X className="ml-2 size-4" />
           </Button>
         )}
       </div>

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconEdit, IconTrash, IconCheck, IconX } from '@tabler/icons-react';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
+import { Check, Pencil, Trash2, X } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -219,7 +219,7 @@ export function MaterialsManageSubjectsDialog() {
                               size="sm"
                               disabled={updateSubjectMutation.isPending}
                             >
-                              <IconCheck className="mr-1 size-4" />
+                              <Check className="mr-1 size-4" />
                               {t('materials.manageSubjects.save')}
                             </Button>
                             <Button
@@ -229,7 +229,7 @@ export function MaterialsManageSubjectsDialog() {
                               onClick={cancelEdit}
                               disabled={updateSubjectMutation.isPending}
                             >
-                              <IconX className="mr-1 size-4" />
+                              <X className="mr-1 size-4" />
                               {t('common.cancel')}
                             </Button>
                           </div>
@@ -253,7 +253,7 @@ export function MaterialsManageSubjectsDialog() {
                                 size="sm"
                                 onClick={() => startEdit(subject)}
                               >
-                                <IconEdit className="size-4" />
+                                <Pencil className="size-4" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -270,7 +270,7 @@ export function MaterialsManageSubjectsDialog() {
                                 className="hover:text-red-500"
                                 disabled={deleteSubjectMutation.isPending}
                               >
-                                <IconTrash className="size-4" />
+                                <Trash2 className="size-4" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>

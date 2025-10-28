@@ -1,11 +1,5 @@
-import {
-  IconCalendar,
-  IconCamera,
-  IconEdit,
-  IconMail,
-  IconMapPin,
-} from '@tabler/icons-react';
 import dayjs from 'dayjs';
+import { Calendar, Camera, Mail, MapPin, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -58,7 +52,7 @@ export function ProfileHeader({ onEditClick, isEditing }: ProfileHeaderProps) {
               variant="outline"
               className="absolute -right-2 -bottom-2 h-8 w-8 rounded-full"
             >
-              <IconCamera className="h-4 w-4" />
+              <Camera className="h-4 w-4" />
             </Button>
           )}
         </div>
@@ -80,17 +74,17 @@ export function ProfileHeader({ onEditClick, isEditing }: ProfileHeaderProps) {
           </p>
           <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-1">
-              <IconMail className="size-4" />
+              <Mail className="size-4" />
               {user?.email || '-'}
             </div>
             <div className="flex items-center gap-1">
-              <IconMapPin className="size-4" />
+              <MapPin className="size-4" />
               {user?.city && user?.country?.name
                 ? `${user.city}, ${user.country?.name}`
                 : user?.country?.name || user?.city || '-'}
             </div>
             <div className="flex items-center gap-1">
-              <IconCalendar className="size-4" />
+              <Calendar className="size-4" />
               {t('settings.profile.status.joined')}{' '}
               {dayjs(user?.createdAt).format('DD/MM/YYYY')}
             </div>
@@ -98,7 +92,7 @@ export function ProfileHeader({ onEditClick, isEditing }: ProfileHeaderProps) {
         </div>
         {!isEditing && (
           <Button variant="outline" onClick={onEditClick} className="gap-2">
-            <IconEdit className="size-4" />
+            <Pencil className="size-4" />
             {t('settings.profile.form.editProfile')}
           </Button>
         )}

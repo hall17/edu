@@ -1,13 +1,13 @@
 import {
-  IconArrowDown,
-  IconArrowRight,
-  IconArrowUp,
-  IconCircle,
-  IconCircleCheck,
-  IconCircleX,
-  IconExclamationCircle,
-  IconStopwatch,
-} from '@tabler/icons-react';
+  ArrowDown,
+  ArrowRight,
+  ArrowUp,
+  CheckCircle2,
+  Circle,
+  AlertCircle,
+  Timer,
+  XCircle,
+} from 'lucide-react';
 
 export const labels = [
   {
@@ -28,27 +28,27 @@ export const statuses = [
   {
     value: 'backlog',
     label: 'Backlog',
-    icon: IconExclamationCircle,
+    icon: AlertCircle,
   },
   {
     value: 'todo',
     label: 'Todo',
-    icon: IconCircle,
+    icon: Circle,
   },
   {
     value: 'in progress',
     label: 'In Progress',
-    icon: IconStopwatch,
+    icon: Timer,
   },
   {
     value: 'done',
     label: 'Done',
-    icon: IconCircleCheck,
+    icon: CheckCircle2,
   },
   {
     value: 'canceled',
     label: 'Canceled',
-    icon: IconCircleX,
+    icon: XCircle,
   },
 ];
 
@@ -56,16 +56,16 @@ export const priorities = [
   {
     label: 'Low',
     value: 'low',
-    icon: IconArrowDown,
+    icon: ArrowDown,
   },
   {
     label: 'Medium',
     value: 'medium',
-    icon: IconArrowRight,
+    icon: ArrowRight,
   },
   {
     label: 'High',
     value: 'high',
-    icon: IconArrowUp,
+    icon: ArrowUp,
   },
 ];

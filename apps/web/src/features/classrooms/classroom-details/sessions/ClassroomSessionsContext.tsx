@@ -12,6 +12,7 @@ function useProviderValue() {
     useState<ClassroomSessionsDialogType | null>(null);
   const [currentRow, setCurrentRow] =
     useState<ClassroomIntegrationSession | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const {
     filters: searchFilters,
     setFilters,
@@ -36,10 +37,26 @@ function useProviderValue() {
     classroomIntegrationSessionsQuery.data?.integrationSessions;
   const pagination = classroomIntegrationSessionsQuery.data?.pagination;
 
+  function deleteClassroomIntegrationSession(id: string) {
+    queryClient.setQueryData(queryKey, (data) => {
+      if (!data) return undefined;
+
+      return {
+        integrationSessions:
+          data?.integrationSessions.filter((s) => s.id !== id) ?? [],
+        pagination: {
+          ...data.pagination,
+          count: data.pagination.count - 1,
+        },
+      };
+    });
+  }
+
   function setOpenedDialogFn(dialog: ClassroomSessionsDialogType | null) {
     setOpenedDialog(dialog);
 
     if (!dialog) {
+      setShowDeleteDialog(false);
       setTimeout(() => {
         setCurrentRow(null);
       }, 500);
@@ -57,6 +74,9 @@ function useProviderValue() {
     resetFilters,
     classroomIntegrationSessions,
     pagination,
+    deleteClassroomIntegrationSession,
+    showDeleteDialog,
+    setShowDeleteDialog,
   };
 }
 

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData } from '../ClassroomsActionDialog';
+import { FormData } from '../getFormSchema';
 
 import { ScheduleDialog } from './ScheduleDialog';
 

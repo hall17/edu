@@ -1,11 +1,4 @@
-import {
-  IconCamera,
-  IconCheck,
-  IconEdit,
-  IconTrash,
-  IconUpload,
-  IconX,
-} from '@tabler/icons-react';
+import { Camera, Check, Edit, Trash2, Upload, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
@@ -241,7 +234,7 @@ export function DroppableImage({
                       />
                     ) : (
                       <div className="bg-muted/20 flex h-full items-center justify-center">
-                        <IconCamera
+                        <Camera
                           className={`${iconSizes[size]} text-muted-foreground`}
                         />
                       </div>
@@ -263,7 +256,7 @@ export function DroppableImage({
                               dropzoneInputRef.current?.click();
                             }}
                           >
-                            <IconEdit className={actionIconSizes[size]} />
+                            <Edit className={actionIconSizes[size]} />
                           </Button>
                           <Button
                             type="button"
@@ -275,13 +268,11 @@ export function DroppableImage({
                               removeImage();
                             }}
                           >
-                            <IconTrash className={actionIconSizes[size]} />
+                            <Trash2 className={actionIconSizes[size]} />
                           </Button>
                         </div>
                       ) : (
-                        <IconCamera
-                          className={`${iconSizes[size]} text-white`}
-                        />
+                        <Camera className={`${iconSizes[size]} text-white`} />
                       )}
                     </div>
                   )}
@@ -289,9 +280,7 @@ export function DroppableImage({
                   {/* Drag Active Overlay */}
                   {isImageDragActive && !disabled && (
                     <div className="bg-primary/20 ring-primary absolute inset-0 flex items-center justify-center rounded-lg ring-2">
-                      <IconUpload
-                        className={`${iconSizes[size]} text-primary`}
-                      />
+                      <Upload className={`${iconSizes[size]} text-primary`} />
                     </div>
                   )}
                 </div>
@@ -337,7 +326,7 @@ export function DroppableImage({
                     className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/20 p-0 text-white backdrop-blur-sm hover:bg-black/40"
                     onClick={() => setIsPreviewOpen(false)}
                   >
-                    <IconX className="h-5 w-5" />
+                    <X className="h-5 w-5" />
                   </Button>
 
                   {/* Image info overlay */}
