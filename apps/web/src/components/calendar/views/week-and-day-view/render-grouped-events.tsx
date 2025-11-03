@@ -7,11 +7,13 @@ import { EventBlock } from '@/components/calendar/views/week-and-day-view/event-
 interface RenderGroupedEventsProps {
   groupedEvents: IEvent[][];
   day: Date;
+  onClickEventCard?: (eventId: string) => void;
 }
 
 export function RenderGroupedEvents({
   groupedEvents,
   day,
+  onClickEventCard,
 }: RenderGroupedEventsProps) {
   return groupedEvents.map((group, groupIndex) =>
     group.map((event) => {

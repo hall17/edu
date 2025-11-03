@@ -1,6 +1,6 @@
 import { useClassroomsContext } from '../../ClassroomsContext';
 
-import { ClassroomsActionDialog } from './classrooms-action-dialog/ClassroomsActionDialog';
+import { ClassroomsActionDialog } from './action-dialog/ClassroomsActionDialog';
 import { ClassroomsDeleteDialog } from './ClassroomsDeleteDialog';
 import { ClassroomsViewDialog } from './ClassroomsViewDialog';
 

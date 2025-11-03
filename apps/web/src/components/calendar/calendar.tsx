@@ -21,6 +21,7 @@ export function Calendar(props: CalendarProviderProps) {
       onClickEditEvent={props.onClickEditEvent}
       onClickRemoveEvent={props.onClickRemoveEvent}
       onClickEventCard={props.onClickEventCard}
+      allowAddEvent={props.allowAddEvent}
     >
       <DndProvider showConfirmation={false}>
         <div className="w-full rounded-xl border">

@@ -278,8 +278,9 @@ export class ClassroomService {
         });
 
         for (const integration of integrations ?? []) {
-          const { schedules, ...integrationData } = integration;
-          await tx.classroomIntegration.create({
+          const { schedules, sessions, ...integrationData } = integration;
+          console.log('sessions', sessions);
+          const classroomIntegration = await tx.classroomIntegration.create({
             data: {
               ...integrationData,
               classroomId: createdClassroom.id,
@@ -295,6 +296,32 @@ export class ClassroomService {
                   : undefined,
             },
           });
+
+          if (sessions?.length) {
+            await Promise.all(
+              sessions.map(async (session) => {
+                await tx.classroomIntegrationSession.create({
+                  data: {
+                    startDate: session.startDate,
+                    endDate: session.endDate,
+                    description: session.description || '',
+                    teacherId: session.teacherId,
+                    classroomIntegrationId: classroomIntegration.id,
+                    lessons: {
+                      createMany: {
+                        data:
+                          session.lessonIds?.map((lessonId) => {
+                            return {
+                              lessonId,
+                            };
+                          }) ?? [],
+                      },
+                    },
+                  },
+                });
+              })
+            );
+          }
         }
 
         // Return the complete classroom with includes

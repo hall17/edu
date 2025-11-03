@@ -22,6 +22,10 @@ export function TimeInput({
     const inputValue = e.target.value;
     const numericValue = parseInt(inputValue) || 0;
 
+    // if (numericValue > 99) {
+    //   numericValue = Number(numericValue.toString().slice(-1));
+    // }
+
     // Allow empty input or valid hour range
     if (inputValue === '' || (numericValue >= 0 && numericValue <= 23)) {
       const paddedHour =

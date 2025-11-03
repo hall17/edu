@@ -17,8 +17,14 @@ import { Settings } from '@/components/calendar/settings/settings';
 import { Button } from '@/components/ui/button';
 
 export function CalendarHeader() {
-  const { view, events, onClickAddEvent, addEventButtonText, availableViews } =
-    useCalendar();
+  const {
+    view,
+    events,
+    onClickAddEvent,
+    addEventButtonText,
+    availableViews,
+    allowAddEvent,
+  } = useCalendar();
 
   return (
     <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
@@ -48,12 +54,14 @@ export function CalendarHeader() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">
           {/* <UserSelect /> */}
 
-          <Button onClick={() => onClickAddEvent(new Date())}>
-            <Plus className="h-4 w-4" />
-            {addEventButtonText}
-          </Button>
+          {allowAddEvent && onClickAddEvent && (
+            <Button onClick={() => onClickAddEvent(new Date())}>
+              <Plus className="h-4 w-4" />
+              {addEventButtonText}
+            </Button>
+          )}
         </div>
-        <Settings />
+        {/* <Settings /> */}
       </motion.div>
     </div>
   );

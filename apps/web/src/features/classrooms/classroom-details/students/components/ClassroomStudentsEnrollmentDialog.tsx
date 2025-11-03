@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useDebounceCallback } from 'usehooks-ts';
 
+import { useClassroomDetailsContext } from '../../ClassroomDetailsContext';
 import { useClassroomStudentsContext } from '../ClassroomStudentsContext';
 
 import { LoadingButton } from '@/components';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -29,6 +29,7 @@ export function ClassroomStudentsEnrollmentDialog() {
     classroomId,
     studentsQuery,
   } = useClassroomStudentsContext();
+  const { classroomQuery } = useClassroomDetailsContext();
 
   const [enrollingStudentId, setEnrollingStudentId] = useState<string | null>(
     null
@@ -41,6 +42,7 @@ export function ClassroomStudentsEnrollmentDialog() {
       onSuccess: () => {
         toast.success(t('students.enrollment.success'));
         studentsQuery.refetch();
+        classroomQuery.refetch();
         setEnrollingStudentId(null);
       },
       onError: (error) => {

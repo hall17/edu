@@ -5,71 +5,87 @@ export function createCustomZodErrorMessage(
   iss: z.core.$ZodIssue,
   t: TFunction
 ) {
+  console.log('iss', iss);
   switch (iss.code) {
     case 'invalid_format':
     case 'invalid_type':
     case 'invalid_value':
+      console.log('invalid_value', iss);
       if (!iss.input) {
         return {
+          ...iss,
           message: t('common.requiredField'),
         };
       }
       if ('format' in iss) {
         if (iss.format === 'url') {
           return {
+            ...iss,
             message: t('common.invalidUrl'),
           };
         } else if (iss.format === 'email') {
           return {
+            ...iss,
             message: t('common.invalidEmail'),
           };
         }
       }
       return {
+        ...iss,
         message: t('common.invalidValue'),
       };
     case 'too_small': {
+      console.log('too_small', iss);
       const minimum = iss.minimum as number;
       if (iss.origin === 'string') {
         if (minimum === 1) {
+          console.log('required field');
           return {
+            path: iss.path,
             message: t('common.requiredField'),
           };
         }
         return {
+          ...iss,
           message: t('common.stringValueMinLengthError', {
             count: minimum,
           }),
         };
       } else if (iss.origin === 'number') {
         return {
+          ...iss,
           message: t('common.numberValueMinError', {
             count: minimum,
           }),
         };
       } else {
         return {
+          ...iss,
           message: t('common.requiredField'),
         };
       }
     }
     case 'too_big': {
+      console.log('too_big', iss);
       const maximum = iss.maximum as number;
 
       if (iss.origin === 'string') {
         return {
+          ...iss,
           message: t('common.stringValueMaxLengthError', {
             count: maximum,
           }),
         };
       } else if (iss.origin === 'number') {
         return {
+          ...iss,
           message: t('common.numberValueMaxError', {
             count: maximum,
           }),
         };
       } else {
         return {
+          ...iss,
           message: t('common.invalidValue'),
         };
       }
@@ -77,6 +93,7 @@ export function createCustomZodErrorMessage(
   }
 
   return {
+    ...iss,
     message: t('common.anErrorOccurred'),
   };
 }

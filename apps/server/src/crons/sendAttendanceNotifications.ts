@@ -110,14 +110,14 @@ export async function sendAttendanceNotifications() {
 
   logger.info(`Sending ${studentsToNotify.length} attendance notifications`);
 
-  await prisma.attendanceNotification.createMany({
-    data: studentsToNotify.map((studentToNotify) => ({
-      studentId: studentToNotify.student.id,
-      classroomIntegrationId: studentToNotify.integration.id,
-      notificationType: studentToNotify.notificationType,
-      notificationDate: new Date(),
-    })),
-  });
+  // await prisma.attendanceNotification.createMany({
+  //   data: studentsToNotify.map((studentToNotify) => ({
+  //     studentId: studentToNotify.student.id,
+  //     classroomIntegrationId: studentToNotify.integration.id,
+  //     notificationType: studentToNotify.notificationType,
+  //     notificationDate: new Date(),
+  //   })),
+  // });
 
   // await Promise.all(
   //   studentsToNotify.map(async (studentToNotify) => {

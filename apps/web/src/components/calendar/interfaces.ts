@@ -22,7 +22,7 @@ export interface IEvent {
   title: string;
   color: TEventColor;
   description: string;
-  user: any;
+  user?: any;
 }
 
 export interface ICalendarCell {

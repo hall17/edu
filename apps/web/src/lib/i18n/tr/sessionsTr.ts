@@ -83,7 +83,7 @@ export const sessions = {
     update: 'Oturumu Güncelle',
     create: 'Oturum Oluştur',
     incompleteAttendanceRecord: 'Katılım Kaydını Tamamla',
-    completeAttendanceRecord: 'Katılım Kaydı Tamamlandı',
+    completeAttendanceRecord: 'Katılım Kaydını Tamamla',
     completeAttendanceRecordSuccess: 'Katılım kaydı başarıyla tamamlandı',
   },
   deleteDialog: {

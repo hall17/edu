@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData } from '../getFormSchema';
+import { FormData, useClassroomForm } from '../ClassroomFormContext';
 
 import { ModuleCard } from '@/components/ModuleCard';
 import {
@@ -15,10 +15,6 @@ import {
 } from '@/components/ui/form';
 import { trpc } from '@/lib/trpc';
 
-interface ModulesTabProps {
-  form: UseFormReturn<FormData>;
-}
-
 const selectableModules: ModuleCode[] = [
   MODULE_CODES.certificates,
   MODULE_CODES.assessment,
@@ -28,8 +24,9 @@ const selectableModules: ModuleCode[] = [
   MODULE_CODES.materials,
 ];
 
-export function ModulesTab({ form }: ModulesTabProps) {
+export function ModulesStep() {
   const { t } = useTranslation();
+  const { form } = useClassroomForm();
 
   const modulesQuery = useQuery(
     trpc.module.findAll.queryOptions({

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { useMemo, useCallback } from 'react';
 
+import { useCalendar } from '../../contexts/calendar-context';
 import { AddEditEventDialog } from '../../dialogs/add-edit-event-dialog';
 
 import { staggerContainer, transition } from '@/components/calendar/animations';
@@ -49,7 +50,7 @@ const MAX_VISIBLE_EVENTS = 3;
 export function DayCell({ cell, events, eventPositions }: IProps) {
   const { day, currentMonth, date } = cell;
   const isMobile = useMediaQuery('(max-width: 768px)');
-
+  const { allowAddEvent } = useCalendar();
   // Memoize cellEvents and currentCellMonth for performance
   const { cellEvents, currentCellMonth } = useMemo(() => {
     const cellEvents = getMonthCellEvents(date, events, eventPositions);
@@ -136,7 +137,7 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
               !currentMonth && 'opacity-50'
             )}
           >
-            {cellEvents.length === 0 && !isMobile ? (
+            {cellEvents.length === 0 && !isMobile && allowAddEvent ? (
               <div className="group flex h-full w-full items-center justify-center">
                 <AddEditEventDialog startDate={date}>
                   <Button

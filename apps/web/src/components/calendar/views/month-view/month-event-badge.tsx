@@ -106,33 +106,32 @@ export function MonthEventBadge({
 
   return (
     <DraggableEvent event={event}>
-      <EventDetailsDialog event={event}>
-        <div role="button" tabIndex={0} className={eventBadgeClasses}>
-          <div className="flex items-center gap-1.5 truncate">
-            {!['middle', 'last'].includes(position) &&
-              badgeVariant === 'dot' && <EventBullet color={event.color} />}
+      <div role="button" tabIndex={0} className={eventBadgeClasses}>
+        <div className="flex items-center gap-1.5 truncate">
+          {!['middle', 'last'].includes(position) && badgeVariant === 'dot' && (
+            <EventBullet color={event.color} />
+          )}
 
-            {renderBadgeText && (
-              <p className="flex-1 truncate font-semibold">
-                {eventCurrentDay && (
-                  <span className="text-xs">
-                    Day {eventCurrentDay} of {eventTotalDays} •{' '}
-                  </span>
-                )}
-                {event.title}
-              </p>
-            )}
-          </div>
-
-          <div className="hidden sm:block">
-            {renderBadgeTime && (
-              <span>
-                {formatTime(new Date(event.startDate), use24HourFormat)}
-              </span>
-            )}
-          </div>
+          {renderBadgeText && (
+            <p className="flex-1 truncate font-semibold">
+              {eventCurrentDay && (
+                <span className="text-xs">
+                  Day {eventCurrentDay} of {eventTotalDays} •{' '}
+                </span>
+              )}
+              {event.title}
+            </p>
+          )}
         </div>
-      </EventDetailsDialog>
+
+        <div className="hidden sm:block">
+          {renderBadgeTime && (
+            <span>
+              {formatTime(new Date(event.startDate), use24HourFormat)}
+            </span>
+          )}
+        </div>
+      </div>
     </DraggableEvent>
   );
 }

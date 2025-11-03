@@ -31,7 +31,8 @@ interface IProps {
 }
 
 export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
-  const { selectedDate, use24HourFormat, onClickAddEvent } = useCalendar();
+  const { selectedDate, use24HourFormat, onClickAddEvent, allowAddEvent } =
+    useCalendar();
 
   const weekStart = startOfWeek(selectedDate, {
     locale: {
@@ -178,28 +179,31 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                               startDate={day}
                               startTime={{ hour, minute: 0 }}
                             > */}
-                            <div
-                              role="button"
-                              className="group hover:bg-secondary absolute inset-0 flex cursor-pointer items-center justify-center transition-colors"
-                              onClick={() => {
-                                console.log('clicked');
-                                // construct time from day hour and minute with date-fns
-                                const time = set(new Date(day), {
-                                  hours: hour,
-                                  minutes: 0,
-                                  seconds: 0,
-                                });
-                                onClickAddEvent(time);
-                              }}
-                            >
-                              <Button
-                                variant="ghost"
-                                className="border opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                            {onClickAddEvent && (
+                              <div
+                                role="button"
+                                className="group hover:bg-secondary absolute inset-0 flex cursor-pointer items-center justify-center transition-colors"
+                                onClick={() => {
+                                  // construct time from day hour and minute with date-fns
+                                  const time = set(new Date(day), {
+                                    hours: hour,
+                                    minutes: 0,
+                                    seconds: 0,
+                                  });
+                                  onClickAddEvent(time);
+                                }}
                               >
-                                <Plus className="h-4 w-4" />
-                                <span className="max-sm:hidden">Add Event</span>
-                              </Button>
-                            </div>
+                                <Button
+                                  variant="ghost"
+                                  className="border opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                >
+                                  <Plus className="h-4 w-4" />
+                                  <span className="max-sm:hidden">
+                                    Add Event
+                                  </span>
+                                </Button>
+                              </div>
+                            )}
                             {/* </AddEditEventDialog> */}
                           </DroppableArea>
 
@@ -211,27 +215,30 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                             minute={30}
                             className="absolute inset-x-0 bottom-0 h-[48px]"
                           >
-                            <div
-                              className="group hover:bg-secondary absolute inset-0 flex cursor-pointer items-center justify-center transition-colors"
-                              onClick={() => {
-                                console.log('clicked');
-                                // construct time from day hour and minute with date-fns
-                                const time = set(new Date(day), {
-                                  hours: hour,
-                                  minutes: 30,
-                                  seconds: 0,
-                                });
-                                onClickAddEvent(time);
-                              }}
-                            >
-                              <Button
-                                variant="ghost"
-                                className="border opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                            {onClickAddEvent && (
+                              <div
+                                className="group hover:bg-secondary absolute inset-0 flex cursor-pointer items-center justify-center transition-colors"
+                                onClick={() => {
+                                  // construct time from day hour and minute with date-fns
+                                  const time = set(new Date(day), {
+                                    hours: hour,
+                                    minutes: 30,
+                                    seconds: 0,
+                                  });
+                                  onClickAddEvent(time);
+                                }}
                               >
-                                <Plus className="h-4 w-4" />
-                                <span className="max-sm:hidden">Add Event</span>
-                              </Button>
-                            </div>
+                                <Button
+                                  variant="ghost"
+                                  className="border opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                                >
+                                  <Plus className="h-4 w-4" />
+                                  <span className="max-sm:hidden">
+                                    Add Event
+                                  </span>
+                                </Button>
+                              </div>
+                            )}
                           </DroppableArea>
                         </motion.div>
                       ))}

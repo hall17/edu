@@ -1,11 +1,10 @@
 import { ClockIcon, Link, TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData } from '../getFormSchema';
+import { useClassroomForm } from '../../ClassroomFormContext';
 
-import { ScheduleDialog } from './ScheduleDialog';
+import { ScheduleDialog } from './schedule-dialog/ScheduleDialog';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -30,30 +29,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Subject, trpc } from '@/lib/trpc';
+import { Subject } from '@/lib/trpc';
 
 interface IntegrationCardProps {
   index: number;
-  form: UseFormReturn<FormData>;
-  subjects: Subject[];
-  selectedSubjectIds: string[];
-  onRemove: () => void;
-  canRemove: boolean;
-  isLoading: boolean;
 }
 
-export function IntegrationCard({
-  index,
-  form,
-  subjects,
-  selectedSubjectIds,
-  onRemove,
-  canRemove,
-  isLoading,
-}: IntegrationCardProps) {
+export function IntegrationCard({ index }: IntegrationCardProps) {
   const { t } = useTranslation();
-  const selectedSubjectId = form.watch(`integrations.${index}.subjectId`);
+  const {
+    form,
+    integrationFields,
+    removeIntegration,
+    subjectsQuery,
+    subjects,
+  } = useClassroomForm();
+  const isLoading = subjectsQuery.isLoading;
+
+  const selectedSubjectIds = integrationFields.map(
+    (integration) => integration.subjectId
+  );
+  const canRemove = integrationFields.length > 1;
+
   const [showScheduleDialog, setShowScheduleDialog] = useState(false);
+
+  const selectedSubjectId = form.watch(`integrations.${index}.subjectId`);
 
   const curriculums = useMemo(() => {
     return (
@@ -72,8 +72,9 @@ export function IntegrationCard({
   function handleSubjectChange(subjectId: string) {
     form.setValue(`integrations.${index}.subjectId`, subjectId);
     form.setValue(`integrations.${index}.curriculumId`, '');
-    form.setValue(`integrations.${index}.teacherId`, null);
+    form.setValue(`integrations.${index}.teacherId`, '');
   }
+
   // Check if current selected subject is already selected in another integration
   const isCurrentSubjectAlreadySelected =
     selectedSubjectId &&
@@ -90,8 +91,16 @@ export function IntegrationCard({
   }
 
   function handleTeacherChange(teacherId: string | null) {
-    form.setValue(`integrations.${index}.teacherId`, teacherId);
+    form.setValue(`integrations.${index}.teacherId`, teacherId ?? '');
   }
+
+  function handleRemoveIntegration() {
+    if (integrationFields.length > 1) {
+      removeIntegration(index);
+    }
+  }
+
+  console.log('form', form.formState.errors);
 
   return (
     <Card>
@@ -129,9 +138,9 @@ export function IntegrationCard({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={onRemove}
+                    onClick={handleRemoveIntegration}
                     disabled={!canRemove}
-                    className="text-destructive hover:text-destructive disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-destructive hover:text-destructive"
                   >
                     <TrashIcon className="h-4 w-4" />
                   </Button>
@@ -154,7 +163,7 @@ export function IntegrationCard({
         <FormField
           control={form.control}
           name={`integrations.${index}.subjectId`}
-          render={({ field }) => (
+          render={({ field, formState }) => (
             <FormItem>
               <FormLabel required>
                 {t('classrooms.actionDialog.integrations.subject')}
@@ -292,7 +301,6 @@ export function IntegrationCard({
         open={showScheduleDialog}
         onOpenChange={setShowScheduleDialog}
         integrationIndex={index}
-        form={form}
       />
     </Card>
   );

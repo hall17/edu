@@ -152,3 +152,4 @@ export type Assessment =
 //   RouterOutput['assessment']['findAllQuestions']['assessmentQuestions'][number];
 // export type ClassroomIntegrationAssessment =
 //   RouterOutput['classroom']['findAllClassroomIntegrationAssessments']['classroomIntegrationAssessments'][number];
+export type ClassroomFromFindOne = RouterOutput['classroom']['findOne'];

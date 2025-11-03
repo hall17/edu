@@ -91,6 +91,9 @@ export function EventBlock({ event, className }: IProps) {
 
             <p className="truncate font-semibold">{event.title}</p>
           </div>
+          <p className="text-muted-foreground truncate text-xs">
+            {event.description}
+          </p>
 
           {/* {event.type === 'session' && event.data && (
             <div className="space-y-1">

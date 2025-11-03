@@ -24,7 +24,8 @@ function useProviderValue() {
   });
 
   const filters = {
-    ...searchFilters,
+    // ...searchFilters,
+    all: true,
     classroomId,
   };
 

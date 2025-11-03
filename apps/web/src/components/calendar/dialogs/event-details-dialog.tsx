@@ -52,7 +52,7 @@ export function EventDetailsDialog({ event, children }: IProps) {
               <div>
                 <p className="text-sm font-medium">Responsible</p>
                 <p className="text-muted-foreground text-sm">
-                  {event.user.name}
+                  {event.user?.name || 'Unknown'}
                 </p>
               </div>
             </div>

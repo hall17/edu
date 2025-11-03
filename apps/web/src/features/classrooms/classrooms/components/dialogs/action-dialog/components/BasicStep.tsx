@@ -1,9 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { initialValues } from '../ClassroomsActionDialog';
-import { FormData } from '../getFormSchema';
+import { useClassroomForm } from '../ClassroomFormContext';
 
 import { DatePicker } from '@/components/DatePicker';
 import { DroppableImage } from '@/components/DroppableImage';
@@ -17,16 +15,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { TabsContent } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 
-interface BasicStepProps {
-  form: UseFormReturn<FormData>;
-}
-
-export function BasicStep({ form }: BasicStepProps) {
+export function BasicStep() {
   const { t } = useTranslation();
+  const { form, resetFormToInitialValues } = useClassroomForm();
 
   const templatesQuery = useQuery(
     trpc.classroomTemplate.findAll.queryOptions({ all: true })
@@ -34,7 +28,7 @@ export function BasicStep({ form }: BasicStepProps) {
 
   function handleSelectedClassroomTemplateChange(templateId: string) {
     if (!templateId) {
-      form.reset(initialValues);
+      resetFormToInitialValues();
       return;
     }
 

@@ -31,9 +31,10 @@ export interface CalendarProviderProps {
   events: IEvent[];
   users?: IUser[];
   addEventButtonText: string;
-  onClickAddEvent: (time: Date) => void;
-  onClickEditEvent: (eventId: string) => void;
-  onClickRemoveEvent: (eventId: string) => void;
+  allowAddEvent?: boolean;
+  onClickAddEvent?: (time: Date) => void;
+  onClickEditEvent?: (eventId: string) => void;
+  onClickRemoveEvent?: (eventId: string) => void;
   onClickEventCard: (eventId: string) => void;
 }
 

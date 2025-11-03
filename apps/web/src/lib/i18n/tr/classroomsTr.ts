@@ -59,10 +59,11 @@ export const classrooms = {
       "Yeni sınıfı burada oluşturun. İşiniz bittiğinde kaydet'e tıklayın.",
     editDescription:
       "Sınıfı burada güncelleyin. İşiniz bittiğinde kaydet'e tıklayın.",
-    tabs: {
+    steps: {
       basic: 'Temel Bilgiler',
       modules: 'Modüller',
       integrations: 'Entegrasyonlar',
+      calendar: 'Takvim',
     },
     fields: {
       name: 'İsim',

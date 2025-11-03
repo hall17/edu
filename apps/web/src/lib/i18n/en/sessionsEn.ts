@@ -83,7 +83,7 @@ export const sessions = {
     update: 'Update Session',
     create: 'Create Session',
     incompleteAttendanceRecord: 'Complete Attendance Record',
-    completeAttendanceRecord: 'Attendance Record Completed',
+    completeAttendanceRecord: 'Complete Attendance Record',
     completeAttendanceRecordSuccess: 'Attendance record completed successfully',
   },
   deleteDialog: {

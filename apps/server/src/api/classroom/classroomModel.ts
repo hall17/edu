@@ -26,13 +26,27 @@ export const classroomIntegrationScheduleSchema = z.object({
   }),
 });
 
+export const createIntegrationSessionSchema = z.object({
+  classroomIntegrationId: z.string().uuid(),
+  description: z.string().optional(),
+  lessonIds: z.array(z.string().uuid()).optional(),
+  teacherId: z.uuid().optional().nullable(),
+  startDate: z.string().transform((stringDate) => new Date(stringDate)),
+  endDate: z.string().transform((stringDate) => new Date(stringDate)),
+});
+
 export const createClassroomIntegrationSchema = z.object({
   id: z.string().uuid().optional(),
-  subjectId: z.string().uuid(),
-  curriculumId: z.string().uuid(),
-  teacherId: z.string().uuid().optional().nullable(),
+  subjectId: z.uuid(),
+  curriculumId: z.uuid(),
+  teacherId: z.uuid(),
   schedules: z.array(classroomIntegrationScheduleSchema).optional(),
   accessLink: z.string().url().max(255).optional().or(z.literal('')),
+  sessions: z
+    .array(
+      createIntegrationSessionSchema.omit({ classroomIntegrationId: true })
+    )
+    .optional(),
 });
 
 export const updateClassroomIntegrationSchema = createClassroomIntegrationSchema
@@ -123,16 +137,6 @@ export const findAllIntegrationSessionsSchema = z
     subjectIds: z.array(z.string().uuid()).optional(),
   })
   .merge(DefaultFilterSchema);
-
-export const createIntegrationSessionSchema = z.object({
-  classroomIntegrationId: z.string().uuid(),
-  description: z.string().optional(),
-  lessonIds: z.array(z.string().uuid()).optional(),
-  teacherId: z.string().uuid().optional(),
-  startDate: z.string().transform((stringDate) => new Date(stringDate)),
-  endDate: z.string().transform((stringDate) => new Date(stringDate)),
-  accessLink: z.string().url().max(255).optional(),
-});
 
 export const updateIntegrationSessionSchema = createIntegrationSessionSchema
   .partial()

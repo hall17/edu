@@ -58,10 +58,11 @@ export const classrooms = {
     createDescription:
       "Create new classroom here. Click save when you're done.",
     editDescription: "Update the classroom here. Click save when you're done.",
-    tabs: {
+    steps: {
       basic: 'Basic Information',
       modules: 'Modules',
       integrations: 'Integrations',
+      calendar: 'Calendar',
     },
     fields: {
       name: 'Name',

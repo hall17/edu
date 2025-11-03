@@ -1,6 +1,6 @@
 import { useClassroomSessionsContext } from '../ClassroomSessionsContext';
 
-import { ClassroomSessionCreateDialog } from './ClassroomSessionCreateDialog';
+import { ClassroomSessionActionDialog } from './action-dialog/ClassroomSessionActionDialog';
 import { ClassroomSessionDeleteDialog } from './ClassroomSessionDeleteDialog';
 import { ClassroomSessionViewDialog } from './ClassroomSessionViewDialog';
 
@@ -10,7 +10,7 @@ export function ClassroomSessionDialogs() {
   return (
     <>
       {(openedDialog === 'create' || openedDialog === 'edit') && (
-        <ClassroomSessionCreateDialog />
+        <ClassroomSessionActionDialog />
       )}
       {openedDialog === 'view' && <ClassroomSessionViewDialog />}
       {showDeleteDialog && <ClassroomSessionDeleteDialog />}

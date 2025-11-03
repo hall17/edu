@@ -1,3 +1,3 @@
 export { ClassroomSessionDialogs } from './ClassroomSessionDialogs';
-export { ClassroomSessionCreateDialog } from './ClassroomSessionCreateDialog';
+export { ClassroomSessionActionDialog } from './action-dialog/ClassroomSessionActionDialog';
 export { ClassroomSessionViewDialog } from './ClassroomSessionViewDialog';
