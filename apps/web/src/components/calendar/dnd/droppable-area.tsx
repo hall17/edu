@@ -8,6 +8,7 @@ interface DroppableAreaProps {
   minute?: number;
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export function DroppableArea({
@@ -16,6 +17,7 @@ export function DroppableArea({
   minute,
   children,
   className,
+  style,
 }: DroppableAreaProps) {
   const { handleEventDrop, isDragging } = useDragDrop();
 
@@ -35,6 +37,7 @@ export function DroppableArea({
         e.currentTarget.classList.remove('bg-primary/10');
         handleEventDrop(date, hour, minute);
       }}
+      style={style}
     >
       {children}
     </div>

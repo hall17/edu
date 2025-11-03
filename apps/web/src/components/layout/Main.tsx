@@ -60,6 +60,8 @@ export const Main = ({
               {backButton && (
                 <Button
                   variant="outline"
+                  size="icon"
+                  className="rounded-full"
                   asChild
                   onClick={(e) => {
                     if (onClickBackButton) {
@@ -70,8 +72,8 @@ export const Main = ({
                   }}
                 >
                   <Link to={backButtonTo || '/'}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    {t('common.back')}
+                    <ArrowLeft />
+                    {/* {t('common.back')} */}
                   </Link>
                 </Button>
               )}

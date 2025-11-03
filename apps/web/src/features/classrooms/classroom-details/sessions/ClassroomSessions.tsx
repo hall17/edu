@@ -1,8 +1,6 @@
 import { addMinutes } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { useClassroomDetailsContext } from '../ClassroomDetailsContext';
-
 import {
   ClassroomSessionsProvider,
   useClassroomSessionsContext,
@@ -23,15 +21,10 @@ function ClassroomSessionsContent() {
     classroomIntegrationSessionsQuery,
     setShowDeleteDialog,
   } = useClassroomSessionsContext();
-  const { classroom } = useClassroomDetailsContext();
-
-  // Get available subjects for filtering
 
   if (classroomIntegrationSessionsQuery.isPending) {
     return <Loading className="h-[500px]" />;
   }
-
-  console.log('classroomIntegrationSessions', classroomIntegrationSessions);
 
   return (
     <>

@@ -28,7 +28,7 @@ import { Route as AuthenticatedUsersRouteRouteImport } from './routes/_authentic
 import { Route as AuthenticatedSubjectsRouteRouteImport } from './routes/_authenticated/subjects/route'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedQuestionBankRouteRouteImport } from './routes/_authenticated/question-bank/route'
-import { Route as AuthenticatedClassroomsRouteRouteImport } from './routes/_authenticated/classrooms/route'
+import { Route as AuthenticatedClassroomsRouteRouteImport } from './routes/_authenticated/_classrooms/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedTeachersIndexRouteImport } from './routes/_authenticated/teachers/index'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
@@ -40,7 +40,6 @@ import { Route as AuthenticatedParentsIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedModulesIndexRouteImport } from './routes/_authenticated/modules/index'
 import { Route as AuthenticatedMaterialsIndexRouteImport } from './routes/_authenticated/materials/index'
 import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
-import { Route as AuthenticatedClassroomsIndexRouteImport } from './routes/_authenticated/classrooms/index'
 import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authenticated/chats/index'
 import { Route as AuthenticatedBranchSettingsIndexRouteImport } from './routes/_authenticated/branch-settings/index'
 import { Route as AuthenticatedAttendanceIndexRouteImport } from './routes/_authenticated/attendance/index'
@@ -53,16 +52,17 @@ import { Route as AuthenticatedSettingsPreferencesRouteImport } from './routes/_
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsInventoryRouteImport } from './routes/_authenticated/settings/inventory'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
-import { Route as AuthenticatedClassroomsTemplatesRouteImport } from './routes/_authenticated/classrooms/templates'
-import { Route as AuthenticatedClassroomsClassroomIdRouteRouteImport } from './routes/_authenticated/classrooms/$classroomId/route'
+import { Route as AuthenticatedClassroomsClassroomIdRouteRouteImport } from './routes/_authenticated/classrooms.$classroomId/route'
 import { Route as AuthenticatedSuperManagementCompaniesRouteRouteImport } from './routes/_authenticated/_super-management/companies/route'
-import { Route as AuthenticatedClassroomsClassroomIdIndexRouteImport } from './routes/_authenticated/classrooms/$classroomId/index'
+import { Route as AuthenticatedClassroomsClassroomIdIndexRouteImport } from './routes/_authenticated/classrooms.$classroomId/index'
 import { Route as AuthenticatedSuperManagementCompaniesIndexRouteImport } from './routes/_authenticated/_super-management/companies/index'
+import { Route as AuthenticatedClassroomsClassroomsIndexRouteImport } from './routes/_authenticated/_classrooms.classrooms/index'
 import { Route as AuthenticatedQuestionBankTypeTypeRouteImport } from './routes/_authenticated/question-bank/type/$type'
-import { Route as AuthenticatedClassroomsClassroomIdStudentsRouteImport } from './routes/_authenticated/classrooms/$classroomId/students'
-import { Route as AuthenticatedClassroomsClassroomIdSessionsRouteImport } from './routes/_authenticated/classrooms/$classroomId/sessions'
-import { Route as AuthenticatedClassroomsClassroomIdIntegrationsRouteImport } from './routes/_authenticated/classrooms/$classroomId/integrations'
+import { Route as AuthenticatedClassroomsClassroomIdStudentsRouteImport } from './routes/_authenticated/classrooms.$classroomId/students'
+import { Route as AuthenticatedClassroomsClassroomIdSessionsRouteImport } from './routes/_authenticated/classrooms.$classroomId/sessions'
+import { Route as AuthenticatedClassroomsClassroomIdIntegrationsRouteImport } from './routes/_authenticated/classrooms.$classroomId/integrations'
 import { Route as AuthenticatedSuperManagementCompaniesBranchesRouteImport } from './routes/_authenticated/_super-management/companies/branches'
+import { Route as AuthenticatedClassroomsClassroomsTemplatesRouteImport } from './routes/_authenticated/_classrooms.classrooms/templates'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -162,8 +162,7 @@ const AuthenticatedQuestionBankRouteRoute =
   } as any)
 const AuthenticatedClassroomsRouteRoute =
   AuthenticatedClassroomsRouteRouteImport.update({
-    id: '/classrooms',
-    path: '/classrooms',
+    id: '/_classrooms',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
@@ -229,12 +228,6 @@ const AuthenticatedHelpCenterIndexRoute =
     id: '/help-center/',
     path: '/help-center/',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedClassroomsIndexRoute =
-  AuthenticatedClassroomsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AuthenticatedClassroomsRouteRoute,
   } as any)
 const AuthenticatedChatsIndexRoute = AuthenticatedChatsIndexRouteImport.update({
   id: '/chats/',
@@ -305,17 +298,11 @@ const AuthenticatedSettingsDisplayRoute =
     path: '/display',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
-const AuthenticatedClassroomsTemplatesRoute =
-  AuthenticatedClassroomsTemplatesRouteImport.update({
-    id: '/templates',
-    path: '/templates',
-    getParentRoute: () => AuthenticatedClassroomsRouteRoute,
-  } as any)
 const AuthenticatedClassroomsClassroomIdRouteRoute =
   AuthenticatedClassroomsClassroomIdRouteRouteImport.update({
-    id: '/$classroomId',
-    path: '/$classroomId',
-    getParentRoute: () => AuthenticatedClassroomsRouteRoute,
+    id: '/classrooms/$classroomId',
+    path: '/classrooms/$classroomId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSuperManagementCompaniesRouteRoute =
   AuthenticatedSuperManagementCompaniesRouteRouteImport.update({
@@ -334,6 +321,12 @@ const AuthenticatedSuperManagementCompaniesIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedSuperManagementCompaniesRouteRoute,
+  } as any)
+const AuthenticatedClassroomsClassroomsIndexRoute =
+  AuthenticatedClassroomsClassroomsIndexRouteImport.update({
+    id: '/classrooms/',
+    path: '/classrooms/',
+    getParentRoute: () => AuthenticatedClassroomsRouteRoute,
   } as any)
 const AuthenticatedQuestionBankTypeTypeRoute =
   AuthenticatedQuestionBankTypeTypeRouteImport.update({
@@ -365,10 +358,15 @@ const AuthenticatedSuperManagementCompaniesBranchesRoute =
     path: '/branches',
     getParentRoute: () => AuthenticatedSuperManagementCompaniesRouteRoute,
   } as any)
+const AuthenticatedClassroomsClassroomsTemplatesRoute =
+  AuthenticatedClassroomsClassroomsTemplatesRouteImport.update({
+    id: '/classrooms/templates',
+    path: '/classrooms/templates',
+    getParentRoute: () => AuthenticatedClassroomsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
-  '/classrooms': typeof AuthenticatedClassroomsRouteRouteWithChildren
   '/question-bank': typeof AuthenticatedQuestionBankRouteRouteWithChildren
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/subjects': typeof AuthenticatedSubjectsRouteRouteWithChildren
@@ -387,7 +385,6 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/companies': typeof AuthenticatedSuperManagementCompaniesRouteRouteWithChildren
   '/classrooms/$classroomId': typeof AuthenticatedClassroomsClassroomIdRouteRouteWithChildren
-  '/classrooms/templates': typeof AuthenticatedClassroomsTemplatesRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/inventory': typeof AuthenticatedSettingsInventoryRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -400,7 +397,6 @@ export interface FileRoutesByFullPath {
   '/attendance': typeof AuthenticatedAttendanceIndexRoute
   '/branch-settings': typeof AuthenticatedBranchSettingsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
-  '/classrooms/': typeof AuthenticatedClassroomsIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/materials': typeof AuthenticatedMaterialsIndexRoute
   '/modules': typeof AuthenticatedModulesIndexRoute
@@ -412,11 +408,13 @@ export interface FileRoutesByFullPath {
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/classrooms/templates': typeof AuthenticatedClassroomsClassroomsTemplatesRoute
   '/companies/branches': typeof AuthenticatedSuperManagementCompaniesBranchesRoute
   '/classrooms/$classroomId/integrations': typeof AuthenticatedClassroomsClassroomIdIntegrationsRoute
   '/classrooms/$classroomId/sessions': typeof AuthenticatedClassroomsClassroomIdSessionsRoute
   '/classrooms/$classroomId/students': typeof AuthenticatedClassroomsClassroomIdStudentsRoute
   '/question-bank/type/$type': typeof AuthenticatedQuestionBankTypeTypeRoute
+  '/classrooms': typeof AuthenticatedClassroomsClassroomsIndexRoute
   '/companies/': typeof AuthenticatedSuperManagementCompaniesIndexRoute
   '/classrooms/$classroomId/': typeof AuthenticatedClassroomsClassroomIdIndexRoute
 }
@@ -434,7 +432,6 @@ export interface FileRoutesByTo {
   '/404': typeof errors404Route
   '/500': typeof errors500Route
   '/503': typeof errors503Route
-  '/classrooms/templates': typeof AuthenticatedClassroomsTemplatesRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/inventory': typeof AuthenticatedSettingsInventoryRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -447,7 +444,6 @@ export interface FileRoutesByTo {
   '/attendance': typeof AuthenticatedAttendanceIndexRoute
   '/branch-settings': typeof AuthenticatedBranchSettingsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
-  '/classrooms': typeof AuthenticatedClassroomsIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
   '/materials': typeof AuthenticatedMaterialsIndexRoute
   '/modules': typeof AuthenticatedModulesIndexRoute
@@ -459,11 +455,13 @@ export interface FileRoutesByTo {
   '/tasks': typeof AuthenticatedTasksIndexRoute
   '/teachers': typeof AuthenticatedTeachersIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/classrooms/templates': typeof AuthenticatedClassroomsClassroomsTemplatesRoute
   '/companies/branches': typeof AuthenticatedSuperManagementCompaniesBranchesRoute
   '/classrooms/$classroomId/integrations': typeof AuthenticatedClassroomsClassroomIdIntegrationsRoute
   '/classrooms/$classroomId/sessions': typeof AuthenticatedClassroomsClassroomIdSessionsRoute
   '/classrooms/$classroomId/students': typeof AuthenticatedClassroomsClassroomIdStudentsRoute
   '/question-bank/type/$type': typeof AuthenticatedQuestionBankTypeTypeRoute
+  '/classrooms': typeof AuthenticatedClassroomsClassroomsIndexRoute
   '/companies': typeof AuthenticatedSuperManagementCompaniesIndexRoute
   '/classrooms/$classroomId': typeof AuthenticatedClassroomsClassroomIdIndexRoute
 }
@@ -471,7 +469,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(auth)': typeof authRouteRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/_authenticated/classrooms': typeof AuthenticatedClassroomsRouteRouteWithChildren
+  '/_authenticated/_classrooms': typeof AuthenticatedClassroomsRouteRouteWithChildren
   '/_authenticated/question-bank': typeof AuthenticatedQuestionBankRouteRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/_authenticated/subjects': typeof AuthenticatedSubjectsRouteRouteWithChildren
@@ -491,7 +489,6 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/_super-management/companies': typeof AuthenticatedSuperManagementCompaniesRouteRouteWithChildren
   '/_authenticated/classrooms/$classroomId': typeof AuthenticatedClassroomsClassroomIdRouteRouteWithChildren
-  '/_authenticated/classrooms/templates': typeof AuthenticatedClassroomsTemplatesRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/inventory': typeof AuthenticatedSettingsInventoryRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
@@ -504,7 +501,6 @@ export interface FileRoutesById {
   '/_authenticated/attendance/': typeof AuthenticatedAttendanceIndexRoute
   '/_authenticated/branch-settings/': typeof AuthenticatedBranchSettingsIndexRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
-  '/_authenticated/classrooms/': typeof AuthenticatedClassroomsIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
   '/_authenticated/materials/': typeof AuthenticatedMaterialsIndexRoute
   '/_authenticated/modules/': typeof AuthenticatedModulesIndexRoute
@@ -516,11 +512,13 @@ export interface FileRoutesById {
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/teachers/': typeof AuthenticatedTeachersIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/_classrooms/classrooms/templates': typeof AuthenticatedClassroomsClassroomsTemplatesRoute
   '/_authenticated/_super-management/companies/branches': typeof AuthenticatedSuperManagementCompaniesBranchesRoute
   '/_authenticated/classrooms/$classroomId/integrations': typeof AuthenticatedClassroomsClassroomIdIntegrationsRoute
   '/_authenticated/classrooms/$classroomId/sessions': typeof AuthenticatedClassroomsClassroomIdSessionsRoute
   '/_authenticated/classrooms/$classroomId/students': typeof AuthenticatedClassroomsClassroomIdStudentsRoute
   '/_authenticated/question-bank/type/$type': typeof AuthenticatedQuestionBankTypeTypeRoute
+  '/_authenticated/_classrooms/classrooms/': typeof AuthenticatedClassroomsClassroomsIndexRoute
   '/_authenticated/_super-management/companies/': typeof AuthenticatedSuperManagementCompaniesIndexRoute
   '/_authenticated/classrooms/$classroomId/': typeof AuthenticatedClassroomsClassroomIdIndexRoute
 }
@@ -528,7 +526,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/classrooms'
     | '/question-bank'
     | '/settings'
     | '/subjects'
@@ -547,7 +544,6 @@ export interface FileRouteTypes {
     | '/503'
     | '/companies'
     | '/classrooms/$classroomId'
-    | '/classrooms/templates'
     | '/settings/display'
     | '/settings/inventory'
     | '/settings/notifications'
@@ -560,7 +556,6 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/branch-settings'
     | '/chats'
-    | '/classrooms/'
     | '/help-center'
     | '/materials'
     | '/modules'
@@ -572,11 +567,13 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/teachers'
     | '/users/'
+    | '/classrooms/templates'
     | '/companies/branches'
     | '/classrooms/$classroomId/integrations'
     | '/classrooms/$classroomId/sessions'
     | '/classrooms/$classroomId/students'
     | '/question-bank/type/$type'
+    | '/classrooms'
     | '/companies/'
     | '/classrooms/$classroomId/'
   fileRoutesByTo: FileRoutesByTo
@@ -594,7 +591,6 @@ export interface FileRouteTypes {
     | '/404'
     | '/500'
     | '/503'
-    | '/classrooms/templates'
     | '/settings/display'
     | '/settings/inventory'
     | '/settings/notifications'
@@ -607,7 +603,6 @@ export interface FileRouteTypes {
     | '/attendance'
     | '/branch-settings'
     | '/chats'
-    | '/classrooms'
     | '/help-center'
     | '/materials'
     | '/modules'
@@ -619,18 +614,20 @@ export interface FileRouteTypes {
     | '/tasks'
     | '/teachers'
     | '/users'
+    | '/classrooms/templates'
     | '/companies/branches'
     | '/classrooms/$classroomId/integrations'
     | '/classrooms/$classroomId/sessions'
     | '/classrooms/$classroomId/students'
     | '/question-bank/type/$type'
+    | '/classrooms'
     | '/companies'
     | '/classrooms/$classroomId'
   id:
     | '__root__'
     | '/(auth)'
     | '/_authenticated'
-    | '/_authenticated/classrooms'
+    | '/_authenticated/_classrooms'
     | '/_authenticated/question-bank'
     | '/_authenticated/settings'
     | '/_authenticated/subjects'
@@ -650,7 +647,6 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/_super-management/companies'
     | '/_authenticated/classrooms/$classroomId'
-    | '/_authenticated/classrooms/templates'
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/inventory'
     | '/_authenticated/settings/notifications'
@@ -663,7 +659,6 @@ export interface FileRouteTypes {
     | '/_authenticated/attendance/'
     | '/_authenticated/branch-settings/'
     | '/_authenticated/chats/'
-    | '/_authenticated/classrooms/'
     | '/_authenticated/help-center/'
     | '/_authenticated/materials/'
     | '/_authenticated/modules/'
@@ -675,11 +670,13 @@ export interface FileRouteTypes {
     | '/_authenticated/tasks/'
     | '/_authenticated/teachers/'
     | '/_authenticated/users/'
+    | '/_authenticated/_classrooms/classrooms/templates'
     | '/_authenticated/_super-management/companies/branches'
     | '/_authenticated/classrooms/$classroomId/integrations'
     | '/_authenticated/classrooms/$classroomId/sessions'
     | '/_authenticated/classrooms/$classroomId/students'
     | '/_authenticated/question-bank/type/$type'
+    | '/_authenticated/_classrooms/classrooms/'
     | '/_authenticated/_super-management/companies/'
     | '/_authenticated/classrooms/$classroomId/'
   fileRoutesById: FileRoutesById
@@ -829,10 +826,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedQuestionBankRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/classrooms': {
-      id: '/_authenticated/classrooms'
-      path: '/classrooms'
-      fullPath: '/classrooms'
+    '/_authenticated/_classrooms': {
+      id: '/_authenticated/_classrooms'
+      path: ''
+      fullPath: ''
       preLoaderRoute: typeof AuthenticatedClassroomsRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
@@ -912,13 +909,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/classrooms/': {
-      id: '/_authenticated/classrooms/'
-      path: '/'
-      fullPath: '/classrooms/'
-      preLoaderRoute: typeof AuthenticatedClassroomsIndexRouteImport
-      parentRoute: typeof AuthenticatedClassroomsRouteRoute
     }
     '/_authenticated/chats/': {
       id: '/_authenticated/chats/'
@@ -1004,19 +994,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsDisplayRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
-    '/_authenticated/classrooms/templates': {
-      id: '/_authenticated/classrooms/templates'
-      path: '/templates'
-      fullPath: '/classrooms/templates'
-      preLoaderRoute: typeof AuthenticatedClassroomsTemplatesRouteImport
-      parentRoute: typeof AuthenticatedClassroomsRouteRoute
-    }
     '/_authenticated/classrooms/$classroomId': {
       id: '/_authenticated/classrooms/$classroomId'
-      path: '/$classroomId'
+      path: '/classrooms/$classroomId'
       fullPath: '/classrooms/$classroomId'
       preLoaderRoute: typeof AuthenticatedClassroomsClassroomIdRouteRouteImport
-      parentRoute: typeof AuthenticatedClassroomsRouteRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/_super-management/companies': {
       id: '/_authenticated/_super-management/companies'
@@ -1038,6 +1021,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/companies/'
       preLoaderRoute: typeof AuthenticatedSuperManagementCompaniesIndexRouteImport
       parentRoute: typeof AuthenticatedSuperManagementCompaniesRouteRoute
+    }
+    '/_authenticated/_classrooms/classrooms/': {
+      id: '/_authenticated/_classrooms/classrooms/'
+      path: '/classrooms'
+      fullPath: '/classrooms'
+      preLoaderRoute: typeof AuthenticatedClassroomsClassroomsIndexRouteImport
+      parentRoute: typeof AuthenticatedClassroomsRouteRoute
     }
     '/_authenticated/question-bank/type/$type': {
       id: '/_authenticated/question-bank/type/$type'
@@ -1074,6 +1064,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSuperManagementCompaniesBranchesRouteImport
       parentRoute: typeof AuthenticatedSuperManagementCompaniesRouteRoute
     }
+    '/_authenticated/_classrooms/classrooms/templates': {
+      id: '/_authenticated/_classrooms/classrooms/templates'
+      path: '/classrooms/templates'
+      fullPath: '/classrooms/templates'
+      preLoaderRoute: typeof AuthenticatedClassroomsClassroomsTemplatesRouteImport
+      parentRoute: typeof AuthenticatedClassroomsRouteRoute
+    }
   }
 }
 
@@ -1101,43 +1098,17 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
-interface AuthenticatedClassroomsClassroomIdRouteRouteChildren {
-  AuthenticatedClassroomsClassroomIdIntegrationsRoute: typeof AuthenticatedClassroomsClassroomIdIntegrationsRoute
-  AuthenticatedClassroomsClassroomIdSessionsRoute: typeof AuthenticatedClassroomsClassroomIdSessionsRoute
-  AuthenticatedClassroomsClassroomIdStudentsRoute: typeof AuthenticatedClassroomsClassroomIdStudentsRoute
-  AuthenticatedClassroomsClassroomIdIndexRoute: typeof AuthenticatedClassroomsClassroomIdIndexRoute
-}
-
-const AuthenticatedClassroomsClassroomIdRouteRouteChildren: AuthenticatedClassroomsClassroomIdRouteRouteChildren =
-  {
-    AuthenticatedClassroomsClassroomIdIntegrationsRoute:
-      AuthenticatedClassroomsClassroomIdIntegrationsRoute,
-    AuthenticatedClassroomsClassroomIdSessionsRoute:
-      AuthenticatedClassroomsClassroomIdSessionsRoute,
-    AuthenticatedClassroomsClassroomIdStudentsRoute:
-      AuthenticatedClassroomsClassroomIdStudentsRoute,
-    AuthenticatedClassroomsClassroomIdIndexRoute:
-      AuthenticatedClassroomsClassroomIdIndexRoute,
-  }
-
-const AuthenticatedClassroomsClassroomIdRouteRouteWithChildren =
-  AuthenticatedClassroomsClassroomIdRouteRoute._addFileChildren(
-    AuthenticatedClassroomsClassroomIdRouteRouteChildren,
-  )
-
 interface AuthenticatedClassroomsRouteRouteChildren {
-  AuthenticatedClassroomsClassroomIdRouteRoute: typeof AuthenticatedClassroomsClassroomIdRouteRouteWithChildren
-  AuthenticatedClassroomsTemplatesRoute: typeof AuthenticatedClassroomsTemplatesRoute
-  AuthenticatedClassroomsIndexRoute: typeof AuthenticatedClassroomsIndexRoute
+  AuthenticatedClassroomsClassroomsTemplatesRoute: typeof AuthenticatedClassroomsClassroomsTemplatesRoute
+  AuthenticatedClassroomsClassroomsIndexRoute: typeof AuthenticatedClassroomsClassroomsIndexRoute
 }
 
 const AuthenticatedClassroomsRouteRouteChildren: AuthenticatedClassroomsRouteRouteChildren =
   {
-    AuthenticatedClassroomsClassroomIdRouteRoute:
-      AuthenticatedClassroomsClassroomIdRouteRouteWithChildren,
-    AuthenticatedClassroomsTemplatesRoute:
-      AuthenticatedClassroomsTemplatesRoute,
-    AuthenticatedClassroomsIndexRoute: AuthenticatedClassroomsIndexRoute,
+    AuthenticatedClassroomsClassroomsTemplatesRoute:
+      AuthenticatedClassroomsClassroomsTemplatesRoute,
+    AuthenticatedClassroomsClassroomsIndexRoute:
+      AuthenticatedClassroomsClassroomsIndexRoute,
   }
 
 const AuthenticatedClassroomsRouteRouteWithChildren =
@@ -1239,6 +1210,30 @@ const AuthenticatedSuperManagementCompaniesRouteRouteWithChildren =
     AuthenticatedSuperManagementCompaniesRouteRouteChildren,
   )
 
+interface AuthenticatedClassroomsClassroomIdRouteRouteChildren {
+  AuthenticatedClassroomsClassroomIdIntegrationsRoute: typeof AuthenticatedClassroomsClassroomIdIntegrationsRoute
+  AuthenticatedClassroomsClassroomIdSessionsRoute: typeof AuthenticatedClassroomsClassroomIdSessionsRoute
+  AuthenticatedClassroomsClassroomIdStudentsRoute: typeof AuthenticatedClassroomsClassroomIdStudentsRoute
+  AuthenticatedClassroomsClassroomIdIndexRoute: typeof AuthenticatedClassroomsClassroomIdIndexRoute
+}
+
+const AuthenticatedClassroomsClassroomIdRouteRouteChildren: AuthenticatedClassroomsClassroomIdRouteRouteChildren =
+  {
+    AuthenticatedClassroomsClassroomIdIntegrationsRoute:
+      AuthenticatedClassroomsClassroomIdIntegrationsRoute,
+    AuthenticatedClassroomsClassroomIdSessionsRoute:
+      AuthenticatedClassroomsClassroomIdSessionsRoute,
+    AuthenticatedClassroomsClassroomIdStudentsRoute:
+      AuthenticatedClassroomsClassroomIdStudentsRoute,
+    AuthenticatedClassroomsClassroomIdIndexRoute:
+      AuthenticatedClassroomsClassroomIdIndexRoute,
+  }
+
+const AuthenticatedClassroomsClassroomIdRouteRouteWithChildren =
+  AuthenticatedClassroomsClassroomIdRouteRoute._addFileChildren(
+    AuthenticatedClassroomsClassroomIdRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedClassroomsRouteRoute: typeof AuthenticatedClassroomsRouteRouteWithChildren
   AuthenticatedQuestionBankRouteRoute: typeof AuthenticatedQuestionBankRouteRouteWithChildren
@@ -1247,6 +1242,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedUsersRouteRoute: typeof AuthenticatedUsersRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedSuperManagementCompaniesRouteRoute: typeof AuthenticatedSuperManagementCompaniesRouteRouteWithChildren
+  AuthenticatedClassroomsClassroomIdRouteRoute: typeof AuthenticatedClassroomsClassroomIdRouteRouteWithChildren
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedAssessmentsIndexRoute: typeof AuthenticatedAssessmentsIndexRoute
   AuthenticatedAttendanceIndexRoute: typeof AuthenticatedAttendanceIndexRoute
@@ -1272,6 +1268,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedSuperManagementCompaniesRouteRoute:
     AuthenticatedSuperManagementCompaniesRouteRouteWithChildren,
+  AuthenticatedClassroomsClassroomIdRouteRoute:
+    AuthenticatedClassroomsClassroomIdRouteRouteWithChildren,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedAssessmentsIndexRoute: AuthenticatedAssessmentsIndexRoute,
   AuthenticatedAttendanceIndexRoute: AuthenticatedAttendanceIndexRoute,

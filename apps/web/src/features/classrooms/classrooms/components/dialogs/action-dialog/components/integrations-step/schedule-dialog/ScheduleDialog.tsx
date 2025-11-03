@@ -1,21 +1,15 @@
 import { DayOfWeek } from '@edusama/server';
-import { eachDayOfInterval, format, set } from 'date-fns';
 import { detailedDiff } from 'deep-object-diff';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomForm } from '../../../ClassroomFormContext';
-import {
-  type ClassroomFormData,
-  type ClassroomFormDataIntegrationSchedule,
-} from '../../../classroomFormSchema';
+import { type ClassroomFormDataIntegrationSchedule } from '../../../classroomFormSchema';
 
 import { DayScheduleCard } from './DayScheduleCard';
 
 import { UnsavedChangesDialog } from '@/components';
-import { TimeInput } from '@/components/TimeInput';
 import { Button } from '@/components/ui/button';
-import { CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -23,15 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemHeader,
-} from '@/components/ui/item';
-import { Switch } from '@/components/ui/switch';
-import { ClassroomSessionFormData } from '@/lib/schemas/classroomSessionFormSchema';
-import { parseHourAndMinutesUTC } from '@/utils';
 
 const daysOfWeek = [
   DayOfWeek.MONDAY,

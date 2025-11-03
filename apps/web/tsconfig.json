@@ -47,5 +47,9 @@
     "vite.config.ts",
     "../server/src/types/express.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "../server/src/prisma/generated",
+    "../server/src/prisma/migrations"
+  ]
 }

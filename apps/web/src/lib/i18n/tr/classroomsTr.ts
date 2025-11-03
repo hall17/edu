@@ -236,6 +236,7 @@ export const classrooms = {
     deleteError: 'Sınıf silinemedi',
   },
   templates: {
+    title: 'Şablonlar',
     description: 'Yeni sınıflar oluşturmak için sınıf şablonlarını yönetin.',
     manage: 'Şablonları Yönet',
     dialogTitle: 'Sınıf Şablonları',

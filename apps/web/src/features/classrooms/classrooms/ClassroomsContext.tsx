@@ -8,10 +8,10 @@ type ClassroomsDialogType = 'add' | 'edit' | 'delete' | 'view';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =
-    useDialogState<ClassroomsDialogType>('add');
+    useDialogState<ClassroomsDialogType>(null);
   const [currentRow, setCurrentRow] = useState<Classroom | null>(null);
   const { filters, setFilters, resetFilters } = useSearchFilters(
-    '/_authenticated/classrooms/'
+    '/_authenticated/_classrooms/classrooms/'
   );
 
   const classroomsQuery = useQuery(

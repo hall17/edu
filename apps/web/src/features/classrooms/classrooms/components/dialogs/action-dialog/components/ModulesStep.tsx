@@ -1,9 +1,8 @@
 import { MODULE_CODES, ModuleCode } from '@edusama/common';
 import { useQuery } from '@tanstack/react-query';
-import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { FormData, useClassroomForm } from '../ClassroomFormContext';
+import { useClassroomForm } from '../ClassroomFormContext';
 
 import { ModuleCard } from '@/components/ModuleCard';
 import {

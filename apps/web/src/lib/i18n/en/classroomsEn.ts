@@ -235,6 +235,7 @@ export const classrooms = {
     deleteError: 'Failed to delete classroom',
   },
   templates: {
+    title: 'Templates',
     description: 'Manage classroom templates for creating new classrooms.',
     manage: 'Manage Templates',
     dialogTitle: 'Classroom Templates',

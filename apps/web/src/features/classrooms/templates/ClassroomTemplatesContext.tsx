@@ -11,7 +11,7 @@ function useProviderValue() {
     useDialogState<ClassroomTemplatesDialogType>(null);
   const [currentRow, setCurrentRow] = useState<ClassroomTemplate | null>(null);
   const { filters, setFilters, resetFilters } = useSearchFilters(
-    '/_authenticated/classrooms/templates'
+    '/_authenticated/_classrooms/classrooms/templates'
   );
 
   const templatesQuery = useQuery(

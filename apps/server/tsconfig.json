@@ -35,5 +35,11 @@
     "src/common.d.ts",
     "src/types/express.d.ts"
   ],
-  "exclude": ["node_modules", "dist", "src/prisma/seed/**/*.ts"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/prisma/seed/**/*.ts",
+    "src/prisma/generated",
+    "src/prisma/migrations"
+  ]
 }

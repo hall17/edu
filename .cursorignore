@@ -1,0 +1,11 @@
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+apps/server/src/prisma/generated/
+apps/server/src/prisma/migrations/
+*.log
+logs/
+.git/
+build/
+coverage/

@@ -1,29 +1,16 @@
-import {
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from '@tanstack/react-router';
+import { Outlet, useLocation } from '@tanstack/react-router';
 import { GraduationCap, LayoutTemplate } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-import { ClassroomDetailsMain } from './classroom-details/ClassroomDetails';
 
 import { Main } from '@/components/layout/Main';
 
 export function ClassroomsRoot() {
-  const location = useLocation();
-  const params = useParams({} as any);
-
-  if ('classroomId' in params) {
-    return <Outlet />;
-  }
-
-  return <ClassroomMain />;
-}
-
-function ClassroomMain() {
   const { t } = useTranslation();
+  const location = useLocation();
+
+  const isClassroomsPage = location.pathname === '/classrooms';
+
+  console.log('location', location);
   const sidebarNavItems = [
     {
       title: t('classrooms.tabs.classrooms'),
@@ -39,8 +26,16 @@ function ClassroomMain() {
 
   return (
     <Main
-      title={t('classrooms.title')}
-      description={t('classrooms.description')}
+      title={
+        isClassroomsPage
+          ? t('classrooms.title')
+          : t('classrooms.templates.title')
+      }
+      description={
+        isClassroomsPage
+          ? t('classrooms.description')
+          : t('classrooms.templates.description')
+      }
       tabItems={sidebarNavItems}
     >
       <Outlet />

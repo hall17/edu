@@ -7,7 +7,8 @@ import {
   startOfWeek,
 } from 'date-fns';
 import { motion } from 'framer-motion';
-import { AlertCircleIcon, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { useLayoutEffect, useRef } from 'react';
 
 import {
   fadeIn,
@@ -15,7 +16,6 @@ import {
   transition,
 } from '@/components/calendar/animations';
 import { useCalendar } from '@/components/calendar/contexts/calendar-context';
-import { AddEditEventDialog } from '@/components/calendar/dialogs/add-edit-event-dialog';
 import { DroppableArea } from '@/components/calendar/dnd/droppable-area';
 import { groupEvents } from '@/components/calendar/helpers';
 import type { IEvent } from '@/components/calendar/interfaces';
@@ -25,6 +25,7 @@ import { WeekViewMultiDayEventsRow } from '@/components/calendar/views/week-and-
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+const AREA_HEIGHT = 48;
 interface IProps {
   singleDayEvents: IEvent[];
   multiDayEvents: IEvent[];
@@ -43,6 +44,29 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
   });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const hours = Array.from({ length: 24 }, (_, i) => i);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!scrollAreaRef.current) return;
+
+    const observer = new MutationObserver(() => {
+      const scrollAreaViewport = scrollAreaRef.current?.querySelector(
+        '[data-slot="scroll-area-viewport"]'
+      );
+
+      if (scrollAreaViewport) {
+        observer.disconnect();
+
+        // scroll to 08:00 in the scroll area AREA_HEIGHT * 2 * difference between 00:00 and 08:00
+        const scrollPosition = AREA_HEIGHT * 2 * (7 - 0) - 10;
+        scrollAreaViewport.scrollTop = scrollPosition;
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <motion.div
@@ -107,7 +131,7 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
           </motion.div>
         </div>
 
-        <ScrollArea className="h-[736px]" type="always">
+        <ScrollArea className="h-[700px]" type="always" ref={scrollAreaRef}>
           <div className="flex">
             {/* Hours column */}
             <motion.div className="relative w-18" variants={staggerContainer}>
@@ -115,7 +139,7 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                 <motion.div
                   key={hour}
                   className="relative"
-                  style={{ height: '96px' }}
+                  style={{ height: AREA_HEIGHT * 2 }}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.02, ...transition }}
@@ -160,7 +184,7 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                         <motion.div
                           key={hour}
                           className="relative"
-                          style={{ height: '96px' }}
+                          style={{ height: AREA_HEIGHT * 2 }}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: index * 0.01, ...transition }}
@@ -173,7 +197,8 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                             date={day}
                             hour={hour}
                             minute={0}
-                            className="absolute inset-x-0 top-0 h-[48px]"
+                            className="absolute inset-x-0 top-0"
+                            style={{ height: AREA_HEIGHT }}
                           >
                             {/* <AddEditEventDialog
                               startDate={day}
@@ -213,7 +238,8 @@ export function CalendarWeekView({ singleDayEvents, multiDayEvents }: IProps) {
                             date={day}
                             hour={hour}
                             minute={30}
-                            className="absolute inset-x-0 bottom-0 h-[48px]"
+                            className="absolute inset-x-0 bottom-0"
+                            style={{ height: AREA_HEIGHT }}
                           >
                             {onClickAddEvent && (
                               <div

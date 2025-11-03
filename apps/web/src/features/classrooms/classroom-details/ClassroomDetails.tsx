@@ -7,7 +7,7 @@ import { ClassroomDetailsProvider } from './ClassroomDetailsContext';
 
 import { Main } from '@/components/layout/Main';
 
-export function ClassroomDetailsMain() {
+export function ClassroomDetails() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
