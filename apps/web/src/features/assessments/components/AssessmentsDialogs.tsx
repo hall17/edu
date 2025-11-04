@@ -1,6 +1,7 @@
 import { useAssessmentsContext } from '../AssessmentsContext';
 
-import { AssessmentActionDialog } from './dialogs/AssessmentActionDialog';
+import { AssessmentClassroomAssignmentDialog } from './AssessmentClassroomAssignmentDialog';
+import { AssessmentActionDialog } from './dialogs/action-dialog/AssessmentActionDialog';
 import { AssessmentDeleteDialog } from './dialogs/AssessmentDeleteDialog';
 import { AssessmentSuspendDialog } from './dialogs/AssessmentSuspendDialog';
 import { AssessmentViewDialog } from './dialogs/AssessmentViewDialog';
@@ -19,6 +20,8 @@ export function AssessmentsDialogs() {
         return <AssessmentSuspendDialog />;
       case 'delete':
         return <AssessmentDeleteDialog />;
+      case 'assignToClassroom':
+        return <AssessmentClassroomAssignmentDialog />;
     }
   }
 

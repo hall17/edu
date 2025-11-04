@@ -1,28 +1,17 @@
-import { QuestionDifficulty, QuestionType } from '@edusama/server';
-import { useQuery } from '@tanstack/react-query';
-import {
-  CheckCircle2,
-  Circle,
-  FileText,
-  Hash,
-  ListOrdered,
-  Shuffle,
-  Type,
-  HelpCircle,
-  Target,
-  TrendingUp,
-  Award,
-} from 'lucide-react';
+import { QuestionDifficulty, QuestionType, ScoringType } from '@edusama/server';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { AssessmentFormData } from '../AssessmentActionDialog';
+import { AssessmentFormData } from './AssessmentActionDialog';
+import { SeeQuestionsDialog } from './SeeQuestionsDialog';
 
 import { getDifficultyIcon } from '@/components/getDifficultyIcon';
 import { getQuestionTypeIcon } from '@/components/getQuestionTypeIcon';
+// import InfiniteScroll from '@/components/infinite-scroll';
 import { LoadingButton } from '@/components/LoadingButton';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -40,24 +29,21 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { queryClient, trpc } from '@/lib/trpc';
-import { getQuestionTypeColor, getDifficultyColor } from '@/utils';
+import {
+  getQuestionTypeColor,
+  getDifficultyColor,
+  getQuestionDifficultyBadgeVariant,
+} from '@/utils';
 
-interface QuestionsTabProps {
+interface QuestionsStepProps {
   form: UseFormReturn<AssessmentFormData>;
 }
 
-export function QuestionsTab({ form }: QuestionsTabProps) {
+export function QuestionsStep({ form }: QuestionsStepProps) {
   const { t } = useTranslation();
 
-  // Internal state for questions tab
-  const [selectedQuestions, setSelectedQuestions] = useState<
-    Array<{
-      id: string;
-      type: QuestionType;
-      difficulty: QuestionDifficulty;
-      questionText: string;
-    }>
-  >([]);
+  const questions = form.watch('questions') || [];
+
   const [questionCount, setQuestionCount] = useState(10);
   const [questionType, setQuestionType] = useState<QuestionType | undefined>(
     undefined
@@ -67,11 +53,13 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
   >(undefined);
   const [isFetchingQuestions, setIsFetchingQuestions] = useState(false);
 
-  // Handle fetching random questions
-  const handleFetchRandomQuestions = async () => {
+  const [seeQuestionsDialogOpen, setSeeQuestionsDialogOpen] = useState(false);
+
+  async function handleFetchRandomQuestions() {
     const subjectId = form.getValues('subjectId');
-    const curriculumId = form.getValues('curriculumId');
-    const lessonId = form.getValues('lessonId');
+    const curriculumIds = form.getValues('curriculumIds');
+    const lessonIds = form.getValues('lessonIds');
+    const scoringType = form.getValues('scoringType');
 
     if (!subjectId) {
       toast.error(t('assessments.actionDialog.errors.selectSubject'));
@@ -86,78 +74,100 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
     setIsFetchingQuestions(true);
 
     try {
+      const excludeQuestionIds =
+        form.getValues('questions')?.map((q) => q.questionId) || [];
       const randomQuestions = await queryClient.fetchQuery(
         trpc.question.findQuestionsRandom.queryOptions({
           subjectId,
-          curriculumId: curriculumId || undefined,
-          lessonIds: lessonId ? [lessonId] : undefined,
+          curriculumIds: curriculumIds || undefined,
+          lessonIds: lessonIds || undefined,
           type: (questionType as QuestionType) || undefined,
           difficulty: (questionDifficulty as QuestionDifficulty) || undefined,
           count: questionCount,
+          excludeQuestionIds,
         })
       );
 
-      setSelectedQuestions(randomQuestions);
+      if (randomQuestions.length === 0) {
+        toast.error(t('assessments.actionDialog.errors.noQuestionsFound'));
+      } else if (randomQuestions.length < questionCount) {
+        toast.error(t('assessments.actionDialog.errors.notEnoughQuestions'));
+      } else {
+        toast.success(
+          t('assessments.actionDialog.success.fetchedQuestions', {
+            count: randomQuestions.length,
+          })
+        );
+      }
+
+      const currentQuestions = form.getValues('questions') || [];
       const maxPoints = form.getValues('maxPoints') || 100;
-      const pointsPerQuestion =
-        Math.floor(maxPoints / randomQuestions.length) || 1;
+      const totalQuestions = currentQuestions.length + randomQuestions.length;
+      const pointsPerQuestion = Math.floor(maxPoints / totalQuestions) || 1;
 
-      const formQuestions = randomQuestions.map(
-        (
+      const newQuestions = (randomQuestions as any[]).map((question, index) => {
+        return {
+          order: currentQuestions.length + index + 1,
+          questionId: question.id,
+          points: pointsPerQuestion,
           question: {
-            id: string;
-            type: QuestionType;
-            difficulty: QuestionDifficulty;
-            questionText: string;
+            id: question.id,
+            questionText: question.questionText,
+            type: question.type,
+            difficulty: question.difficulty,
           },
-          index: number
-        ) => {
-          return {
-            order: index,
-            questionId: question.id,
-            points: pointsPerQuestion,
-          };
-        }
-      );
-      form.setValue('questions', formQuestions);
-      toast.success(
-        t('assessments.actionDialog.success.fetchedQuestions', {
-          count: randomQuestions.length,
-        })
-      );
+        };
+      });
+
+      const allQuestions = currentQuestions.concat(newQuestions);
+
+      const updatedQuestions = allQuestions.map((q, idx) => {
+        return {
+          ...q,
+          questionId: q.questionId,
+          order: idx + 1,
+          points:
+            scoringType === ScoringType.AUTOMATIC
+              ? pointsPerQuestion
+              : q.points,
+        };
+      });
+
+      form.setValue('questions', updatedQuestions);
     } catch (error) {
       console.error('Failed to fetch random questions:', error);
-      // toast.error('Failed to fetch random questions.');
+      toast.error(t('assessments.actionDialog.errors.fetchQuestionsFailed'));
     } finally {
       setIsFetchingQuestions(false);
     }
-  };
+  }
 
-  // Handle removing a question from selection
-  const handleRemoveQuestion = (questionId: string) => {
-    const updatedQuestions = selectedQuestions.filter(
-      (question) => question.id !== questionId
+  function handleRemoveQuestion(questionId: string) {
+    const currentQuestions = form.getValues('questions') || [];
+    const filteredQuestions = currentQuestions.filter(
+      (question) => question.questionId !== questionId
     );
-    setSelectedQuestions(updatedQuestions);
 
-    // Recalculate points for remaining questions
     const maxPoints = form.getValues('maxPoints') || 100;
     const pointsPerQuestion =
-      Math.floor(maxPoints / updatedQuestions.length) || 1;
+      Math.floor(maxPoints / filteredQuestions.length) || 1;
 
-    const formQuestions = updatedQuestions.map((question, index) => ({
-      order: index,
-      questionId: question.id,
+    const reorderedQuestions = filteredQuestions.map((q, idx) => ({
+      ...q,
+      questionId: q.questionId,
+      order: idx + 1,
       points: pointsPerQuestion,
     }));
-    form.setValue('questions', formQuestions);
-  };
+
+    form.setValue('questions', reorderedQuestions);
+  }
 
   return (
     <div className="space-y-6">
       {/* Question Selection Controls */}
       <div className="flex items-end justify-between gap-8">
         <div className="flex w-full flex-1 gap-4">
+          {/* ...existing code for questionCount, questionType, questionDifficulty ... */}
           <div>
             <label className="text-sm font-medium">
               {t('assessments.actionDialog.questionCount')}
@@ -171,7 +181,6 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
               className="w-28"
             />
           </div>
-
           <div className="w-full">
             <label className="text-sm font-medium">
               {t('assessments.actionDialog.questionType')}
@@ -194,7 +203,6 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
               </SelectContent>
             </Select>
           </div>
-
           <div className="w-full">
             <label className="text-sm font-medium">
               {t('assessments.actionDialog.questionDifficulty')}
@@ -222,7 +230,7 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
             </Select>
           </div>
         </div>
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end gap-2">
           <LoadingButton
             type="button"
             onClick={handleFetchRandomQuestions}
@@ -231,40 +239,61 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
           >
             {t('assessments.actionDialog.fetchRandomQuestions')}
           </LoadingButton>
+          {/* See Questions Button */}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setSeeQuestionsDialogOpen(true)}
+          >
+            {t('assessments.actionDialog.seeQuestions', 'See Questions')}
+          </Button>
         </div>
       </div>
 
-      {/* Selected Questions Display */}
-      {selectedQuestions.length > 0 && (
+      <SeeQuestionsDialog
+        form={form}
+        questionType={questionType}
+        questionDifficulty={questionDifficulty}
+        seeQuestionsDialogOpen={seeQuestionsDialogOpen}
+        setSeeQuestionsDialogOpen={setSeeQuestionsDialogOpen}
+      />
+
+      {/* Added Questions Display */}
+      {questions.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">
             {t('assessments.actionDialog.selectedQuestions')} (
-            {selectedQuestions.length})
+            {questions.length})
           </h3>
           <div className="max-h-60 space-y-2 overflow-y-auto">
-            {selectedQuestions.map((question) => (
-              <Item key={question.id} variant="outline">
+            {questions.map((question) => (
+              <Item key={question.questionId} variant="outline">
                 <ItemContent>
-                  <ItemTitle>{question.questionText}</ItemTitle>
+                  <ItemTitle>{question.question?.questionText}</ItemTitle>
                   <ItemDescription>
                     <div className="flex items-center gap-2">
                       <div
-                        className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs ${getQuestionTypeColor(question.type)}`}
+                        className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs ${getQuestionTypeColor(question.question?.type)}`}
                       >
-                        {getQuestionTypeIcon(question.type)}
+                        {getQuestionTypeIcon(question.question?.type)}
                         <span className="font-medium">
-                          {t(`questionTypes.${question.type}` as any)}
+                          {t(`questionTypes.${question.question?.type}` as any)}
                         </span>
                       </div>
                       <div
-                        className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs ${getDifficultyColor(question.difficulty)}`}
+                        className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs ${getDifficultyColor(question.question?.difficulty)}`}
                       >
-                        {getDifficultyIcon(question.difficulty)}
-                        <span className="font-medium">
-                          {t(
-                            `questionDifficulties.${question.difficulty}` as any
+                        {getDifficultyIcon(question.question?.difficulty)}
+                        <Badge
+                          variant={getQuestionDifficultyBadgeVariant(
+                            question.question?.difficulty as QuestionDifficulty
                           )}
-                        </span>
+                          className="capitalize"
+                        >
+                          {t(
+                            `questionDifficulties.${question.question!.difficulty}`
+                          )}
+                        </Badge>
                       </div>
                     </div>
                   </ItemDescription>
@@ -274,7 +303,7 @@ export function QuestionsTab({ form }: QuestionsTabProps) {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleRemoveQuestion(question.id)}
+                    onClick={() => handleRemoveQuestion(question.questionId)}
                   >
                     {t('common.remove')}
                   </Button>

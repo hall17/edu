@@ -10,7 +10,6 @@ export function ClassroomsRoot() {
 
   const isClassroomsPage = location.pathname === '/classrooms';
 
-  console.log('location', location);
   const sidebarNavItems = [
     {
       title: t('classrooms.tabs.classrooms'),

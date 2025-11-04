@@ -53,8 +53,8 @@ export class AssessmentService {
       where: { id },
       include: {
         subject: true,
-        curriculum: true,
-        lesson: true,
+        curriculums: true,
+        lessons: true,
         questions: {
           include: {
             question: true,
@@ -101,16 +101,18 @@ export class AssessmentService {
 
     let where: Prisma.AssessmentWhereInput = {};
 
-    if (filterDto.subjectId) {
-      where.subjectId = filterDto.subjectId;
+    if (filterDto.subjectIds?.length) {
+      where.subjectId = { in: filterDto.subjectIds };
     }
 
-    if (filterDto.curriculumId) {
-      where.curriculumId = filterDto.curriculumId;
+    if (filterDto.curriculumIds?.length) {
+      where.curriculums = {
+        some: { curriculumId: { in: filterDto.curriculumIds } },
+      };
     }
 
-    if (filterDto.lessonId) {
-      where.lessonId = filterDto.lessonId;
+    if (filterDto.lessonIds?.length) {
+      where.lessons = { some: { lessonId: { in: filterDto.lessonIds } } };
     }
 
     if (filterDto.status?.length) {
@@ -152,8 +154,16 @@ export class AssessmentService {
         orderBy,
         include: {
           subject: true,
-          curriculum: true,
-          lesson: true,
+          curriculums: {
+            include: {
+              curriculum: true,
+            },
+          },
+          lessons: {
+            include: {
+              lesson: true,
+            },
+          },
           _count: {
             select: {
               questions: true,
@@ -222,8 +232,18 @@ export class AssessmentService {
           sendNotifications: createDto.sendNotifications,
           notificationFrequency: createDto.notificationFrequency,
           subjectId: createDto.subjectId,
-          curriculumId: createDto.curriculumId,
-          lessonId: createDto.lessonId,
+          curriculums: {
+            createMany: {
+              data:
+                createDto.curriculumIds?.map((id) => ({ curriculumId: id })) ??
+                [],
+            },
+          },
+          lessons: {
+            createMany: {
+              data: createDto.lessonIds?.map((id) => ({ lessonId: id })) ?? [],
+            },
+          },
           createdBy: requestedBy.id,
         },
       });

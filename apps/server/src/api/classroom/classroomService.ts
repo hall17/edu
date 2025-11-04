@@ -85,6 +85,20 @@ export class ClassroomService {
             in: filterDto.classroomTemplateIds,
           }
         : undefined,
+      integrations: {
+        some: {
+          subjectId: filterDto.subjectIds?.length
+            ? {
+                in: filterDto.subjectIds,
+              }
+            : undefined,
+          curriculumId: filterDto.curriculumIds?.length
+            ? {
+                in: filterDto.curriculumIds,
+              }
+            : undefined,
+        },
+      },
     };
 
     if (q) {
@@ -1157,7 +1171,6 @@ export class ClassroomService {
     requestedBy: TokenUser,
     filterDto: FindAllClassroomIntegrationsDto
   ) {
-    // Apply permission-based access control
     if (!requestedBy.isSuperAdmin) {
       const userHasReadPermission = hasPermission(
         requestedBy,
@@ -1313,10 +1326,26 @@ export class ClassroomService {
       };
     }
 
+    if (filterDto.curriculumIds) {
+      where.assessment = {
+        curriculums: {
+          some: {
+            curriculumId: {
+              in: filterDto.curriculumIds,
+            },
+          },
+        },
+      };
+    }
+
     if (filterDto.lessonIds) {
       where.assessment = {
-        lessonId: {
-          in: filterDto.lessonIds,
+        lessons: {
+          some: {
+            lessonId: {
+              in: filterDto.lessonIds,
+            },
+          },
         },
       };
     }

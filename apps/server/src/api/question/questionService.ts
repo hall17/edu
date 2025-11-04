@@ -143,7 +143,7 @@ export class QuestionService {
       };
     }
 
-    if (filterDto.curriculumIds) {
+    if (filterDto.curriculumIds && filterDto.curriculumIds.length > 0) {
       where = {
         ...where,
         curriculumId: {
@@ -152,7 +152,7 @@ export class QuestionService {
       };
     }
 
-    if (filterDto.lessonIds) {
+    if (filterDto.lessonIds && filterDto.lessonIds.length > 0) {
       where = {
         ...where,
         lessonId: {
@@ -170,7 +170,7 @@ export class QuestionService {
         ...(filterDto.all
           ? {}
           : {
-              skip: (page - 1) * size,
+              skip: filterDto.infiniteScroll ? undefined : (page - 1) * size,
               take: size,
             }),
         where,
@@ -187,7 +187,12 @@ export class QuestionService {
         ...question,
         questionData: question.questionData as QuestionData,
       })),
-      count,
+      pagination: {
+        page,
+        size,
+        count,
+        totalPages: Math.ceil(count / size),
+      },
     };
   }
 
@@ -218,25 +223,27 @@ export class QuestionService {
       }
     }
 
-    const { type, difficulty, subjectId, curriculumId, lessonIds, count } =
+    const { type, difficulty, subjectId, curriculumIds, lessonIds, count } =
       filterDto;
 
+    const where: Prisma.QuestionWhereInput = {
+      type,
+      difficulty,
+      subjectId,
+      curriculumId: curriculumIds?.length ? { in: curriculumIds } : undefined,
+      lessonId: lessonIds?.length ? { in: lessonIds } : undefined,
+    };
+
+    if (filterDto.excludeQuestionIds?.length) {
+      where.id = { notIn: filterDto.excludeQuestionIds };
+    }
+
     const questionIds = await prisma.question.findMany({
-      where: {
-        type,
-        difficulty,
-        subjectId,
-        curriculumId,
-        lessonId: { in: lessonIds },
-      },
+      where,
       select: {
         id: true,
       },
     });
-
-    if (questionIds.length < count) {
-      throw new CustomError(HTTP_EXCEPTIONS.QUESTION_NOT_ENOUGH);
-    }
 
     const randomizedQuestionIds = questionIds
       .sort(() => Math.random() - 0.5)

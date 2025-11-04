@@ -68,7 +68,10 @@ function useProviderValue(initialFilters?: { type?: string[] }) {
       if (!data) return undefined;
       return {
         questions: [question, ...(data?.questions ?? [])],
-        count: data?.count ? data.count + 1 : 1,
+        pagination: {
+          ...data?.pagination,
+          count: data?.pagination?.count ? data.pagination.count + 1 : 1,
+        },
       };
     });
   }
@@ -80,7 +83,10 @@ function useProviderValue(initialFilters?: { type?: string[] }) {
         questions:
           data?.questions.map((q) => (q.id === question.id ? question : q)) ??
           [],
-        count: data?.count ?? 0,
+        pagination: {
+          ...data?.pagination,
+          count: data?.pagination?.count ? data.pagination.count - 1 : 0,
+        },
       };
     });
   }
@@ -90,7 +96,10 @@ function useProviderValue(initialFilters?: { type?: string[] }) {
       if (!data) return undefined;
       return {
         questions: data?.questions.filter((q) => q.id !== id) ?? [],
-        count: data?.count ? data.count - 1 : 0,
+        pagination: {
+          ...data?.pagination,
+          count: data?.pagination?.count ? data.pagination.count - 1 : 0,
+        },
       };
     });
   }

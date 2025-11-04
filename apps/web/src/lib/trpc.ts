@@ -146,6 +146,8 @@ export type BranchSingle = RouterOutput['branch']['findOne'];
 export type AttendanceNotification =
   RouterOutput['auth']['findAttendanceNotifications'][number];
 export type Question = RouterOutput['question']['findAll']['questions'][number];
+export type QuestionRandom =
+  RouterOutput['question']['findQuestionsRandom'][number];
 export type Assessment =
   RouterOutput['assessment']['findAll']['assessments'][number];
 // export type AssessmentQuestion =

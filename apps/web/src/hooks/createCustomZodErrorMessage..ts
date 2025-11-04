@@ -5,12 +5,10 @@ export function createCustomZodErrorMessage(
   iss: z.core.$ZodIssue,
   t: TFunction
 ) {
-  console.log('iss', iss);
   switch (iss.code) {
     case 'invalid_format':
     case 'invalid_type':
     case 'invalid_value':
-      console.log('invalid_value', iss);
       if (!iss.input) {
         return {
           ...iss,
@@ -35,11 +33,9 @@ export function createCustomZodErrorMessage(
         message: t('common.invalidValue'),
       };
     case 'too_small': {
-      console.log('too_small', iss);
       const minimum = iss.minimum as number;
       if (iss.origin === 'string') {
         if (minimum === 1) {
-          console.log('required field');
           return {
             path: iss.path,
             message: t('common.requiredField'),
@@ -66,7 +62,6 @@ export function createCustomZodErrorMessage(
       }
     }
     case 'too_big': {
-      console.log('too_big', iss);
       const maximum = iss.maximum as number;
 
       if (iss.origin === 'string') {

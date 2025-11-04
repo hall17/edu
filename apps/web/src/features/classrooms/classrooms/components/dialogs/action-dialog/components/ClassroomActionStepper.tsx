@@ -61,15 +61,15 @@ export function ClassroomActionStepper() {
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   function onSubmit(data: ClassroomFormData) {
-    console.log('onSubmit data1', data);
-    // return;
     if (isEdit && currentRow) {
-      updateMutation.mutate({
-        ...data,
-        id: currentRow.id,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
-      });
+      // TODO: Implement update mutation
+      // updateMutation.mutate({
+      //   ...data,
+      //   id: currentRow.id,
+      //   startDate: data.startDate.toISOString(),
+      //   endDate: data.endDate.toISOString(),
+      //   description: data.description || '',
+      // });
     } else {
       createMutation.mutate({
         ...data,
@@ -109,7 +109,7 @@ export function ClassroomActionStepper() {
       const schema =
         schemasById[methods.current.id as keyof typeof schemasById];
       const schemaParsed = await schema.safeParseAsync(form.getValues());
-      console.log('schemaParsed', schemaParsed);
+
       if (!schemaParsed.success) {
         toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
         schemaParsed.error.issues.forEach((issue) => {
@@ -194,7 +194,6 @@ export function ClassroomActionStepper() {
         id="classrooms-action-form"
         noValidate
         onSubmit={form.handleSubmit(onSubmit, (err) => {
-          console.log('err', err);
           toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
         })}
         className="flex-1 space-y-6"

@@ -12,9 +12,12 @@ import {
 
 // Question Type Helpers
 export function getQuestionTypeIcon(
-  questionType: QuestionType,
+  questionType?: QuestionType,
   size: 'sm' | 'md' | 'lg' = 'sm'
 ) {
+  if (!questionType) {
+    return null;
+  }
   const sizeClasses = {
     sm: 'h-3 w-3',
     md: 'h-4 w-4',

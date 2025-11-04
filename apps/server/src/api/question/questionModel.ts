@@ -28,7 +28,6 @@ export const questionFindAllSchema = z
     subjectIds: z.array(z.uuid()).optional(),
     curriculumIds: z.array(z.uuid()).optional(),
     lessonIds: z.array(z.uuid()).optional(),
-    branchIds: z.array(z.number().int()).optional(),
   })
   .merge(DefaultFilterSchema);
 
@@ -36,9 +35,10 @@ export const questionFindQuestionsRandomSchema = z.object({
   type: z.enum(QuestionType).optional(),
   difficulty: z.enum(QuestionDifficulty).optional(),
   subjectId: z.uuid(),
-  curriculumId: z.uuid().optional(),
+  curriculumIds: z.array(z.uuid()).optional(),
   lessonIds: z.array(z.uuid()).optional(),
   count: z.number().int().min(1).max(100),
+  excludeQuestionIds: z.array(z.uuid()).optional(),
 });
 
 export type QuestionCreateDto = z.infer<typeof questionCreateSchema>;

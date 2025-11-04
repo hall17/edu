@@ -32,7 +32,7 @@ export function CalendarStep() {
           (teacher) => teacher.teacher.id === sessionData.teacherId
         );
 
-        const session: ClassroomIntegrationSession = {
+        const session = {
           ...sessionData,
           teacher: teacher?.teacher ?? null,
           lessons:
@@ -40,7 +40,7 @@ export function CalendarStep() {
               lesson,
               lessonId: lesson.id,
             })) ?? [],
-        };
+        } as unknown as ClassroomIntegrationSession;
 
         return {
           id: session.id ?? crypto.randomUUID(),

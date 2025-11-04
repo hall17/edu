@@ -48,6 +48,7 @@ export const DefaultFilterSchema = z.object({
   sort: z.string().optional(),
   page: z.number().default(1),
   size: z.number().default(10),
+  infiniteScroll: z.boolean().optional().default(false),
   all: z.boolean().optional().default(false),
   global: z.boolean().optional().default(false),
   branchIds: z.array(z.number().int()).optional(),

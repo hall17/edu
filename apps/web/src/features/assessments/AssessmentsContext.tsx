@@ -4,7 +4,13 @@ import React, { useState } from 'react';
 import { useDialogState, useSearchFilters, useUsersQuery } from '@/hooks';
 import { queryClient, Assessment, trpc } from '@/lib/trpc';
 
-type AssessmentsDialogType = 'add' | 'edit' | 'delete' | 'view' | 'suspend';
+type AssessmentsDialogType =
+  | 'add'
+  | 'edit'
+  | 'delete'
+  | 'view'
+  | 'suspend'
+  | 'assignToClassroom';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =

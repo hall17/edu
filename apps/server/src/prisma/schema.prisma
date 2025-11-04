@@ -778,7 +778,7 @@ model Curriculum {
   subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   lessons              Lesson[]
   integratedClassrooms ClassroomIntegration[]
-  assessments          Assessment[]
+  assessments          AssessmentCurriculum[]
   questions            Question[]
 
   @@unique([subjectId, name])
@@ -824,7 +824,7 @@ model Lesson {
 
   curriculum                   Curriculum                          @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
   classroomIntegrationSessions ClassroomIntegrationSessionLesson[]
-  assessments                  Assessment[]
+  assessments                  AssessmentLesson[]
   questions                    Question[]
 
   @@unique([curriculumId, name])
@@ -1319,13 +1319,9 @@ model Assessment {
   statusUpdatedBy    String?
   statusUpdateReason String?   @db.VarChar(500)
 
-  subjectId    String
-  curriculumId String?
-  lessonId     String?
+  subjectId String
 
-  subject    Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  curriculum Curriculum? @relation(fields: [curriculumId], references: [id], onDelete: SetNull)
-  lesson     Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
   createdByUser       User? @relation("CreatedBy", fields: [createdBy], references: [id])
   deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
@@ -1337,6 +1333,33 @@ model Assessment {
   logs          AssessmentLog[]
   rubrics       AssessmentGradingRubric[]
   notifications AssessmentNotification[]
+
+  curriculums AssessmentCurriculum[]
+  lessons     AssessmentLesson[]
+}
+
+// Junction table for Assessment-Curriculum
+model AssessmentCurriculum {
+  assessmentId String
+  curriculumId String
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  curriculum Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+
+  @@id([assessmentId, curriculumId])
+  @@index([curriculumId])
+}
+
+// Junction table for Assessment-Lesson
+model AssessmentLesson {
+  assessmentId String
+  lessonId     String
+
+  assessment Assessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  lesson     Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([assessmentId, lessonId])
+  @@index([lessonId])
 }
 
 model ClassroomIntegrationAssessment {

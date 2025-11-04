@@ -23,8 +23,8 @@ export const assessmentCreateSchema = z.object({
   sendNotifications: z.boolean(),
   notificationFrequency: z.number().int().positive().optional(),
   subjectId: z.string().uuid(),
-  curriculumId: z.string().uuid().optional(),
-  lessonId: z.string().uuid().optional(),
+  curriculumIds: z.array(z.string().uuid()).optional(),
+  lessonIds: z.array(z.string().uuid()).optional(),
   questions: z
     .array(
       z.object({
@@ -44,9 +44,9 @@ export const assessmentUpdateSchema = z
 
 export const assessmentFindAllSchema = z
   .object({
-    subjectId: z.string().uuid().optional(),
-    curriculumId: z.string().uuid().optional(),
-    lessonId: z.string().uuid().optional(),
+    subjectIds: z.array(z.string().uuid()).optional(),
+    curriculumIds: z.array(z.string().uuid()).optional(),
+    lessonIds: z.array(z.string().uuid()).optional(),
     status: z.array(z.nativeEnum(AssessmentStatus)).optional(),
     scheduleType: z.array(z.nativeEnum(ScheduleType)).optional(),
     scoringType: z.array(z.nativeEnum(ScoringType)).optional(),

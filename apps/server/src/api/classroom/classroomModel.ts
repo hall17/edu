@@ -95,6 +95,8 @@ export const classroomFindAllSchema = z
   .object({
     branchIds: z.array(z.number().int()).optional(),
     classroomTemplateIds: z.array(z.string().uuid()).optional(),
+    subjectIds: z.array(z.string().uuid()).optional(),
+    curriculumIds: z.array(z.string().uuid()).optional(),
   })
   .merge(DefaultFilterSchema);
 
@@ -165,6 +167,7 @@ export const findAllClassroomIntegrationsSchema = z
 export const findAllClassroomIntegrationAssessmentsSchema = z
   .object({
     subjectIds: z.array(z.uuid()).optional(),
+    curriculumIds: z.array(z.uuid()).optional(),
     lessonIds: z.array(z.uuid()).optional(),
   })
   .merge(DefaultFilterSchema);

@@ -65,7 +65,6 @@ export function UsersTable() {
       setFilters={setFilters}
       columnFiltersState={columnFiltersState}
       onColumnFiltersChange={(columnFilters) => {
-        console.log('columnFilters', columnFilters);
         const status = columnFilters.find((c) => c.id === 'status')?.value;
         const role = columnFilters.find((c) => c.id === 'role')?.value;
         setFilters({

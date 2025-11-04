@@ -100,8 +100,6 @@ export function IntegrationCard({ index }: IntegrationCardProps) {
     }
   }
 
-  console.log('form', form.formState.errors);
-
   return (
     <Card>
       <CardHeader>

@@ -13,7 +13,11 @@ export function getQuestionDifficultyBadgeVariant(
   }
 }
 
-export function getQuestionTypeColor(questionType: QuestionType) {
+export function getQuestionTypeColor(questionType?: QuestionType) {
+  if (!questionType) {
+    return 'text-gray-600 bg-gray-50 border-gray-200';
+  }
+
   switch (questionType) {
     case QuestionType.MULTIPLE_CHOICE:
       return 'text-blue-600 bg-blue-50 border-blue-200';
@@ -34,7 +38,11 @@ export function getQuestionTypeColor(questionType: QuestionType) {
   }
 }
 
-export function getDifficultyColor(difficulty: QuestionDifficulty) {
+export function getDifficultyColor(difficulty?: QuestionDifficulty) {
+  if (!difficulty) {
+    return 'text-gray-600 bg-gray-50 border-gray-200';
+  }
+
   switch (difficulty) {
     case QuestionDifficulty.EASY:
       return 'text-green-600 bg-green-50 border-green-200';

@@ -3,9 +3,13 @@ import { Target, TrendingUp, Award } from 'lucide-react';
 
 // Difficulty Helpers
 export function getDifficultyIcon(
-  difficulty: QuestionDifficulty,
+  difficulty?: QuestionDifficulty,
   size: 'sm' | 'md' | 'lg' = 'sm'
 ) {
+  if (!difficulty) {
+    return null;
+  }
+
   const sizeClasses = {
     sm: 'h-3 w-3',
     md: 'h-4 w-4',

@@ -242,7 +242,7 @@ function ClassroomSessionContent() {
             <form
               id="session-form"
               onSubmit={form.handleSubmit(onSubmit, (errors) => {
-                console.log('errors', errors);
+                toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
               })}
               className="space-y-4"
             >

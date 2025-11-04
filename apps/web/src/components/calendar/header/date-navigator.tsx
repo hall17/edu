@@ -34,10 +34,14 @@ export function DateNavigator({ view, events }: IProps) {
     [events, selectedDate, view]
   );
 
-  const handlePrevious = () =>
+  const handlePrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setSelectedDate(navigateDate(selectedDate, view, 'previous'));
-  const handleNext = () =>
+  };
+  const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setSelectedDate(navigateDate(selectedDate, view, 'next'));
+  };
 
   return (
     <div className="space-y-0.5">

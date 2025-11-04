@@ -167,6 +167,7 @@ CREATE TABLE "User" (
     "twitterLink" VARCHAR(255),
     "instagramLink" VARCHAR(255),
     "linkedinLink" VARCHAR(255),
+    "teacherMeetingLink" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -288,6 +289,8 @@ CREATE TABLE "Branch" (
     "contact" VARCHAR(255),
     "canBeDeleted" BOOLEAN NOT NULL DEFAULT true,
     "maximumStudents" INTEGER NOT NULL DEFAULT 250,
+    "zoomApiKey" VARCHAR(255),
+    "zoomApiSecret" VARCHAR(255),
     "companyId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -853,10 +856,24 @@ CREATE TABLE "Assessment" (
     "statusUpdatedBy" TEXT,
     "statusUpdateReason" VARCHAR(500),
     "subjectId" TEXT NOT NULL,
-    "curriculumId" TEXT,
-    "lessonId" TEXT,
 
     CONSTRAINT "Assessment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AssessmentCurriculum" (
+    "assessmentId" TEXT NOT NULL,
+    "curriculumId" TEXT NOT NULL,
+
+    CONSTRAINT "AssessmentCurriculum_pkey" PRIMARY KEY ("assessmentId","curriculumId")
+);
+
+-- CreateTable
+CREATE TABLE "AssessmentLesson" (
+    "assessmentId" TEXT NOT NULL,
+    "lessonId" TEXT NOT NULL,
+
+    CONSTRAINT "AssessmentLesson_pkey" PRIMARY KEY ("assessmentId","lessonId")
 );
 
 -- CreateTable
@@ -1165,6 +1182,12 @@ CREATE INDEX "Question_lessonId_idx" ON "Question"("lessonId");
 
 -- CreateIndex
 CREATE INDEX "Question_type_idx" ON "Question"("type");
+
+-- CreateIndex
+CREATE INDEX "AssessmentCurriculum_curriculumId_idx" ON "AssessmentCurriculum"("curriculumId");
+
+-- CreateIndex
+CREATE INDEX "AssessmentLesson_lessonId_idx" ON "AssessmentLesson"("lessonId");
 
 -- CreateIndex
 CREATE INDEX "ClassroomIntegrationAssessment_classroomIntegrationId_idx" ON "ClassroomIntegrationAssessment"("classroomIntegrationId");
@@ -1500,12 +1523,6 @@ ALTER TABLE "Question" ADD CONSTRAINT "Question_curriculumId_fkey" FOREIGN KEY (
 ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1513,6 +1530,18 @@ ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_deletedBy_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_statusUpdatedBy_fkey" FOREIGN KEY ("statusUpdatedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssessmentCurriculum" ADD CONSTRAINT "AssessmentCurriculum_assessmentId_fkey" FOREIGN KEY ("assessmentId") REFERENCES "Assessment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssessmentCurriculum" ADD CONSTRAINT "AssessmentCurriculum_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssessmentLesson" ADD CONSTRAINT "AssessmentLesson_assessmentId_fkey" FOREIGN KEY ("assessmentId") REFERENCES "Assessment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssessmentLesson" ADD CONSTRAINT "AssessmentLesson_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ClassroomIntegrationAssessment" ADD CONSTRAINT "ClassroomIntegrationAssessment_classroomIntegrationId_fkey" FOREIGN KEY ("classroomIntegrationId") REFERENCES "ClassroomIntegration"("id") ON DELETE CASCADE ON UPDATE CASCADE;

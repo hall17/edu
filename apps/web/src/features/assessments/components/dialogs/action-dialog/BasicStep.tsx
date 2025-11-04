@@ -3,9 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { AssessmentFormData } from '../AssessmentActionDialog';
+import { AssessmentFormData } from './AssessmentActionDialog';
 
 import { DroppableImage } from '@/components/DroppableImage';
+import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from '@/components/multi-select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Combobox } from '@/components/ui/combobox';
 import {
@@ -26,15 +33,15 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 
-interface BasicTabProps {
+interface BasicStepProps {
   form: UseFormReturn<AssessmentFormData>;
 }
 
-export function BasicTab({ form }: BasicTabProps) {
+export function BasicStep({ form }: BasicStepProps) {
   const { t } = useTranslation();
 
   const selectedSubjectId = form.watch('subjectId');
-  const selectedCurriculumId = form.watch('curriculumId');
+  const selectedCurriculumIds = form.watch('curriculumIds');
 
   const subjectsQuery = useQuery(
     trpc.subject.findAll.queryOptions({ all: true })
@@ -46,10 +53,10 @@ export function BasicTab({ form }: BasicTabProps) {
   );
   const availableCurriculums = selectedSubject?.curriculums || [];
 
-  const availableLessons = selectedCurriculumId
-    ? availableCurriculums.find(
-        (curriculum) => curriculum.id === selectedCurriculumId
-      )?.lessons
+  const availableLessons = selectedCurriculumIds
+    ? availableCurriculums
+        .filter((curriculum) => selectedCurriculumIds.includes(curriculum.id))
+        .flatMap((curriculum) => curriculum.lessons)
     : [];
 
   return (
@@ -76,7 +83,7 @@ export function BasicTab({ form }: BasicTabProps) {
                       changeText={t('common.changeImage')}
                       helpText={t('common.imageUploadHelp')}
                       previewTitle={t('common.imagePreview')}
-                      maxSize={5 * 1024 * 1024} // 5MB for cover images
+                      maxSize={5 * 1024 * 1024}
                       accept={{
                         'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                       }}
@@ -145,11 +152,33 @@ export function BasicTab({ form }: BasicTabProps) {
 
           <FormField
             control={form.control}
-            name="curriculumId"
+            name="curriculumIds"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('assessments.fields.curriculum')}</FormLabel>
-                <Combobox
+                <MultiSelect
+                  defaultValues={field.value as string[]}
+                  onValuesChange={field.onChange}
+                >
+                  <MultiSelectTrigger className="w-full">
+                    <MultiSelectValue
+                      placeholder={t(
+                        'assessments.actionDialog.selectCurriculum'
+                      )}
+                    />
+                  </MultiSelectTrigger>
+                  <MultiSelectContent>
+                    {availableCurriculums?.map((curriculum) => (
+                      <MultiSelectItem
+                        key={curriculum.id}
+                        value={curriculum.id}
+                      >
+                        {curriculum.name}
+                      </MultiSelectItem>
+                    ))}
+                  </MultiSelectContent>
+                </MultiSelect>
+                {/* <Combobox
                   options={availableCurriculums?.map((curriculum) => ({
                     label: curriculum.name,
                     value: curriculum.id,
@@ -157,7 +186,7 @@ export function BasicTab({ form }: BasicTabProps) {
                   value={field.value}
                   onValueChange={field.onChange}
                   placeholder={t('assessments.actionDialog.selectCurriculum')}
-                />
+                /> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -165,21 +194,28 @@ export function BasicTab({ form }: BasicTabProps) {
 
           <FormField
             control={form.control}
-            name="lessonId"
+            name="lessonIds"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('assessments.fields.lesson')}</FormLabel>
-                <Combobox
-                  options={
-                    availableLessons?.map((lesson) => ({
-                      label: lesson.name,
-                      value: lesson.id,
-                    })) ?? []
-                  }
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  placeholder={t('assessments.actionDialog.selectLesson')}
-                />
+
+                <MultiSelect
+                  defaultValues={field.value as string[]}
+                  onValuesChange={field.onChange}
+                >
+                  <MultiSelectTrigger className="w-full">
+                    <MultiSelectValue
+                      placeholder={t('assessments.actionDialog.selectLesson')}
+                    />
+                  </MultiSelectTrigger>
+                  <MultiSelectContent>
+                    {availableLessons?.map((lesson) => (
+                      <MultiSelectItem key={lesson.id} value={lesson.id}>
+                        {lesson.name}
+                      </MultiSelectItem>
+                    ))}
+                  </MultiSelectContent>
+                </MultiSelect>
                 <FormMessage />
               </FormItem>
             )}

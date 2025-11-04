@@ -10,8 +10,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
-type AssessmentsDialogType = 'add' | 'edit' | 'delete' | 'view';
-
 export function AssessmentViewDialog() {
   const { t } = useTranslation();
   const { currentRow, setOpenedDialog } = useAssessmentsContext();
@@ -76,20 +74,28 @@ export function AssessmentViewDialog() {
             </label>
             <div className="col-span-3">{currentRow?.subject?.name}</div>
           </div>
-          {currentRow?.curriculum && (
+          {currentRow?.curriculums && (
             <div className="grid grid-cols-4 items-center gap-4">
               <label className="text-right font-medium">
                 {t('assessments.fields.curriculum')}:
               </label>
-              <div className="col-span-3">{currentRow.curriculum.name}</div>
+              <div className="col-span-3">
+                {currentRow.curriculums
+                  .map((curriculum) => curriculum.curriculum.name)
+                  .join(', ')}
+              </div>
             </div>
           )}
-          {currentRow?.lesson && (
+          {currentRow?.lessons && (
             <div className="grid grid-cols-4 items-center gap-4">
               <label className="text-right font-medium">
                 {t('assessments.fields.lesson')}:
               </label>
-              <div className="col-span-3">{currentRow.lesson.name}</div>
+              <div className="col-span-3">
+                {currentRow.lessons
+                  .map((lesson) => lesson.lesson.name)
+                  .join(', ')}
+              </div>
             </div>
           )}
         </div>

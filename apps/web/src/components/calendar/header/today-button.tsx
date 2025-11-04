@@ -11,7 +11,10 @@ export function TodayButton() {
   const { setSelectedDate } = useCalendar();
 
   const today = new Date();
-  const handleClick = () => setSelectedDate(today);
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSelectedDate(today);
+  };
 
   return (
     <MotionButton

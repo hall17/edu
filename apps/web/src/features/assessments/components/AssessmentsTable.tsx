@@ -1,7 +1,7 @@
 import { ScheduleType, ScoringType } from '@edusama/server';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
-import { Ban, Check, Edit, Eye, Trash2 } from 'lucide-react';
+import { Ban, Check, Edit, Eye, School, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useAssessmentsContext } from '../AssessmentsContext';
@@ -188,6 +188,14 @@ export function useColumns(): ColumnDef<Assessment>[] {
                   setOpenedDialog('edit');
                 },
                 tooltip: t('common.edit'),
+              },
+              {
+                icon: <School className="size-5" />,
+                onClick: () => {
+                  setCurrentRow(row.original);
+                  setOpenedDialog('assignToClassroom');
+                },
+                tooltip: t('assessments.table.actions.assignToClassroom'),
               },
               {
                 icon: isActive ? (

@@ -54,7 +54,7 @@ export function QuestionBankTable() {
   return (
     <CustomTable
       data={questionsQuery.data?.questions ?? []}
-      rowCount={questionsQuery.data?.count ?? 0}
+      rowCount={questionsQuery.data?.pagination?.count ?? 0}
       columns={columns}
       filters={filters}
       setFilters={setFilters}
