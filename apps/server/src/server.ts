@@ -2,8 +2,6 @@ import 'reflect-metadata';
 import { logger, stream } from '@api/libs/logger';
 import { errorMiddleware } from '@api/middlewares/rest/errorMiddleware';
 import * as trpcExpress from '@trpc/server/adapters/express';
-// import { createExpressEndpoints } from '@ts-rest/express';
-// import { generateOpenApi } from '@ts-rest/open-api';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -20,8 +18,6 @@ import { sendAttendanceNotifications } from './crons/sendAttendanceNotifications
 import { env } from './env';
 import { createContext } from './trpc';
 import { appRouter } from './trpc/appRouter';
-// import { apiContract } from './ts-rest/apiContract';
-// import { tsRestRouter } from './ts-rest/router';
 import { CustomError } from './types';
 
 export const app = express();
