@@ -34,6 +34,7 @@ export function AssessmentActionStepper({
   const isEdit = !!currentRow;
 
   const createMutation = useMutation(
+    // @ts-ignore
     trpc.assessment.create.mutationOptions({
       onSuccess: (assessment) => {
         toast.success(t('assessments.actionDialog.success.create'));
@@ -107,6 +108,7 @@ export function AssessmentActionStepper({
     }
 
     methods.goTo(stepId);
+    return true;
   }
 
   return (
@@ -166,7 +168,11 @@ export function AssessmentActionStepper({
                   (s) => s.id === methods.current.id
                 );
                 const nextStep = methods.all[currentStepIndex + 1];
+                if (!nextStep) {
+                  return false;
+                }
                 goToStep(nextStep.id as StepperStepId);
+                return true;
               }}
             >
               {t('common.next')}

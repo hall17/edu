@@ -52,7 +52,7 @@ export function MatchingFields({ form }: MatchingFieldsProps) {
 
     const reorderedOptions = Array.from(pairs[key]);
     const [removed] = reorderedOptions.splice(sourceIndex, 1);
-    reorderedOptions.splice(destinationIndex, 0, removed);
+    reorderedOptions.splice(destinationIndex, 0, removed as any);
 
     form.setValue(`questionData.pairs.${key}`, reorderedOptions as string[]);
   };

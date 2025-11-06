@@ -1,4 +1,4 @@
-import { AttendanceStatus } from '@edusama/server';
+import { AttendanceStatus } from '@edusama/common';
 import dayjs from 'dayjs';
 import { z } from 'zod';
 

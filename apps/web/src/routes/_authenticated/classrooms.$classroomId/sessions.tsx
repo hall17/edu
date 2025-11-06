@@ -8,5 +8,5 @@ export const Route = createFileRoute(
 )({
   component: ClassroomSessions,
   validateSearch: () =>
-    (({}) as RouterInput['classroom']['findAllIntegrationSessions']),
+    ({}) as RouterInput['classroom']['findAllIntegrationSessions'],
 });

@@ -25,6 +25,8 @@ export function TeachersDialogs() {
         return <TeachersSuspendDialog />;
       case 'delete':
         return <TeachersDeleteDialog />;
+      default:
+        return null;
     }
   }
 

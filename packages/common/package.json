@@ -2,7 +2,7 @@
   "name": "@edusama/common",
   "private": true,
   "version": "0.0.0",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "yarn clean && tsup",
     "build:dev": "tsup --watch",
@@ -24,6 +24,15 @@
     "eslint": "^9.26.0",
     "prettier": "^3.5.3",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2"  
+    "typescript": "^5.9.2"
+  },
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
   }
 }

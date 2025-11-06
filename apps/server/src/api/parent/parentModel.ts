@@ -1,4 +1,4 @@
-import { Gender, UserStatus } from '@api/prisma/generated/prisma/client';
+import { Gender, UserStatus } from '@edusama/common';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

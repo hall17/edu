@@ -1,4 +1,4 @@
-import { ScheduleType, ScoringType } from '@edusama/server';
+import { ScheduleType, ScoringType } from '@edusama/common';
 import { useQuery } from '@tanstack/react-query';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

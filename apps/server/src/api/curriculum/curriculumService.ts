@@ -39,7 +39,10 @@ export class CurriculumService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.CurriculumOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -203,8 +206,14 @@ export class CurriculumService {
         include: subjectInclude,
       });
 
+      const firstCurriculumId = subject.curriculums[0]?.id;
+
+      if (!firstCurriculumId) {
+        throw new CustomError(HTTP_EXCEPTIONS.CURRICULUM_NOT_FOUND);
+      }
+
       const curriculum = await prisma.curriculum.findUnique({
-        where: { id: subject.curriculums[0].id },
+        where: { id: firstCurriculumId },
         include: curriculumInclude,
       });
 

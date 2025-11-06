@@ -121,7 +121,7 @@ export function UsersViewDialog() {
                   </label>
                   <p className="text-sm capitalize">
                     {currentRow.roles.length > 0
-                      ? currentRow.roles[0].role.name
+                      ? (currentRow.roles[0]?.role?.name ?? '-')
                       : '-'}
                   </p>
                 </div>

@@ -20,6 +20,8 @@ export function BranchesDialogs() {
         return <BranchesSuspendDialog />;
       case 'delete':
         return <BranchesDeleteDialog />;
+      default:
+        return null;
     }
   }
   return <>{getActiveDialog()}</>;

@@ -1,4 +1,4 @@
-import { RoleStatus } from '@api/prisma/generated/prisma/client';
+import { RoleStatus } from '@edusama/common';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

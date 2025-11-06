@@ -3,7 +3,7 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { Gender, UserStatus } from '@edusama/server';
+import { Gender, UserStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
@@ -253,9 +253,9 @@ export function UsersActionDialog() {
         }
 
         const updateData = { ...diff.updated } as Record<string, unknown>;
-        if (updateData.dateOfBirth) {
-          updateData.dateOfBirth = (
-            updateData.dateOfBirth as Date
+        if (updateData['dateOfBirth']) {
+          updateData['dateOfBirth'] = (
+            updateData['dateOfBirth'] as Date
           ).toISOString();
         }
 

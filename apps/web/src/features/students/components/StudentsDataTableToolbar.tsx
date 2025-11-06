@@ -1,4 +1,4 @@
-import { StudentStatus } from '@edusama/server';
+import { StudentStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 

@@ -39,8 +39,8 @@ export function DateTimePicker({
     if (date && timeValue) {
       const [hours, minutes] = timeValue.split(':');
       const newDate = dayjs(date)
-        .hour(parseInt(hours))
-        .minute(parseInt(minutes))
+        .hour(parseInt(hours ?? '0'))
+        .minute(parseInt(minutes ?? '0'))
         .toDate();
       onChange(newDate);
     } else if (date) {
@@ -53,8 +53,8 @@ export function DateTimePicker({
     if (selectedDate && time) {
       const [hours, minutes] = time.split(':');
       const newDate = dayjs(selectedDate)
-        .hour(parseInt(hours))
-        .minute(parseInt(minutes))
+        .hour(parseInt(hours ?? '0'))
+        .minute(parseInt(minutes ?? '0'))
         .toDate();
       onChange(newDate);
     }

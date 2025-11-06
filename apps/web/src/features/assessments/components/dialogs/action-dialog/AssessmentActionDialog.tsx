@@ -3,7 +3,7 @@ import {
   QuestionType,
   ScheduleType,
   ScoringType,
-} from '@edusama/server';
+} from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { detailedDiff } from 'deep-object-diff';
 import { useEffect, useState } from 'react';

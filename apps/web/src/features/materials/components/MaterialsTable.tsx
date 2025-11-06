@@ -47,7 +47,7 @@ export function MaterialsTable() {
   const sortingState: SortingState = filters.sort
     ? [
         {
-          id: filters.sort.split(':')[0],
+          id: filters.sort.split(':')[0] ?? '',
           desc: filters.sort.split(':')[1] === 'desc',
         },
       ]
@@ -100,7 +100,7 @@ export function MaterialsTable() {
 
       setFilters({
         sort: newSorting?.length
-          ? `${newSorting[0].id}:${newSorting[0].desc ? 'desc' : 'asc'}`
+          ? `${newSorting?.[0]?.id}:${newSorting?.[0]?.desc ? 'desc' : 'asc'}`
           : undefined,
       });
     },

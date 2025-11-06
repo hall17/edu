@@ -17,6 +17,8 @@ export function CurriculumsDialogs() {
         return <CurriculumsViewDialog />;
       case 'delete':
         return <CurriculumsDeleteDialog />;
+      default:
+        return null;
     }
   }
 

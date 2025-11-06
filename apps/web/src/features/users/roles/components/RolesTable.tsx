@@ -1,4 +1,4 @@
-import { RoleStatus } from '@edusama/server';
+import { RoleStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import {
@@ -79,7 +79,7 @@ export function RolesTable() {
   const sortingState: SortingState = filters.sort
     ? [
         {
-          id: filters.sort.split(':')[0],
+          id: filters.sort.split(':')[0] ?? '',
           desc: filters.sort.split(':')[1] === 'desc',
         },
       ]
@@ -138,7 +138,7 @@ export function RolesTable() {
 
       setFilters({
         sort: newSorting?.length
-          ? `${newSorting[0].id}:${newSorting[0].desc ? 'desc' : 'asc'}`
+          ? `${newSorting?.[0]?.id}:${newSorting?.[0]?.desc ? 'desc' : 'asc'}`
           : undefined,
       });
     },

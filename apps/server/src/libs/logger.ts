@@ -13,7 +13,7 @@ if (!existsSync(logDir)) {
 
 // Define log format
 const logFormat = winston.format.printf((info) => {
-  return `${info.timestamp} ${info.level}: ${info.message}`;
+  return `${info['timestamp']} ${info.level}: ${info.message}`;
 });
 
 /*

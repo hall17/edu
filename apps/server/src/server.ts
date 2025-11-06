@@ -81,7 +81,7 @@ function initializeTrpc() {
       createContext,
       responseMeta: (opts) => {
         if (opts.errors.length) {
-          const firstErrorCause = opts.errors[0].cause;
+          const firstErrorCause = opts.errors[0]?.cause;
 
           if (firstErrorCause instanceof CustomError) {
             return {

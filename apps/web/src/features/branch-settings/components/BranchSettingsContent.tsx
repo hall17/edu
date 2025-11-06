@@ -1,4 +1,4 @@
-import { BranchStatus } from '@edusama/server';
+import { BranchStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {

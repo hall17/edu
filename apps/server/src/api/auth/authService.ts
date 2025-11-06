@@ -741,7 +741,7 @@ export class AuthService {
 
     const existingAccount =
       branch.users.length > 0
-        ? branch.users[0].user
+        ? branch.users[0]?.user
         : branch.students.length > 0
           ? branch.students[0]
           : branch.parents[0];
@@ -1362,12 +1362,12 @@ export class AuthService {
     const maybeParent = this.isParent(user) ? user : null;
     const activeBranchId =
       options.activeBranchId ??
-      maybeUser?.branches[0].branchId ??
+      maybeUser?.branches[0]?.branchId ??
       maybeStudent?.branchId ??
       maybeParent?.branchId ??
       -1;
     const activeBranch =
-      maybeUser?.branches[0].branch ??
+      maybeUser?.branches[0]?.branch ??
       maybeStudent?.branch ??
       maybeParent?.branch;
     const companyId = activeBranch
@@ -1459,12 +1459,12 @@ export class AuthService {
       -1;
     const activeBranchId =
       options.activeBranchId ??
-      maybeUser?.branches[0].branchId ??
+      maybeUser?.branches[0]?.branchId ??
       maybeStudent?.branchId ??
       maybeParent?.branchId ??
       -1;
     const activeBranch =
-      maybeUser?.branches[0].branch ??
+      maybeUser?.branches[0]?.branch ??
       maybeStudent?.branch ??
       maybeParent?.branch;
     const userType: UserType = maybeUser

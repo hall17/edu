@@ -16,6 +16,8 @@ export function QuestionBankDialogs() {
         return <QuestionBankViewDialog />;
       case 'delete':
         return <QuestionBankDeleteDialog />;
+      default:
+        return null;
     }
   }
 

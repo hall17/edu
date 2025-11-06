@@ -47,7 +47,6 @@
     "@tanstack/router-plugin": "^1.130.15",
     "@trpc/client": "^11.4.3",
     "@trpc/react-query": "^11.4.3",
-    "@trpc/server": "^11.4.3",
     "@trpc/tanstack-react-query": "^11.4.4",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",
@@ -84,6 +83,7 @@
     "zustand": "^5.0.6"
   },
   "devDependencies": {
+    "@edusama/tsconfig": "*",
     "@edusama/common": "*",
     "@edusama/eslint-config-custom": "*",
     "@edusama/prettier": "*",
@@ -94,12 +94,11 @@
     "@types/js-cookie": "^3.0.6",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.5",
-    "@vitejs/plugin-react": "^4.5.0",
-    "jsdom": "^26.1.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "jsdom": "^27.0.0",
     "typescript": "^5.9.2",
-    "vite": "^6.3.5",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.1.4",
+    "vite": "^7.1.7",
+    "vitest": "^3.0.5",
     "web-vitals": "^4.2.4"
   },
   "prettier": "@edusama/prettier"

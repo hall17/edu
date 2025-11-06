@@ -45,7 +45,10 @@ export class AttendanceService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.AttendanceRecordOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -543,7 +546,10 @@ export class AttendanceService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.AttendanceSummaryOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -857,7 +863,10 @@ export class AttendanceService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.AttendanceNotificationOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }

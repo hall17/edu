@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@edusama/server';
+import { DayOfWeek } from '@edusama/common';
 import { detailedDiff } from 'deep-object-diff';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,7 @@ export function ScheduleDialog({
   const { form } = useClassroomForm();
   const watchedIntegrations = form.watch('integrations');
   const integrationField = watchedIntegrations[integrationIndex];
-  const currentSchedules = integrationField.schedules ?? [];
+  const currentSchedules = integrationField?.schedules ?? [];
 
   const [schedules, setSchedules] = useState(currentSchedules ?? []);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);

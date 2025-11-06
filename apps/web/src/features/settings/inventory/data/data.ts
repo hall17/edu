@@ -1,4 +1,4 @@
-import { DeviceCondition, DeviceStatus, DeviceType } from '@edusama/server';
+import { DeviceCondition, DeviceStatus, DeviceType } from '@edusama/common';
 import {
   Monitor,
   Laptop,

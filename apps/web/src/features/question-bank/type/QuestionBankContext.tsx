@@ -1,4 +1,4 @@
-import { QuestionType } from '@edusama/server';
+import { QuestionType } from '@edusama/common';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import React, { useState } from 'react';

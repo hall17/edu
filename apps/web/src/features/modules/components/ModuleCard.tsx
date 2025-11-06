@@ -1,5 +1,5 @@
 import { ModuleCode } from '@edusama/common';
-import { ModuleStatus } from '@edusama/server';
+import { ModuleStatus } from '@edusama/common';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { useState } from 'react';

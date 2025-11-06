@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@edusama/server';
+import { QuestionDifficulty } from '@edusama/common';
 import { BookOpen, CircleQuestionMark, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

@@ -22,6 +22,8 @@ export function AssessmentsDialogs() {
         return <AssessmentDeleteDialog />;
       case 'assignToClassroom':
         return <AssessmentClassroomAssignmentDialog />;
+      default:
+        return null;
     }
   }
 

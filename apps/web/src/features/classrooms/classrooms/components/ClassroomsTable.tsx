@@ -1,4 +1,4 @@
-import { ClassroomStatus } from '@edusama/server';
+import { ClassroomStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -78,7 +78,7 @@ export function ClassroomsTable() {
   const sortingState: SortingState = filters.sort
     ? [
         {
-          id: filters.sort.split(':')[0],
+          id: filters.sort.split(':')[0] ?? '',
           desc: filters.sort.split(':')[1] === 'desc',
         },
       ]
@@ -131,7 +131,7 @@ export function ClassroomsTable() {
 
       setFilters({
         sort: newSorting?.length
-          ? `${newSorting[0].id}:${newSorting[0].desc ? 'desc' : 'asc'}`
+          ? `${newSorting?.[0]?.id}:${newSorting?.[0]?.desc ? 'desc' : 'asc'}`
           : undefined,
       });
     },

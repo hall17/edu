@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 // Load environment variables from .env file
 config({
-  path: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env',
+  path: process.env['NODE_ENV'] ? `.env.${process.env['NODE_ENV']}` : '.env',
 });
 
 function parseEnv() {

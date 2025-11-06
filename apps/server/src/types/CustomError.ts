@@ -2,6 +2,7 @@ import { CustomErrorType } from './types';
 
 export class CustomError extends Error {
   public status: CustomErrorType['status'];
+  // @ts-ignore
   public message: string;
 
   constructor(error: CustomErrorType) {

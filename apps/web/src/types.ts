@@ -1,4 +1,4 @@
-import { UserStatus } from '@edusama/server';
+import { UserStatus } from '@edusama/common';
 import { z } from 'zod';
 
 export const localizedCustomErrorMessageSchema = z.object({

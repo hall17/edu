@@ -1,4 +1,4 @@
-import { CurriculumStatus } from '@edusama/server';
+import { CurriculumStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import {
   ColumnDef,

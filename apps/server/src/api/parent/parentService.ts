@@ -44,7 +44,10 @@ export class ParentService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ParentOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }

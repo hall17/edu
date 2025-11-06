@@ -1,4 +1,4 @@
-import { AttendanceStatus } from '@edusama/server';
+import { AttendanceStatus } from '@edusama/common';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 

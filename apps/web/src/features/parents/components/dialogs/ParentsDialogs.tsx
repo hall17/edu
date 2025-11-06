@@ -25,6 +25,8 @@ export function ParentsDialogs() {
         return <ParentsChangePasswordDialog />;
       case 'delete':
         return <ParentsDeleteDialog />;
+      default:
+        return null;
     }
   }
 

@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@edusama/server';
+import { DayOfWeek } from '@edusama/common';
 import z from 'zod';
 
 import i18n from '@/lib/i18n';

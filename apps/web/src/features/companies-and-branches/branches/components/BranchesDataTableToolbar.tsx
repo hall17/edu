@@ -1,4 +1,4 @@
-import { BranchStatus } from '@edusama/server';
+import { BranchStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 

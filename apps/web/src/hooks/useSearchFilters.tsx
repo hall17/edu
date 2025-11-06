@@ -46,8 +46,8 @@ export const cleanEmptyParams = <T extends Record<string, unknown>>(
       delete newSearch[key];
   });
 
-  if (search.pageIndex === DEFAULT_PAGE_INDEX) delete newSearch.pageIndex;
-  if (search.pageSize === DEFAULT_PAGE_SIZE) delete newSearch.pageSize;
+  if (search['pageIndex'] === DEFAULT_PAGE_INDEX) delete newSearch['pageIndex'];
+  if (search['pageSize'] === DEFAULT_PAGE_SIZE) delete newSearch['pageSize'];
 
   return newSearch;
 };

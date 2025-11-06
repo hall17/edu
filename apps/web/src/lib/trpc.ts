@@ -1,4 +1,3 @@
-// import type { AppRouter } from '@edusama/server';
 import type { AppRouter } from '@edusama/server';
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import {
@@ -66,47 +65,49 @@ export const queryClient = new QueryClient({
   }),
 });
 
-export const trpcClient = createTRPCClient<AppRouter>({
-  links: [
-    splitLink({
-      condition: (op) => op.input instanceof FormData,
-      true: httpLink({
-        url: `${import.meta.env.VITE_API_URL}/api/trpc`,
-        fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            credentials: 'include',
-          }).catch();
-        },
+export const trpcClient: ReturnType<typeof createTRPCClient<AppRouter>> =
+  createTRPCClient<AppRouter>({
+    links: [
+      splitLink({
+        condition: (op) => op.input instanceof FormData,
+        true: httpLink({
+          url: `${import.meta.env.VITE_API_URL}/api/trpc`,
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: 'include',
+            }).catch();
+          },
+        }),
+        false: httpBatchLink({
+          url: `${import.meta.env.VITE_API_URL}/api/trpc`,
+          // transformer: superjson,
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: 'include',
+            }).catch();
+          },
+        }),
       }),
-      false: httpBatchLink({
-        url: `${import.meta.env.VITE_API_URL}/api/trpc`,
-        // transformer: superjson,
-        fetch(url, options) {
-          return fetch(url, {
-            ...options,
-            credentials: 'include',
-          }).catch();
-        },
-      }),
-    }),
-    // httpBatchLink({
-    //   url: `${import.meta.env.VITE_API_URL}/api/trpc`,
-    //   // transformer: superjson,
-    //   fetch(url, options) {
-    //     return fetch(url, {
-    //       ...options,
-    //       credentials: 'include',
-    //     }).catch();
-    //   },
-    // }),
-  ],
-});
+      // httpBatchLink({
+      //   url: `${import.meta.env.VITE_API_URL}/api/trpc`,
+      //   // transformer: superjson,
+      //   fetch(url, options) {
+      //     return fetch(url, {
+      //       ...options,
+      //       credentials: 'include',
+      //     }).catch();
+      //   },
+      // }),
+    ],
+  });
 
-export const trpc = createTRPCOptionsProxy<AppRouter>({
-  client: trpcClient,
-  queryClient,
-});
+export const trpc: ReturnType<typeof createTRPCOptionsProxy<AppRouter>> =
+  createTRPCOptionsProxy<AppRouter>({
+    client: trpcClient,
+    queryClient,
+  });
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;

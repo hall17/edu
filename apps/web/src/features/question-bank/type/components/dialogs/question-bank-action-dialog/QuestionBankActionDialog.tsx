@@ -5,7 +5,7 @@ import {
   QuestionData,
   questionDataSchema,
 } from '@edusama/common';
-import { QuestionDifficulty, QuestionType } from '@edusama/server';
+import { QuestionDifficulty, QuestionType } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';

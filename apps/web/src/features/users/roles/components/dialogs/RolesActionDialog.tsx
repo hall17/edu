@@ -1,5 +1,5 @@
 import { ModuleCode, Permission } from '@edusama/common';
-import { RoleStatus } from '@edusama/server';
+import { RoleStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { InfoIcon } from 'lucide-react';

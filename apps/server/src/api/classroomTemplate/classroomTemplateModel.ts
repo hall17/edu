@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@api/prisma/generated/prisma/client';
+import { DayOfWeek } from '@edusama/common';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

@@ -1,5 +1,3 @@
-import { useLocation } from '@tanstack/react-router';
-import { getQueryKey } from '@trpc/react-query';
 import React, { useState } from 'react';
 
 import {
@@ -8,7 +6,7 @@ import {
   useSearchFilters,
   useUsersQuery,
 } from '@/hooks';
-import { queryClient, trpc, User } from '@/lib/trpc';
+import { queryClient, User } from '@/lib/trpc';
 
 type UsersDialogType =
   | 'invite'
@@ -114,7 +112,7 @@ export function UsersProvider(props: React.PropsWithChildren) {
   );
 }
 
-export function useUsersContext() {
+export function useUsersContext(): ReturnType<typeof useProviderValue> {
   const usersContext = React.useContext(UsersContext);
 
   if (!usersContext) {

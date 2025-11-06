@@ -1,4 +1,4 @@
-import { CompanyStatus } from '@edusama/server';
+import { CompanyStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';

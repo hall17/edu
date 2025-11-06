@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType } from '@edusama/server';
+import { QuestionDifficulty, QuestionType } from '@edusama/common';
 
 export function getQuestionDifficultyBadgeVariant(
   difficulty: QuestionDifficulty

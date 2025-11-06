@@ -1,4 +1,4 @@
-import { StudentStatus } from '@edusama/server';
+import { StudentStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState, Row } from '@tanstack/react-table';

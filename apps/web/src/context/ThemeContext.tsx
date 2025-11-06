@@ -1,4 +1,4 @@
-import { Theme } from '@edusama/server';
+import { Theme } from '@edusama/common';
 import { createContext, useContext, useEffect, useState } from 'react';
 
 import { useAuth } from '@/stores/authStore';

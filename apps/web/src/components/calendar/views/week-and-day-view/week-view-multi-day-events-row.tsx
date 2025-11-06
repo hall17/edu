@@ -72,7 +72,7 @@ export function WeekViewMultiDayEventsRow({
         rows.push([]);
       }
 
-      rows[rowIndex].push(event);
+      rows[rowIndex]?.push(event);
     });
 
     return rows;

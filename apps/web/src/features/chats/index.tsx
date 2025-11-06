@@ -115,9 +115,9 @@ export function Chats() {
                 const { id, profile, username, messages, fullName } = chatUsr;
                 const lastConvo = messages[0];
                 const lastMsg =
-                  lastConvo.sender === 'You'
+                  lastConvo?.sender === 'You'
                     ? `You: ${lastConvo.message}`
-                    : lastConvo.message;
+                    : lastConvo?.message;
                 return (
                   <Fragment key={id}>
                     <button
@@ -226,7 +226,7 @@ export function Chats() {
                       {currentMessage &&
                         Object.keys(currentMessage).map((key) => (
                           <Fragment key={key}>
-                            {currentMessage[key].map((msg, index) => (
+                            {currentMessage?.[key]?.map((msg, index) => (
                               <div
                                 key={`${msg.sender}-${msg.timestamp}-${index}`}
                                 className={cn(

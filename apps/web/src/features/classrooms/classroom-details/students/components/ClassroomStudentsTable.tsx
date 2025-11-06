@@ -1,4 +1,4 @@
-import { EnrollmentStatus } from '@edusama/server';
+import { EnrollmentStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import {
   ColumnFiltersState,
@@ -81,7 +81,7 @@ export function ClassroomStudentsTable() {
   const sortingState: SortingState = filters.sort
     ? [
         {
-          id: filters.sort.split(':')[0],
+          id: filters.sort.split(':')[0] ?? '',
           desc: filters.sort.split(':')[1] === 'desc',
         },
       ]
@@ -134,7 +134,7 @@ export function ClassroomStudentsTable() {
 
       setFilters({
         sort: newSorting?.length
-          ? `${newSorting[0].id}:${newSorting[0].desc ? 'desc' : 'asc'}`
+          ? `${newSorting?.[0]?.id}:${newSorting?.[0]?.desc ? 'desc' : 'asc'}`
           : undefined,
       });
     },

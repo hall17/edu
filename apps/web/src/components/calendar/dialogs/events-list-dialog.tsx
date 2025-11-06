@@ -50,7 +50,10 @@ export function EventListDialog({
         <ModalHeader>
           <ModalTitle className="my-2">
             <div className="flex items-center gap-2">
-              <EventBullet color={cellEvents[0]?.color} className="" />
+              <EventBullet
+                color={cellEvents?.[0]?.color ?? 'blue'}
+                className=""
+              />
               <p className="text-sm font-medium">
                 Events on {format(date, 'EEEE, MMMM d, yyyy')}
               </p>

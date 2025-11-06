@@ -5,7 +5,7 @@ import {
   OrderingQuestionData,
   QuestionData,
 } from '@edusama/common';
-import { QuestionType } from '@edusama/server';
+import { QuestionType } from '@edusama/common';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 

@@ -1,45 +1,13 @@
 {
-  "compileOnSave": false,
+  "extends": ["@edusama/tsconfig/base.json"],
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "esnext",
-    "moduleResolution": "NodeNext",
-    "typeRoots": ["src/types", "node_modules/@types"],
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
-    "pretty": true,
-    "sourceMap": true,
-    "declaration": true,
-    "outDir": "dist",
-    "allowJs": true,
+    "outDir": "./dist",
     "noEmit": false,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "strict": true,
-    "baseUrl": "src",
-    "skipLibCheck": true,
-    "incremental": true,
+    "emitDeclarationOnly": true,
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "paths": {
-      "@api/*": ["*"]
-      // "@api/*": ["./src/*"]
-      // "@api/*": ["./src/*"]
+      "@api/*": ["src/*"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.json",
-    ".env.*",
-    "src/common.d.ts",
-    "src/types/express.d.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/prisma/seed/**/*.ts",
-    "src/prisma/generated",
-    "src/prisma/migrations"
-  ]
+  "include": ["src/**/*"]
 }

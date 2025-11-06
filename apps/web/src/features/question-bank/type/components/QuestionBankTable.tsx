@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@edusama/server';
+import { QuestionDifficulty } from '@edusama/common';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { Edit, Eye, Trash2 } from 'lucide-react';

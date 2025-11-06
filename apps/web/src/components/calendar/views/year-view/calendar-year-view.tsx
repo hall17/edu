@@ -131,7 +131,7 @@ export function CalendarYearView({ singleDayEvents, multiDayEvents }: IProps) {
                               ) : (
                                 <div className="flex flex-col items-center justify-center">
                                   <EventBullet
-                                    color={dayEvents[0].color}
+                                    color={dayEvents?.[0]?.color ?? 'blue'}
                                     className="size-1.5"
                                   />
                                   <span className="text-[0.6rem]">

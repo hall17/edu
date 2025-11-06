@@ -1,4 +1,4 @@
-import { QuestionType } from '@edusama/server';
+import { QuestionType } from '@edusama/common';
 import {
   Circle,
   FileText,

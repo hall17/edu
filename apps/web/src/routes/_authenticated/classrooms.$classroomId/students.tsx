@@ -7,5 +7,5 @@ export const Route = createFileRoute(
   '/_authenticated/classrooms/$classroomId/students'
 )({
   component: ClassroomStudents,
-  validateSearch: () => (({}) as RouterInput['classroom']['findAllStudents']),
+  validateSearch: () => ({}) as RouterInput['classroom']['findAllStudents'],
 });

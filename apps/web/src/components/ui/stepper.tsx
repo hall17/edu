@@ -155,7 +155,7 @@ const defineStepper = <const Steps extends Stepperize.Step[]>(
               data-disabled={props.disabled}
             >
               <Button
-                id={`step-${step.id}`}
+                id={`step-${step?.id}`}
                 date-component="stepper-step-indicator"
                 type="button"
                 role="tab"

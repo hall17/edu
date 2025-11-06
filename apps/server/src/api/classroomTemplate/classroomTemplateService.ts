@@ -2,7 +2,7 @@ import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
 import { classroomTemplateInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
-import { ClassroomTemplate, Prisma } from '@api/prisma/generated/prisma/client';
+import { Prisma, ClassroomTemplate } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
 import { Service } from 'typedi';
@@ -46,7 +46,10 @@ export class ClassroomTemplateService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomTemplateOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }

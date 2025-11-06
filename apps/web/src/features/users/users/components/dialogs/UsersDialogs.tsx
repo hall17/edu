@@ -26,6 +26,8 @@ export function UsersDialogs() {
         return <UsersChangePasswordDialog />;
       case 'delete':
         return <UsersDeleteDialog />;
+      default:
+        return null;
     }
   }
   return <>{getActiveDialog()}</>;

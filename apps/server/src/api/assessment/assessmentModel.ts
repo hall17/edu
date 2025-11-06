@@ -5,7 +5,7 @@ import {
   AssessmentLogAction,
   AssessmentNotificationType,
   NotificationStatus,
-} from '@api/prisma/generated/prisma/client';
+} from '@edusama/common';
 import { z } from 'zod';
 
 import { DefaultFilterSchema, idSchema } from '../../types';

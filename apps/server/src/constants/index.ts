@@ -1,4 +1,4 @@
-import { Language } from '@api/prisma/generated/prisma/client';
+import { Language } from '@edusama/common';
 
 export * from './httpExceptions';
 

@@ -2,7 +2,7 @@ import { z } from 'zod';
 // import {
 //   QuestionDifficulty,
 //   QuestionType,
-// } from '@api/prisma/generated/prisma/client';
+// } from '@edusama/common';
 import {
   QuestionDifficulty,
   QuestionType,

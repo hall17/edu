@@ -3,7 +3,7 @@ import {
   getNationalIdSchema,
   getPhoneNumberSchema,
 } from '@edusama/common';
-import { Gender, StudentStatus } from '@edusama/server';
+import { Gender, StudentStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
@@ -267,8 +267,9 @@ export function StudentsActionDialog() {
       const formData = new FormData();
       formData.append('file', file as any);
 
-      const response =
-        await createStudentsFromExcelMutation.mutateAsync(formData);
+      const response = await createStudentsFromExcelMutation.mutateAsync(
+        formData as any
+      );
 
       // Handle the detailed response
       const { successCount, failedCount, failedStudents } = response;
@@ -967,7 +968,7 @@ export function StudentsActionDialog() {
                 <div className="mb-4">
                   <FileDroppableArea
                     accept={getAcceptedFileTypes('excel')}
-                    onDrop={(files) => setFile(files[0])}
+                    onDrop={(files) => setFile(files[0] as any)}
                     selectedFile={file}
                   />
                 </div>

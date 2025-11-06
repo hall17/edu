@@ -253,7 +253,7 @@ export function MaterialsCurriculumActionDialog({
     const currentLessons = form.getValues('lessons');
     const reorderedLessons = Array.from(currentLessons);
     const [removed] = reorderedLessons.splice(sourceIndex, 1);
-    reorderedLessons.splice(destinationIndex, 0, removed);
+    reorderedLessons.splice(destinationIndex, 0, removed as any);
 
     // Update order values
     const updatedLessons = reorderedLessons.map((lesson, index) => ({

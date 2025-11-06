@@ -1,0 +1,10 @@
+{
+  "name": "@edusama/tsconfig",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "./base.json",
+    "./react.json"
+  ]
+}

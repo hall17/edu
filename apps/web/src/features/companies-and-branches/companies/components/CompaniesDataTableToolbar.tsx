@@ -1,4 +1,4 @@
-import { CompanyStatus } from '@edusama/server';
+import { CompanyStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 

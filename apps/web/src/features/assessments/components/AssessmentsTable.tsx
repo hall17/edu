@@ -1,4 +1,4 @@
-import { ScheduleType, ScoringType } from '@edusama/server';
+import { ScheduleType, ScoringType } from '@edusama/common';
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { Ban, Check, Edit, Eye, School, Trash2 } from 'lucide-react';

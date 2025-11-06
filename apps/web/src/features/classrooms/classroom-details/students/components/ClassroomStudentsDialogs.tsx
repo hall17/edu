@@ -18,6 +18,8 @@ export function ClassroomStudentsDialogs() {
         return <ClassroomStudentsViewDialog />;
       case 'delete':
         return <ClassroomStudentsDeleteDialog />;
+      default:
+        return null;
     }
   }
 

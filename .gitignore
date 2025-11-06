@@ -151,3 +151,5 @@ lerna-debug.log*
 
 # Prisma generated folder
 apps/server/src/prisma/generated
+
+.turbo

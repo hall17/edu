@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
 import { eachDayOfInterval, format, set } from 'date-fns';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -126,6 +125,7 @@ export function ClassroomActionStepper() {
     }
 
     methods.goTo(stepId);
+    return true;
   }
 
   function handleCreateSessions() {
@@ -247,7 +247,13 @@ export function ClassroomActionStepper() {
                   (s) => s.id === methods.current.id
                 );
                 const nextStep = methods.all[currentStepIndex + 1];
+
+                if (!nextStep) {
+                  return false;
+                }
+
                 goToStep(nextStep.id as StepperStepId);
+                return true;
               }}
             >
               {t('common.next')}

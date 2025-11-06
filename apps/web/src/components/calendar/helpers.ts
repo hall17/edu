@@ -108,7 +108,7 @@ export function groupEvents(dayEvents: IEvent[]): IEvent[][] {
 
     for (const group of groups) {
       const lastEventInGroup = group[group.length - 1];
-      const lastEventEnd = parseISO(lastEventInGroup.endDate);
+      const lastEventEnd = parseISO(lastEventInGroup?.endDate ?? '');
 
       if (eventStart >= lastEventEnd) {
         group.push(event);
@@ -235,7 +235,8 @@ export function calculateMonthEventPositions(
     if (position !== -1) {
       eventDays.forEach((day) => {
         const dayKey = startOfDay(day).toISOString();
-        occupiedPositions[dayKey][position] = true;
+
+        (occupiedPositions as any)[dayKey as string][position] = true;
       });
       eventPositions[event.id] = position;
     }
@@ -285,8 +286,8 @@ export function formatTime(
 export const getFirstLetters = (str: string): string => {
   if (!str) return '';
   const words = str.split(' ');
-  if (words.length === 1) return words[0].charAt(0).toUpperCase();
-  return `${words[0].charAt(0).toUpperCase()}${words[1].charAt(0).toUpperCase()}`;
+  if (words?.length === 1) return words?.[0]?.charAt(0).toUpperCase() ?? '';
+  return `${words?.[0]?.charAt(0).toUpperCase()}${words?.[1]?.charAt(0).toUpperCase()}`;
 };
 
 export const getEventsForDay = (
@@ -344,8 +345,8 @@ export const getEventsForWeek = (events: IEvent[], date: Date): IEvent[] => {
     return (
       isValid(eventStart) &&
       isValid(eventEnd) &&
-      eventStart <= endOfWeekDate &&
-      eventEnd >= startOfWeekDate
+      eventStart <= (endOfWeekDate as Date) &&
+      eventEnd >= (startOfWeekDate as Date)
     );
   });
 };

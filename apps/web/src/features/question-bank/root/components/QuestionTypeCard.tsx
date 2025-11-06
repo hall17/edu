@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType } from '@edusama/server';
+import { QuestionDifficulty, QuestionType } from '@edusama/common';
 import { Link } from '@tanstack/react-router';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';

@@ -39,7 +39,7 @@ export function TabNav({ className, items, ...props }: TabNavProps) {
       const patternPart = patternParts[i];
       const pathPart = pathParts[i];
 
-      if (patternPart.startsWith('$')) {
+      if (patternPart?.startsWith('$')) {
         // Parameter - matches any value
         continue;
       }

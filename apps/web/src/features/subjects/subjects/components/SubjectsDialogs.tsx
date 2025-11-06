@@ -20,6 +20,8 @@ export function SubjectsDialogs() {
         return <SubjectsSuspendDialog />;
       case 'delete':
         return <SubjectsDeleteDialog />;
+      default:
+        return null;
     }
   }
 

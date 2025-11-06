@@ -1,4 +1,4 @@
-import { QuestionType } from '@edusama/server';
+import { QuestionType } from '@edusama/common';
 import { createFileRoute } from '@tanstack/react-router';
 import { useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';

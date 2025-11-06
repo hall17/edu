@@ -20,6 +20,8 @@ export function CompaniesDialogs() {
         return <CompaniesSuspendDialog />;
       case 'delete':
         return <CompaniesDeleteDialog />;
+      default:
+        return null;
     }
   }
   return <>{getActiveDialog()}</>;

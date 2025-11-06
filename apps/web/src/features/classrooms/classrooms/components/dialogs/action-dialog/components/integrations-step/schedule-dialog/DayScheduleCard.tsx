@@ -1,4 +1,4 @@
-import { DayOfWeek } from '@edusama/server';
+import { DayOfWeek } from '@edusama/common';
 import { useTranslation } from 'react-i18next';
 
 import { ClassroomFormDataIntegrationSchedule } from '../../../classroomFormSchema';

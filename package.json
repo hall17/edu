@@ -7,8 +7,8 @@
   "license": "MIT",
   "type": "module",
   "workspaces": [
-    "packages/*",
-    "apps/*"
+    "apps/*",
+    "packages/*"
   ],
   "scripts": {
     "start": "yarn start:web",
@@ -26,7 +26,10 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "@edusama/tsconfig": "*",
+    "turbo": "^2.6.0",
     "typescript": "^5.9.2"
   },
-  "prettier": "@edusama/prettier"
+  "prettier": "@edusama/prettier",
+  "packageManager": "yarn@1.22.22"
 }

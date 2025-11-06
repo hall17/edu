@@ -16,6 +16,8 @@ export function ClassroomTemplatesDialogs() {
         return <ClassroomTemplatesViewDialog />;
       case 'delete':
         return <ClassroomTemplatesDeleteDialog />;
+      default:
+        return null;
     }
   }
 

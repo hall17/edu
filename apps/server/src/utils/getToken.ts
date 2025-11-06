@@ -7,7 +7,7 @@ type GetTokenOptions = {
 export function getToken(
   req: Request,
   options: GetTokenOptions = { useCookie: true }
-): string | null {
+) {
   if (options.useCookie) {
     return req.cookies['Authorization'] || req.cookies['RefreshToken'];
   }

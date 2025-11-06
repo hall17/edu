@@ -66,7 +66,10 @@ export class ClassroomService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -634,7 +637,10 @@ export class ClassroomService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomStudentOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.enrolledAt = 'desc';
     }
@@ -887,7 +893,10 @@ export class ClassroomService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomIntegrationSessionOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.endDate = 'desc';
     }
@@ -1190,7 +1199,10 @@ export class ClassroomService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomIntegrationOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -1311,7 +1323,10 @@ export class ClassroomService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.ClassroomOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.createdAt = 'desc';
     }

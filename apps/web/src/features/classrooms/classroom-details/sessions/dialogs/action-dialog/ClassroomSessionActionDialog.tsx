@@ -1,4 +1,4 @@
-import { AttendanceStatus } from '@edusama/server';
+import { AttendanceStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { detailedDiff } from 'deep-object-diff';

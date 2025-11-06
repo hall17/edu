@@ -7,9 +7,9 @@ import {
   QuestionData,
   ShortAnswerQuestionData,
   TrueFalseQuestionData,
+  QuestionDifficulty,
+  QuestionType,
 } from '@edusama/common';
-
-import { QuestionDifficulty, QuestionType } from '../generated/prisma/client';
 
 type Data = {
   id: string;

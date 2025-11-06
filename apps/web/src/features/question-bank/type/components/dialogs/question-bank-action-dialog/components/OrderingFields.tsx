@@ -52,7 +52,7 @@ export function OrderingFields({
     const currentOptions = form.getValues('questionData.options');
     const reorderedOptions = Array.from(currentOptions);
     const [removed] = reorderedOptions.splice(sourceIndex, 1);
-    reorderedOptions.splice(destinationIndex, 0, removed);
+    reorderedOptions.splice(destinationIndex, 0, removed as any);
 
     form.setValue('questionData.options', reorderedOptions);
   };

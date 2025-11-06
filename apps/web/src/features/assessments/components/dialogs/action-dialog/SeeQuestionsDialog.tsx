@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType } from '@edusama/server';
+import { QuestionDifficulty, QuestionType } from '@edusama/common';
 import { useQuery } from '@tanstack/react-query';
 import { CheckIcon, Loader2Icon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';

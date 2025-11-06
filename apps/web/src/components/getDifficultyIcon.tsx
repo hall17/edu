@@ -1,4 +1,4 @@
-import { QuestionDifficulty } from '@edusama/server';
+import { QuestionDifficulty } from '@edusama/common';
 import { Target, TrendingUp, Award } from 'lucide-react';
 
 // Difficulty Helpers

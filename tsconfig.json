@@ -1,5 +1,3 @@
 {
-  "compilerOptions": {
-    "baseUrl": "."
-  }
+  "extends": "@edusama/tsconfig/base.json"
 }

@@ -1,4 +1,4 @@
-import { SubjectStatus } from '@edusama/server';
+import { SubjectStatus } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import {
   ColumnFiltersState,

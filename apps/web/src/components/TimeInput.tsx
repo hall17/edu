@@ -47,14 +47,14 @@ export function TimeInput({
   }
 
   function handleHourBlur() {
-    const numericValue = parseInt(hours) || 0;
+    const numericValue = parseInt(hours ?? '0') || 0;
     const clampedValue = Math.min(Math.max(numericValue, 0), 23);
     const paddedHour = clampedValue.toString().padStart(2, '0');
     onChange(`${paddedHour}:${minutes}`);
   }
 
   function handleMinuteBlur() {
-    const numericValue = parseInt(minutes) || 0;
+    const numericValue = parseInt(minutes ?? '0') || 0;
     const clampedValue = Math.min(Math.max(numericValue, 0), 59);
     const paddedMinute = clampedValue.toString().padStart(2, '0');
     onChange(`${hours}:${paddedMinute}`);

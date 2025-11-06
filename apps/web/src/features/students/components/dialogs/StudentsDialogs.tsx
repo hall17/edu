@@ -28,6 +28,8 @@ export function StudentsDialogs() {
         return <StudentsDeleteDialog />;
       case 'resendInvitation':
         return <StudentsResendInvitationDialog />;
+      default:
+        return null;
     }
   }
 

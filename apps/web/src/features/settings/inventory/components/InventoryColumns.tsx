@@ -1,4 +1,4 @@
-import { DeviceCondition, DeviceStatus } from '@edusama/server';
+import { DeviceCondition, DeviceStatus } from '@edusama/common';
 import { ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';

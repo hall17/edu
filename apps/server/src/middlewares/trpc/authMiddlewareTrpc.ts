@@ -104,8 +104,8 @@ export const authenticateTokenTRPC: (options: {
   (opts) => {
     try {
       const token =
-        options.query && opts.ctx.req.query.token
-          ? String(opts.ctx.req.query.token)
+        options.query && opts.ctx.req.query['token']
+          ? String(opts.ctx.req.query['token'])
           : opts.ctx.req.body.token;
 
       if (!token) {

@@ -1,6 +1,6 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma as prismaMock } from '@api/libs/__mocks__/prisma';
-import { User } from '@api/prisma/generated/prisma/client';
+import { Prisma, User } from '@api/prisma/generated/prisma/client';
 import { TokenUser } from '@api/types';
 import { CustomError } from '@api/types';
 import {
@@ -48,7 +48,7 @@ describe('authService', () => {
       expect(sign).toHaveBeenCalledTimes(1);
       expect(sign).toHaveBeenCalledWith(
         { ...TokenUserData, jti: expect.any(String), type: 'access' },
-        process.env.ACCESS_TOKEN_SECRET_KEY,
+        process.env['ACCESS_TOKEN_SECRET_KEY'],
         { expiresIn: ACCESS_TOKEN_EXPIRES_IN } // 6 hour
       );
     });
@@ -61,7 +61,7 @@ describe('authService', () => {
       expect(sign).toHaveBeenCalledTimes(1);
       expect(sign).toHaveBeenCalledWith(
         { ...TokenUserData, jti: expect.any(String), type: 'refresh' },
-        process.env.REFRESH_TOKEN_SECRET_KEY,
+        process.env['REFRESH_TOKEN_SECRET_KEY'],
         { expiresIn: REFRESH_TOKEN_EXPIRES_IN } // 7 days
       );
     });

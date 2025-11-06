@@ -1,6 +1,6 @@
+import { getSeedData } from '@api/prisma/getSeedData';
 import { app } from '@api/server';
 import { Express } from 'express';
-import { getSeedData } from 'prisma/getSeedData';
 import { beforeEach, TestContext } from 'vitest';
 
 declare module 'vitest' {

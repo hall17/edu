@@ -1,7 +1,4 @@
-import {
-  QuestionType,
-  QuestionDifficulty,
-} from '@api/prisma/generated/prisma/client';
+import { QuestionType, QuestionDifficulty } from '@edusama/common';
 import { questionDataSchema } from '@edusama/common';
 import { z } from 'zod';
 

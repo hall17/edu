@@ -58,7 +58,7 @@ export function MultipleChoiceFields({
 
     const reorderedOptions = Array.from(watchedQuestionData.options);
     const [removed] = reorderedOptions.splice(sourceIndex, 1);
-    reorderedOptions.splice(destinationIndex, 0, removed);
+    reorderedOptions.splice(destinationIndex, 0, removed as any);
 
     form.setValue('questionData.options', reorderedOptions);
   };
@@ -244,7 +244,7 @@ export function MultipleChoiceFields({
                   onValueChange={(value) => field.onChange([Number(value)])}
                   value={
                     Array.isArray(field.value) && field.value.length > 0
-                      ? field.value[0].toString()
+                      ? (field.value?.[0]?.toString() ?? '')
                       : ''
                   }
                 >

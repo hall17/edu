@@ -35,8 +35,9 @@ export const studentRouter = t.router({
         .instanceof(FormData)
         .transform((fd) => Object.fromEntries(fd.entries()))
         .pipe(
+          // @ts-ignore
           z.object({
-            file: z.instanceof(File).refine((f) => f.size > 0),
+            file: z.instanceof(File).refine((f: any) => f.size > 0),
           })
         )
     )

@@ -56,7 +56,7 @@ export const AgendaEvents: FC = () => {
             heading={
               agendaModeGroupBy === 'date'
                 ? format(parseISO(date), 'EEEE, MMMM d, yyyy')
-                : toCapitalize(groupedEvents![0].color)
+                : toCapitalize(groupedEvents?.[0]?.color ?? '')
             }
           >
             {groupedEvents!.map((event) => (

@@ -5,13 +5,10 @@ import {
   deviceFindMyDevicesInclude,
   deviceInclude,
 } from '@api/libs/prisma/selections';
-import {
-  AssignmentStatus,
-  DeviceStatus,
-  Prisma,
-} from '@api/prisma/generated/prisma/client';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
+import { AssignmentStatus, DeviceStatus } from '@edusama/common';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
 import { Service } from 'typedi';
 
@@ -49,7 +46,10 @@ export class DeviceService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.DeviceOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.updatedAt = 'desc';
     }
@@ -515,7 +515,10 @@ export class DeviceService {
 
     if (sort) {
       const [field, order] = sort.split(':');
-      orderBy = { [field]: order as Prisma.SortOrder };
+      orderBy = {
+        [field as keyof Prisma.UserDeviceOrderByWithRelationInput]:
+          order as Prisma.SortOrder,
+      };
     } else {
       orderBy.assignedAt = 'desc';
     }

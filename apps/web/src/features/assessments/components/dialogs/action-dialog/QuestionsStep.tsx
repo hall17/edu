@@ -1,4 +1,4 @@
-import { QuestionDifficulty, QuestionType, ScoringType } from '@edusama/server';
+import { QuestionDifficulty, QuestionType, ScoringType } from '@edusama/common';
 import { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';

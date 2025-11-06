@@ -33,7 +33,7 @@ import {
   SubjectStatus,
   Theme,
   UserStatus,
-} from '@edusama/server';
+} from '@edusama/common';
 
 import { countries } from './countriesEn';
 

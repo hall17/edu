@@ -1,3 +1,5 @@
+import { TEventColor } from './types';
+
 import { COLORS } from '@/components/calendar/constants';
 import type { IEvent, IUser } from '@/components/calendar/interfaces';
 
@@ -140,7 +142,7 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
     user: randomUser,
   };
 
-  result.push(currentEvent);
+  result.push(currentEvent as IEvent);
 
   // Generate the remaining events
   for (let i = 0; i < numberOfEvents - 1; i++) {
@@ -191,8 +193,8 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
       // },
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      title: events[Math.floor(Math.random() * events.length)],
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      title: events[Math.floor(Math.random() * events.length)] ?? '',
+      color: COLORS[Math.floor(Math.random() * COLORS.length)] as TEventColor,
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       user: USERS_MOCK[Math.floor(Math.random() * USERS_MOCK.length)],

@@ -1,10 +1,11 @@
+import { env } from '@api/env';
+import { Prisma } from '@api/prisma/generated/prisma/client';
 import {
   AssignmentStatus,
   DeviceCondition,
   DeviceStatus,
   Gender,
-  Prisma,
-} from '@api/prisma/generated/prisma/client';
+} from '@edusama/common';
 import { PERMISSIONS, SYSTEM_ROLES } from '@edusama/common';
 import { fakerTR as faker } from '@faker-js/faker';
 import { hash } from 'bcrypt';
@@ -164,17 +165,17 @@ async function createRoot() {
       {
         name: 'Custom Role',
         description: 'Custom role description',
-        branchId: osaAcademy.branches[0].id,
+        branchId: osaAcademy.branches[0]!.id,
       },
       {
         name: 'Custom Role 2',
         description: 'Custom role description 2',
-        branchId: osaAcademy.branches[1].id,
+        branchId: osaAcademy.branches[1]!.id,
       },
       {
         name: 'Custom Role 3',
         description: 'Custom role description 3',
-        branchId: osaAcademy.branches[2].id,
+        branchId: osaAcademy.branches[2]!.id,
       },
     ],
   });
@@ -242,7 +243,7 @@ async function createRoot() {
           },
           modules: {
             createMany: {
-              data: modules.map((module, index) => ({
+              data: modules.map((_module, index) => ({
                 moduleId: index + 1,
               })),
             },
@@ -283,9 +284,9 @@ async function createRoot() {
   //   },
   // };
 
-  const edusamaMainBranchId = edusamaCompany.branches[0].id;
+  const edusamaMainBranchId = edusamaCompany.branches[0]?.id;
 
-  const rootBranch = edusamaCompany.branches[0];
+  const rootBranch = edusamaCompany.branches[0]!;
 
   const [superAdminRole] = rootBranch.roles.filter(
     (role) => role.code === SYSTEM_ROLES.superAdmin
@@ -348,7 +349,7 @@ async function createRoot() {
         ...generateSocialLinks(),
         branches: {
           create: {
-            branchId: edusamaMainBranchId,
+            branchId: edusamaMainBranchId!,
           },
         },
         roles: {
@@ -382,13 +383,13 @@ async function createRoot() {
         ...generateSocialLinks(),
         branches: {
           create: {
-            branchId: edusamaMainBranchId,
+            branchId: edusamaMainBranchId!,
           },
         },
         roles: {
           create: {
             roleId: moduleManagerRole.id,
-            moduleId: modules[index].id,
+            moduleId: modules[index]!.id!,
           },
         },
       } satisfies Prisma.UserCreateInput;
@@ -418,7 +419,7 @@ async function createRoot() {
         ...generateSocialLinks(),
         branches: {
           create: {
-            branchId: edusamaMainBranchId,
+            branchId: edusamaMainBranchId!,
           },
         },
         roles: {
@@ -439,7 +440,7 @@ async function createRoot() {
         password: await hash(password, 10),
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        branchId: edusamaMainBranchId,
+        branchId: edusamaMainBranchId!,
         gender: faker.helpers.arrayElement(Object.values(Gender)),
         dateOfBirth: faker.date.past(),
         nationalId: faker.string.numeric({ length: 10 }),
@@ -465,8 +466,8 @@ async function createRoot() {
         password: await hash(password, 10),
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        branchId: edusamaMainBranchId,
-        parentId: parents[index].id,
+        branchId: edusamaMainBranchId!,
+        parentId: parents[index]!.id as string,
         gender: faker.helpers.arrayElement(Object.values(Gender)),
         dateOfBirth: faker.date.past(),
         nationalId: faker.string.numeric({ length: 10 }),
@@ -483,7 +484,7 @@ async function createRoot() {
     })
   );
 
-  const subjects = generateSubjects(edusamaCompany.branches[0].id);
+  const subjects = generateSubjects(edusamaCompany.branches[0]!.id);
 
   const admins: Prisma.UserCreateInput[] = [
     {
@@ -494,7 +495,7 @@ async function createRoot() {
       lastName: 'Admin',
       branches: {
         create: {
-          branchId: edusamaMainBranchId,
+          branchId: edusamaMainBranchId!,
         },
       },
       roles: {
@@ -511,7 +512,7 @@ async function createRoot() {
       lastName: 'Admin',
       branches: {
         create: {
-          branchId: edusamaMainBranchId,
+          branchId: edusamaMainBranchId!,
         },
       },
       roles: {
@@ -530,7 +531,7 @@ async function createRoot() {
         createMany: {
           data: [
             {
-              branchId: edusamaMainBranchId,
+              branchId: edusamaMainBranchId!,
             },
             ...osaAcademyBranches.map((branch) => ({
               branchId: branch.id,
@@ -554,7 +555,7 @@ async function createRoot() {
         createMany: {
           data: [
             {
-              branchId: edusamaMainBranchId,
+              branchId: edusamaMainBranchId!,
             },
             ...osaAcademyBranches.map((branch) => ({
               branchId: branch.id,
@@ -578,7 +579,7 @@ async function createRoot() {
         createMany: {
           data: [
             {
-              branchId: edusamaMainBranchId,
+              branchId: edusamaMainBranchId!,
             },
             ...osaAcademyBranches.map((branch) => ({
               branchId: branch.id,
@@ -600,7 +601,7 @@ async function createRoot() {
       lastName: 'Admin',
       branches: {
         create: {
-          branchId: edusamaMainBranchId,
+          branchId: edusamaMainBranchId!,
         },
       },
       roles: {
@@ -639,7 +640,7 @@ async function createRoot() {
         // },
         branches: {
           create: {
-            branchId: edusamaMainBranchId,
+            branchId: edusamaMainBranchId!,
           },
         },
         roles: {
@@ -671,7 +672,7 @@ async function createRoot() {
 
   for (const subjectKey of Object.keys(subjects)) {
     const subject = subjects[subjectKey as keyof typeof subjects];
-    const { curriculums, ..._ } = subject;
+    const { curriculums, ..._rest } = subject;
 
     // create subject
     await prisma.subject.create({
@@ -679,7 +680,7 @@ async function createRoot() {
         id: subject.id,
         name: subject.name,
         description: subject.description,
-        branchId: edusamaMainBranchId,
+        branchId: edusamaMainBranchId!,
       },
     });
 
@@ -734,7 +735,7 @@ async function createRoot() {
 
   for (const subject of Object.values(subjects)) {
     for (const curriculum of subject.curriculums) {
-      const { lessons, ..._ } = curriculum;
+      const { lessons, ..._rest } = curriculum;
       console.log('curriculum', curriculum.name);
       // create classroom
       const classroom = await prisma.classroom.create({
@@ -743,7 +744,7 @@ async function createRoot() {
           capacity: faker.number.int({ min: 10, max: 100 }),
           startDate: faker.date.past(),
           endDate: faker.date.future(),
-          branchId: edusamaMainBranchId,
+          branchId: edusamaMainBranchId!,
           classroomTemplateId: null,
           status: 'ACTIVE',
           assessmentScorePass: faker.number.int({ min: 50, max: 100 }),
@@ -826,8 +827,8 @@ async function createRoot() {
                 })),
               },
             },
-            classroomIntegrationId: classroom.integrations[0].id!,
-            teacherId: teachers[0].id!,
+            classroomIntegrationId: classroom.integrations[0]!.id!,
+            teacherId: teachers[0]!.id!,
             description: faker.lorem.sentence(),
             startDate: dayjs()
               .subtract(10 - index, 'day')
@@ -1033,7 +1034,7 @@ async function createRoot() {
       deviceType: 'LAPTOP',
       brand: faker.company.name(),
       model: faker.commerce.productName(),
-      branchId: edusamaMainBranchId,
+      branchId: edusamaMainBranchId!,
       warrantyExpiry: faker.date.future(),
       purchaseDate: faker.date.past(),
       purchasePrice: faker.number.int({ min: 100, max: 1000 }),
@@ -1117,7 +1118,7 @@ export async function seed() {
   //   );
   // }
 
-  console.log(`DATABASE_URL="${process.env.DATABASE_URL}"`);
+  console.log(`DATABASE_URL="${env.DATABASE_URL}"`);
 
   // delete migrations folder if exists
   const migrationsFolder = path.join(__dirname, '.', 'migrations');
@@ -1141,7 +1142,7 @@ export async function seed() {
   console.log('Database initialized successfully.');
 }
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (env.NODE_ENV === 'development' || env.NODE_ENV === 'test') {
   seed()
     .catch((e) => {
       console.error(e);

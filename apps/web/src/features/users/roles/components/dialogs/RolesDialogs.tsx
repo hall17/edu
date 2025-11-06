@@ -19,6 +19,8 @@ export function RolesDialogs() {
         return <RolesDeleteDialog />;
       case 'suspend':
         return <RolesSuspendDialog />;
+      default:
+        return null;
     }
   }
 

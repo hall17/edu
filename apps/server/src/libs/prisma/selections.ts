@@ -1,5 +1,5 @@
-import { Prisma, QuestionType } from '@api/prisma/generated/prisma/client';
-
+import { Prisma } from '@api/prisma/generated/prisma/client';
+import { QuestionType } from '@edusama/common';
 export const userAuthInclude = (options: { branchId?: number } = {}) => {
   return {
     taughtSubjects: true,

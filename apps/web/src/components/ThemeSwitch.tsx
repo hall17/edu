@@ -1,4 +1,4 @@
-import { Theme } from '@edusama/server';
+import { Theme } from '@edusama/common';
 import { useMutation } from '@tanstack/react-query';
 import { Check, Moon, Sun } from 'lucide-react';
 import { useEffect } from 'react';

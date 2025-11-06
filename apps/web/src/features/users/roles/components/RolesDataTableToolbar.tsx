@@ -1,4 +1,4 @@
-import { RoleStatus } from '@edusama/server';
+import { RoleStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
 import { useTranslation } from 'react-i18next';
 

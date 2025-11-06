@@ -1,4 +1,4 @@
-import { AttendanceStatus } from '@edusama/server';
+import { AttendanceStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { detailedDiff } from 'deep-object-diff';
@@ -108,11 +108,16 @@ export function CalendarEventDialog(props: Props) {
     const integrationIndex = classroom.integrations.findIndex(
       (integration) => integration.id === event.classroomIntegrationId
     );
-    const sessionIndex = classroom.integrations[
+    const sessionIndex = classroom.integrations?.[
       integrationIndex
-    ].sessions.findIndex((session) => session.id === event.id);
+    ]?.sessions?.findIndex((session) => session.id === event.id);
 
-    if (integrationIndex === -1 || sessionIndex === -1) {
+    if (
+      !sessionIndex ||
+      !integrationIndex ||
+      integrationIndex === -1 ||
+      sessionIndex === -1
+    ) {
       return;
     }
 

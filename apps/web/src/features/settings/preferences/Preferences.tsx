@@ -1,4 +1,4 @@
-import { Language, Theme } from '@edusama/server';
+import { Language, Theme } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
