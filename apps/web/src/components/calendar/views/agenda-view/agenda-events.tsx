@@ -79,7 +79,7 @@ export const AgendaEvents: FC = () => {
                         <EventBullet color={event.color} />
                       ) : (
                         <Avatar>
-                          <AvatarImage src="" alt="@shadcn" />
+                          <AvatarImage src="" alt="@shadcn" className="object-contain" />
                           <AvatarFallback className={getBgColor(event.color)}>
                             {getFirstLetters(event.title)}
                           </AvatarFallback>

@@ -49,33 +49,19 @@ export function Settings() {
   ];
 
   return (
-    <>
-      {/* ===== Top Heading ===== */}
-      <Header>
-        <Search />
-        <div className="ml-auto flex items-center space-x-4">
-          <ThemeSwitch />
-          <ProfileDropdown />
+    <Main
+      fixed
+      title={t('settings.title')}
+      description={t('settings.description')}
+    >
+      <div className="flex flex-1 flex-col space-y-2 overflow-auto md:space-y-2">
+        <aside className="top-0">
+          <SidebarNav items={sidebarNavItems} />
+        </aside>
+        <div className="flex w-full overflow-y-auto p-1">
+          <Outlet />
         </div>
-      </Header>
-
-      <Main fixed>
-        <div className="space-y-0.5">
-          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-            {t('settings.title')}
-          </h1>
-          <p className="text-muted-foreground">{t('settings.description')}</p>
-        </div>
-        <Separator className="my-4 lg:my-6" />
-        <div className="flex flex-1 flex-col space-y-2 overflow-auto md:space-y-2">
-          <aside className="top-0">
-            <SidebarNav items={sidebarNavItems} />
-          </aside>
-          <div className="flex w-full overflow-y-auto p-1">
-            <Outlet />
-          </div>
-        </div>
-      </Main>
-    </>
+      </div>
+    </Main>
   );
 }

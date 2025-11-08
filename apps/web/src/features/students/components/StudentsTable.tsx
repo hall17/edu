@@ -79,6 +79,10 @@ export function useColumns(): ColumnDef<Student>[] {
       accessorKey: 'profilePictureUrl',
       header: '',
       cell: ({ row }) => {
+        console.log(
+          'row.original.profilePictureUrl',
+          row.original.profilePictureUrl
+        );
         return (
           <Avatar className="h-8 w-8">
             <AvatarImage
@@ -87,6 +91,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 `https://testingbot.com/free-online-tools/random-avatar/100?u=${row.original.id}`
               }
               alt={`${row.original.firstName} ${row.original.lastName}`}
+              className="object-contain"
             />
             <AvatarFallback className="text-xs">
               {row.original.firstName.charAt(0) +
@@ -162,6 +167,9 @@ export function useColumns(): ColumnDef<Student>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       enableHiding: false,
       cell: ({ row }) => {
         const isActive = row.original.status === 'ACTIVE';
@@ -170,7 +178,7 @@ export function useColumns(): ColumnDef<Student>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Eye className="size-5" />,
+                icon: <Eye className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -178,7 +186,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <Edit className="size-5" />,
+                icon: <Edit className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -186,7 +194,7 @@ export function useColumns(): ColumnDef<Student>[] {
                 tooltip: t('common.edit'),
               },
               {
-                icon: <Send className="size-5" />,
+                icon: <Send className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('resendInvitation');
@@ -195,18 +203,18 @@ export function useColumns(): ColumnDef<Student>[] {
                 hidden: row.original.status !== 'INVITED',
               },
               {
-                icon: <Lock className="size-5" />,
+                icon: <Lock className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
-                  setOpenedDialog('changePassword');
+                  setOpenedDialog('resetPassword');
                 },
-                tooltip: t('common.changePassword'),
+                tooltip: t('common.resetPassword'),
               },
               {
                 icon: isActive ? (
-                  <Ban className="size-5" />
+                  <Ban className="size-4" />
                 ) : (
-                  <Check className="size-5" />
+                  <Check className="size-4" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -219,7 +227,7 @@ export function useColumns(): ColumnDef<Student>[] {
               },
 
               {
-                icon: <Trash2 className="size-5" />,
+                icon: <Trash2 className="size-4" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

@@ -133,7 +133,7 @@ export function Chats() {
                     >
                       <div className="flex gap-2">
                         <Avatar>
-                          <AvatarImage src={profile} alt={username} />
+                          <AvatarImage src={profile} alt={username} className="object-contain" />
                           <AvatarFallback>{username}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -178,6 +178,7 @@ export function Chats() {
                       <AvatarImage
                         src={selectedUser.profile}
                         alt={selectedUser.username}
+                        className="object-contain"
                       />
                       <AvatarFallback>{selectedUser.username}</AvatarFallback>
                     </Avatar>

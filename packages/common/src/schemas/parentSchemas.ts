@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { Gender, UserStatus } from '../enums';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 export const parentCreateSchema = z.object({
@@ -15,7 +16,7 @@ export const parentCreateSchema = z.object({
     .transform((stringDate) => new Date(stringDate))
     .optional(),
   email: z.string().email().max(100),
-  profilePictureUrl: z.string().max(255).optional(),
+  profilePictureUrl: z.string().max(1000).nullable().optional(),
   phoneCountryCode: z.string().max(5).optional(),
   phoneNumber: z.string().max(15).optional(),
   countryCode: z.string().max(2).optional(),

@@ -53,6 +53,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { FindAllSubjectsInput, trpc, User } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 function getFormSchema(t: TFunction) {
   return z
@@ -63,7 +64,7 @@ function getFormSchema(t: TFunction) {
       gender: z.nativeEnum(Gender),
       dateOfBirth: z.date(),
       email: z.string().email().max(100),
-      profilePictureUrl: z.url().max(255).optional(),
+      profilePictureUrl: z.string().max(255).optional(),
       phoneCountryCode: z.string().min(1).max(50),
       phoneNumber: z.string().min(1).max(15),
       countryCode: z.string().min(1).max(2),
@@ -129,15 +130,16 @@ export function TeachersActionDialog() {
     useTeachersContext();
   const createTeacherMutation = useMutation(trpc.user.create.mutationOptions());
   const updateTeacherMutation = useMutation(trpc.user.update.mutationOptions());
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
-    null
-  );
-  const isEdit = !!currentRow;
 
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
   const [subjectFilters, setSubjectFilters] = useState<FindAllSubjectsInput>({
     all: true,
   });
+
+  const isEdit = !!currentRow;
 
   const subjectsQuery = useQuery(
     trpc.subject.findAll.queryOptions(subjectFilters)
@@ -347,10 +349,15 @@ export function TeachersActionDialog() {
                 <FormControl>
                   <DroppableImage
                     size="2xl"
-                    value={field.value}
+                    value={
+                      profilePictureFile === null
+                        ? undefined
+                        : (field.value ?? undefined)
+                    }
                     onChange={(file) => {
-                      console.log('file', file);
-                      field.onChange(file ? file.name : undefined);
+                      field.onChange(
+                        file ? file.name : file === null ? null : undefined
+                      );
                       setProfilePictureFile(file);
                     }}
                     uploadText={t('common.uploadProfilePicture')}
@@ -358,7 +365,7 @@ export function TeachersActionDialog() {
                     helpText={t('common.profilePictureUploadHelp')}
                     previewTitle={t('common.profilePicture')}
                     previewSubtitle={t('common.profilePicturePreview')}
-                    maxSize={5 * 1024 * 1024}
+                    maxSize={DEFAULT_IMAGE_SIZE}
                     accept={{
                       'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                     }}

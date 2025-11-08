@@ -41,6 +41,7 @@ export function ProfileHeader({ onEditClick, isEditing }: ProfileHeaderProps) {
             <AvatarImage
               src={user?.profilePictureUrl || undefined}
               alt={`${user?.firstName} ${user?.lastName}`}
+              className="object-contain"
             />
             <AvatarFallback className="text-2xl">
               {getInitials(user?.firstName, user?.lastName)}

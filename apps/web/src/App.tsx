@@ -95,14 +95,17 @@ export function App() {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const language = auth?.user?.preferences?.language?.toLowerCase() ?? 'tr';
-    dayjs.locale(language);
-
     z.config({
       customError: (iss) => {
         return createCustomZodErrorMessage(iss as z.core.$ZodIssue, t);
       },
     });
+  }, []);
+
+  useEffect(() => {
+    const language = auth?.user?.preferences?.language?.toLowerCase() ?? 'tr';
+    i18n.changeLanguage(language);
+    dayjs.locale(language);
   }, [auth?.user?.preferences?.language]);
 
   return (

@@ -16,7 +16,7 @@ import {
   Link as LinkIcon,
   ArrowLeft,
 } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -50,6 +50,7 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/stores/authStore';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 function getProfileFormSchema(t: TFunction) {
   return z
@@ -61,7 +62,7 @@ function getProfileFormSchema(t: TFunction) {
       gender: z.nativeEnum(Gender),
       dateOfBirth: z.date(),
       email: z.string().email().max(100),
-      profilePictureUrl: z.string().url().max(255).optional(),
+      profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50).optional(),
       phoneNumber: z.string().min(1).max(15),
       countryCode: z.string().min(1).max(2),
@@ -111,6 +112,9 @@ export function ProfileContent({ onCancel }: ProfileContentProps) {
   const { t } = useTranslation();
   const { user, setUser } = useAuth();
   const updateMeMutation = useMutation(trpc.auth.updateMe.mutationOptions());
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
 
   const profileFormSchema = useMemo(() => getProfileFormSchema(t), [t]);
 
@@ -164,6 +168,13 @@ export function ProfileContent({ onCancel }: ProfileContentProps) {
         ...diff.updated,
       });
 
+      if (response && 'signedAwsS3Url' in response) {
+        await fetch(response.signedAwsS3Url, {
+          method: 'PUT',
+          body: profilePictureFile,
+        });
+      }
+
       const country = countries.find(
         (country) => country.iso2 === response?.countryCode
       );
@@ -186,9 +197,13 @@ export function ProfileContent({ onCancel }: ProfileContentProps) {
     <Card>
       <CardHeader>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={onCancel}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t('common.back')}
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full"
+            onClick={onCancel}
+          >
+            <ArrowLeft />
           </Button>
           <div>
             <h2 className="text-xl font-semibold">
@@ -224,67 +239,37 @@ export function ProfileContent({ onCancel }: ProfileContentProps) {
                   name="profilePictureUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        {t('settings.profile.form.profilePictureUrl')}
-                      </FormLabel>
-                      <div className="flex items-start gap-4">
-                        <Avatar className="size-16">
-                          <AvatarImage
-                            src={
-                              field.value ||
-                              user?.profilePictureUrl ||
-                              undefined
-                            }
-                            alt="Profile preview"
-                          />
-                          <AvatarFallback className="text-sm">
-                            {user?.firstName?.charAt(0)?.toUpperCase() || 'U'}
-                            {user?.lastName?.charAt(0)?.toUpperCase() || ''}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-4">
-                          <FormControl>
-                            <Input
-                              placeholder="https://example.com/profile-picture.jpg"
-                              {...field}
-                              value={field.value ?? ''}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                          <p className="text-muted-foreground text-xs">
-                            {t('settings.profile.form.profilePictureUrlHelp')}
-                          </p>
-                          <div className="border-border rounded-lg border-2 border-dashed p-4">
-                            <DroppableImage
-                              value={field.value}
-                              onChange={field.onChange}
-                              size="sm"
-                              uploadText={t(
-                                'settings.profile.form.uploadProfilePicture'
-                              )}
-                              changeText={t(
-                                'settings.profile.form.changeProfilePicture'
-                              )}
-                              helpText={t(
-                                'settings.profile.form.profilePictureHelpText'
-                              )}
-                              previewTitle={t(
-                                'settings.profile.form.profilePicturePreview'
-                              )}
-                              maxSize={5 * 1024 * 1024} // 5MB for profile pictures
-                              accept={{
-                                'image/*': [
-                                  '.jpeg',
-                                  '.jpg',
-                                  '.png',
-                                  '.webp',
-                                  '.svg',
-                                ],
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
+                      <FormLabel>{t('common.profilePicture')}</FormLabel>
+                      <FormControl>
+                        <DroppableImage
+                          size="2xl"
+                          value={
+                            profilePictureFile === null
+                              ? undefined
+                              : (field.value ?? undefined)
+                          }
+                          onChange={(file) => {
+                            field.onChange(
+                              file
+                                ? file.name
+                                : file === null
+                                  ? null
+                                  : undefined
+                            );
+                            setProfilePictureFile(file);
+                          }}
+                          uploadText={t('common.uploadProfilePicture')}
+                          changeText={t('common.changeProfilePicture')}
+                          helpText={t('common.profilePictureUploadHelp')}
+                          previewTitle={t('common.profilePicture')}
+                          previewSubtitle={t('common.profilePicturePreview')}
+                          maxSize={DEFAULT_IMAGE_SIZE}
+                          accept={{
+                            'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

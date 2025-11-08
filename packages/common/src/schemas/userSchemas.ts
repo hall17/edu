@@ -18,7 +18,7 @@ export const userCreateSchema = z.object({
     .string()
     .transform((stringDate) => new Date(stringDate))
     .optional(),
-  profilePictureUrl: z.string().max(255).optional(),
+  profilePictureUrl: z.string().max(1000).nullable().optional(),
   phoneCountryCode: z.string().max(5).optional(),
   phoneNumber: z.string().max(15).optional(),
   branchId: z.number().int().optional(),

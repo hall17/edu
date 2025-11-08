@@ -11,7 +11,7 @@ type StudentsDialogType =
   | 'delete'
   | 'view'
   | 'suspend'
-  | 'changePassword'
+  | 'resetPassword'
   | 'resendInvitation';
 
 function useProviderValue() {

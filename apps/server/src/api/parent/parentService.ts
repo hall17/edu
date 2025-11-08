@@ -2,7 +2,7 @@ import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
 import { prisma } from '@api/libs/prisma';
 import { parentInclude } from '@api/libs/prisma/selections';
-import { generateSignedUrl } from '@api/libs/s3';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import { Prisma, Parent } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
@@ -269,6 +269,14 @@ export class ParentService {
 
     if (dto.profilePictureUrl) {
       dto.profilePictureUrl = dto.id;
+    } else if (dto.profilePictureUrl === null) {
+      // delete profile picture from s3
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        dto.id
+      );
     }
 
     const { students } = parent;
@@ -375,6 +383,38 @@ export class ParentService {
     return id;
   }
 
+  async deletePermanently(requestedBy: TokenUser, id: string) {
+    const userHasPermission = hasPermission(
+      requestedBy,
+      MODULE_CODES.parents,
+      PERMISSIONS.delete
+    );
+
+    if (!userHasPermission) {
+      throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+    }
+
+    const parent = await prisma.parent.findUnique({
+      where: { id, branchId: requestedBy.activeBranchId },
+      select: { profilePictureUrl: true },
+    });
+
+    if (parent?.profilePictureUrl) {
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        parent.profilePictureUrl
+      );
+    }
+
+    await prisma.parent.delete({
+      where: { id, branchId: requestedBy.activeBranchId },
+    });
+
+    return id;
+  }
+
   async updateSuspended(requestedBy: TokenUser, dto: ParentUpdateSuspendedDto) {
     const userHasPermission = hasPermission(
       requestedBy,
@@ -426,12 +466,12 @@ export class ParentService {
     operation: 'getObject' | 'putObject',
     url: string
   ) {
-    return await generateSignedUrl(
+    return await generateSignedUrl({
       operation,
-      requestedBy.companyId!,
-      requestedBy.activeBranchId,
-      'profile-pictures',
-      url
-    );
+      companyId: requestedBy.companyId!,
+      branchId: requestedBy.activeBranchId,
+      folder: 'profile-pictures',
+      key: url,
+    });
   }
 }

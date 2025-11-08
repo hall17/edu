@@ -180,7 +180,9 @@ export function useColumns(): ColumnDef<Company>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
-
+      meta: {
+        className: 'text-end',
+      },
       cell: ({ row }) => {
         const isActive = row.original.status === 'ACTIVE';
 
@@ -188,7 +190,7 @@ export function useColumns(): ColumnDef<Company>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Plus className="size-5" />,
+                icon: <Plus className="size-4" />,
                 className: 'hover:text-green-500',
                 onClick: () => {
                   openAddBranchDialog(row.original.id);
@@ -198,7 +200,7 @@ export function useColumns(): ColumnDef<Company>[] {
                 ),
               },
               {
-                icon: <Eye className="size-5" />,
+                icon: <Eye className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -206,7 +208,7 @@ export function useColumns(): ColumnDef<Company>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <Pencil className="size-5" />,
+                icon: <Pencil className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -215,9 +217,9 @@ export function useColumns(): ColumnDef<Company>[] {
               },
               {
                 icon: isActive ? (
-                  <Ban className="size-5" />
+                  <Ban className="size-4" />
                 ) : (
-                  <Check className="size-5" />
+                  <Check className="size-4" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -229,7 +231,7 @@ export function useColumns(): ColumnDef<Company>[] {
                 tooltip: isActive ? t('common.suspend') : t('common.activate'),
               },
               {
-                icon: <Trash2 className="size-5" />,
+                icon: <Trash2 className="size-4" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

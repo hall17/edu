@@ -7,27 +7,18 @@ import {
 import { Gender } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import {
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from '@tanstack/react-router';
-import { TFunction } from 'i18next';
-import { Camera, Check, Edit, Trash, Trash2, Upload, X } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { FieldErrors, useForm, useWatch } from 'react-hook-form';
+import { useRouteContext, useSearch } from '@tanstack/react-router';
+import { useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { useOnClickOutside } from 'usehooks-ts';
 import { z } from 'zod';
 
 import countries from '@/assets/countries.json';
 import { LoadingButton } from '@/components';
 import { CitySelector, CountrySelector, PhoneInput } from '@/components';
 import { DatePicker } from '@/components/DatePicker';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { DroppableImage } from '@/components/DroppableImage';
 import {
   Card,
   CardTitle,
@@ -35,7 +26,6 @@ import {
   CardHeader,
   CardContent,
 } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -53,13 +43,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { trpc } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 export function InvitationForm({
   setSignedUpUserType,
@@ -71,11 +56,9 @@ export function InvitationForm({
   const { t } = useTranslation();
   const search = useSearch({ strict: false }) as { token?: string };
   const token = search.token;
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-
-  const dialogContentRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(dialogContentRef as any, () => setIsPreviewOpen(false));
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
   const completeSignupMutation = useMutation(
     trpc.auth.completeSignup.mutationOptions()
   );
@@ -88,8 +71,7 @@ export function InvitationForm({
       nationalId: z.string().min(1).max(50),
       gender: z.nativeEnum(Gender),
       dateOfBirth: z.date(),
-      profilePicture: z.instanceof(File).optional(),
-      profilePictureUrl: z.string().optional(),
+      profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50),
       phoneNumber: z.string().min(1).max(15),
       countryCode: z.string().min(1).max(2),
@@ -173,57 +155,6 @@ export function InvitationForm({
     },
   });
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        // Validate file type
-        if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-          toast.error(t('common.profilePictureFileTypeError'));
-          return;
-        }
-
-        // Validate file size (2MB)
-        if (file.size > 2 * 1024 * 1024) {
-          toast.error(t('common.profilePictureFileSizeError'));
-          return;
-        }
-
-        form.setValue('profilePicture', file);
-
-        // Create preview URL
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setImagePreview(e.target?.result as string);
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [form]
-  );
-
-  // Avatar dropzone
-  const {
-    getRootProps: getAvatarRootProps,
-    getInputProps: getAvatarInputProps,
-    isDragActive: isAvatarDragActive,
-    inputRef,
-  } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
-    },
-    maxFiles: 1,
-    multiple: false,
-    noClick: false,
-  });
-
-  const removeImage = useCallback(() => {
-    form.setValue('profilePicture', undefined);
-    setImagePreview(null);
-    setIsPreviewOpen(false);
-  }, [form]);
-
   async function onSubmit(data: InvitationFormValues) {
     try {
       if (!token) {
@@ -231,13 +162,18 @@ export function InvitationForm({
         return;
       }
 
-      const { profilePicture, ...rest } = data;
-
       const response = await completeSignupMutation.mutateAsync({
-        ...rest,
+        ...data,
         token: token as string,
-        dateOfBirth: rest.dateOfBirth.toISOString(),
+        dateOfBirth: data.dateOfBirth.toISOString(),
       });
+
+      if (response && 'signedAwsS3Url' in response) {
+        await fetch(response.signedAwsS3Url, {
+          method: 'PUT',
+          body: profilePictureFile,
+        });
+      }
 
       setSignedUpUserType(response.userType);
     } catch (error) {
@@ -272,195 +208,41 @@ export function InvitationForm({
                     {/* Profile Picture */}
                     <FormField
                       control={form.control}
-                      name="profilePicture"
+                      name="profilePictureUrl"
                       render={({ field }) => (
-                        <FormItem className="justify-center">
-                          <div className="flex items-center justify-center gap-4">
-                            {/* Droppable Avatar */}
-                            <div className="relative">
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <div
-                                      {...getAvatarRootProps()}
-                                      className={`group relative cursor-pointer transition-all duration-200 ${
-                                        isAvatarDragActive
-                                          ? 'ring-primary scale-105 ring-2 ring-offset-2'
-                                          : ''
-                                      }`}
-                                      onClick={(e) => {
-                                        if (field.value) {
-                                          setIsPreviewOpen(true);
-                                        } else {
-                                          inputRef.current?.click();
-                                        }
-                                      }}
-                                    >
-                                      <FormControl>
-                                        <input
-                                          {...getAvatarInputProps()}
-                                          ref={inputRef}
-                                        />
-                                      </FormControl>
-                                      <Avatar className="size-24 transition-all duration-200 group-hover:brightness-75">
-                                        <AvatarImage
-                                          src={imagePreview || undefined}
-                                          alt="Profile preview"
-                                          className="object-cover"
-                                        />
-                                        <AvatarFallback className="text-lg font-semibold">
-                                          {form
-                                            .watch('firstName')
-                                            ?.charAt(0)
-                                            ?.toUpperCase() || 'U'}
-                                          {form
-                                            .watch('lastName')
-                                            ?.charAt(0)
-                                            ?.toUpperCase() || ''}
-                                        </AvatarFallback>
-                                      </Avatar>
-
-                                      {/* Hover Overlay with Actions */}
-                                      <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                        {field.value ? (
-                                          <div className="flex gap-2">
-                                            <Button
-                                              type="button"
-                                              variant="ghost"
-                                              size="sm"
-                                              className="h-8 w-8 rounded-full bg-white/20 p-0 text-white hover:bg-white/30"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                inputRef.current?.click();
-                                              }}
-                                            >
-                                              <Edit className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                              type="button"
-                                              variant="ghost"
-                                              size="sm"
-                                              className="h-8 w-8 rounded-full bg-white/20 p-0 text-white hover:bg-red-500/80"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeImage();
-                                              }}
-                                            >
-                                              <Trash className="h-4 w-4" />
-                                            </Button>
-                                          </div>
-                                        ) : (
-                                          <Camera className="h-6 w-6 text-white" />
-                                        )}
-                                      </div>
-
-                                      {/* Drag Active Overlay */}
-                                      {isAvatarDragActive && (
-                                        <div className="bg-primary/20 ring-primary absolute inset-0 flex items-center justify-center rounded-full ring-2">
-                                          <Upload className="text-primary h-6 w-6" />
-                                        </div>
-                                      )}
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent side="bottom">
-                                    <div className="text-center">
-                                      <p className="font-medium">
-                                        {field.value
-                                          ? imagePreview
-                                            ? t(
-                                                'auth.invitation.form.changeProfilePicture'
-                                              )
-                                            : t(
-                                                'auth.invitation.form.changeProfilePicture'
-                                              )
-                                          : t(
-                                              'auth.invitation.form.uploadProfilePicture'
-                                            )}
-                                      </p>
-                                      <p className="text-xs">
-                                        {t(
-                                          'auth.invitation.form.profilePictureUploadHelp'
-                                        )}
-                                      </p>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-
-                              {/* Image Preview Dialog */}
-                              <Dialog
-                                open={isPreviewOpen}
-                                onOpenChange={setIsPreviewOpen}
-                              >
-                                <DialogTrigger asChild>
-                                  <div className="hidden" />
-                                </DialogTrigger>
-                                <DialogContent
-                                  showCloseButton={false}
-                                  className="flex max-h-[95vh] max-w-[95vw] min-w-full items-center justify-center border-0 bg-transparent p-0 shadow-none select-none"
-                                >
-                                  <div className="relative flex h-full w-full items-center justify-center">
-                                    <div
-                                      ref={dialogContentRef}
-                                      className="relative max-h-[90vh] max-w-[90vw] overflow-hidden rounded-xl bg-white shadow-2xl dark:bg-gray-900"
-                                    >
-                                      <img
-                                        src={imagePreview || undefined}
-                                        alt="Profile preview"
-                                        className="h-auto max-h-[85vh] w-auto max-w-[85vw] object-contain"
-                                      />
-                                      <Button
-                                        type="button"
-                                        variant="ghost"
-                                        size="sm"
-                                        className="absolute top-4 right-4 h-10 w-10 rounded-full bg-black/20 p-0 text-white backdrop-blur-sm hover:bg-black/40"
-                                        onClick={() => setIsPreviewOpen(false)}
-                                      >
-                                        <X className="h-5 w-5" />
-                                      </Button>
-
-                                      {/* Image info overlay */}
-                                      {field.value && (
-                                        <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                                          <div className="text-white">
-                                            <p className="text-lg font-medium">
-                                              {field.value.name}
-                                            </p>
-                                            <p className="text-sm opacity-80">
-                                              {(
-                                                field.value.size /
-                                                1024 /
-                                                1024
-                                              ).toFixed(2)}{' '}
-                                              MB • {field.value.type}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-                          </div>
-                          {/* File Info */}
-                          <div className="flex flex-col gap-2">
-                            {field.value && (
-                              <div className="space-y-2 text-center">
-                                <div className="flex items-center gap-2">
-                                  <Check className="h-4 w-4 text-green-600" />
-                                  <p className="text-sm font-medium text-green-700 dark:text-green-400">
-                                    {field.value.name}
-                                  </p>
-                                </div>
-                                <p className="text-muted-foreground text-xs">
-                                  {(field.value.size / 1024 / 1024).toFixed(2)}{' '}
-                                  MB
-                                </p>
-                              </div>
-                            )}
-                            <FormMessage />
-                          </div>
+                        <FormItem>
+                          <FormControl>
+                            <DroppableImage
+                              size="lg"
+                              value={
+                                profilePictureFile === null
+                                  ? undefined
+                                  : (field.value ?? undefined)
+                              }
+                              onChange={(file) => {
+                                field.onChange(
+                                  file
+                                    ? file.name
+                                    : file === null
+                                      ? null
+                                      : undefined
+                                );
+                                setProfilePictureFile(file);
+                              }}
+                              uploadText={t('common.uploadProfilePicture')}
+                              changeText={t('common.changeProfilePicture')}
+                              helpText={t('common.profilePictureUploadHelp')}
+                              previewTitle={t('common.profilePicture')}
+                              previewSubtitle={t(
+                                'common.profilePicturePreview'
+                              )}
+                              maxSize={DEFAULT_IMAGE_SIZE}
+                              accept={{
+                                'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />

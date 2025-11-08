@@ -439,6 +439,9 @@ export function useColumns(): ColumnDef<ClassroomStudent>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       cell: ClassroomStudentsDataTableRowActions,
       enableHiding: false,
     },
@@ -467,7 +470,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('view');
             }}
           >
-            <Eye className="size-5" />
+            <Eye className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('students.table.actions.view')}</TooltipContent>
@@ -482,7 +485,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('enrollmentStatus');
             }}
           >
-            <Edit className="size-5" />
+            <Edit className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>
@@ -499,7 +502,7 @@ export function ClassroomStudentsDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <Trash2 className="size-5" />
+            <Trash2 className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('students.table.actions.delete')}</TooltipContent>

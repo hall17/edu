@@ -233,15 +233,16 @@ model Company {
 }
 
 model Module {
-  id           Int          @id @default(autoincrement())
-  code         String       @unique @db.VarChar(100)
-  name         String       @unique @db.VarChar(100)
-  description  String?
-  version      String?      @default("1.0.0")
-  status       ModuleStatus @default(ACTIVE)
-  videoUrl     String?      @db.VarChar(255)
-  canBeDeleted Boolean      @default(true)
-  isDefault    Boolean      @default(false)
+  id                Int          @id @default(autoincrement())
+  code              String       @unique @db.VarChar(100)
+  name              String       @unique @db.VarChar(100)
+  description       String?
+  version           String?      @default("1.0.0")
+  status            ModuleStatus @default(ACTIVE)
+  videoUrl          String?      @db.VarChar(255)
+  videoThumbnailUrl String?      @db.VarChar(255)
+  canBeDeleted      Boolean      @default(true)
+  isDefault         Boolean      @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

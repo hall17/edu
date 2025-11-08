@@ -33,7 +33,7 @@ export const teachers = {
       view: 'View',
       edit: 'Edit',
       suspend: 'Suspend',
-      changePassword: 'Change Password',
+      resetPassword: 'Reset Password',
       delete: 'Delete',
     },
   },

@@ -17,7 +17,7 @@ type ParentsDialogType =
   | 'delete'
   | 'view'
   | 'suspend'
-  | 'changePassword'
+  | 'resetPassword'
   | 'enrollStudents';
 
 function useProviderValue() {

@@ -1,5 +1,10 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
+import {
+  deleteS3Object,
+  deleteS3ObjectByPath,
+  generateSignedUrl,
+} from '@api/libs/s3';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { Service } from 'typedi';
@@ -119,25 +124,14 @@ export class ModuleService {
       throw new CustomError(HTTP_EXCEPTIONS.FORBIDDEN);
     }
 
-    const existingModuleByCode = await prisma.module.findFirst({
+    const maybeModule = await prisma.module.findFirst({
       where: {
-        code: dto.code,
+        OR: [{ code: dto.code }, { name: dto.name }],
         deletedAt: null,
       },
     });
 
-    if (existingModuleByCode) {
-      throw new CustomError(HTTP_EXCEPTIONS.MODULE_ALREADY_EXISTS);
-    }
-
-    const existingModuleByName = await prisma.module.findFirst({
-      where: {
-        name: dto.name,
-        deletedAt: null,
-      },
-    });
-
-    if (existingModuleByName) {
+    if (maybeModule) {
       throw new CustomError(HTTP_EXCEPTIONS.MODULE_ALREADY_EXISTS);
     }
 
@@ -194,10 +188,37 @@ export class ModuleService {
       }
     }
 
+    if (updateData.videoUrl) {
+      updateData.videoUrl = id.toString();
+    } else if (updateData.videoUrl === null) {
+      // delete video from s3
+      await deleteS3ObjectByPath(`modules/${id.toString()}-video`);
+    }
+
+    if (updateData.videoThumbnailUrl) {
+      updateData.videoThumbnailUrl = id.toString();
+    } else if (updateData.videoThumbnailUrl === null) {
+      // delete video thumbnail from s3
+      await deleteS3ObjectByPath(`modules/${id.toString()}-video-thumbnail`);
+    }
+
     const module = await prisma.module.update({
       where: { id },
       data: updateData,
     });
+
+    if (module.videoUrl) {
+      module.videoUrl = await generateSignedUrl({
+        operation: 'getObject',
+        path: `modules/${id.toString()}-video`,
+      });
+    }
+    if (module.videoThumbnailUrl) {
+      module.videoThumbnailUrl = await generateSignedUrl({
+        operation: 'getObject',
+        path: `modules/${id.toString()}-video-thumbnail`,
+      });
+    }
 
     return module;
   }

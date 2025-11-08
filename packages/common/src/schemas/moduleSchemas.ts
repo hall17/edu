@@ -7,6 +7,8 @@ import { intIdSchema, DefaultFilterSchema } from './sharedSchemas';
 export const moduleCreateSchema = z.object({
   code: z.string().min(1).max(100),
   name: z.string().min(1).max(100),
+  videoUrl: z.string().max(1000).nullable().optional(),
+  videoThumbnailUrl: z.string().max(1000).nullable().optional(),
   description: z.string().optional(),
   version: z.string().max(50).default('1.0.0'),
   status: z.nativeEnum(ModuleStatus).default(ModuleStatus.ACTIVE),

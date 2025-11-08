@@ -2,7 +2,7 @@ import { useSidebarData } from './data/useSidebarData';
 
 import { NavGroup } from '@/components/layout/NavGroup';
 // import { NavUser } from '@/components/layout/NavUser';
-import { TeamSwitcher } from '@/components/layout/TeamSwitcher';
+import { BranchSwitcher } from '@/components/layout/BranchSwitcher';
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +16,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        <BranchSwitcher />
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (

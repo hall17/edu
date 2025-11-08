@@ -302,6 +302,9 @@ function useColumns(): ColumnDef<Role>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       cell: RolesDataTableRowActions,
       enableHiding: false,
     },
@@ -431,7 +434,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('view');
             }}
           >
-            <Eye className="size-5" />
+            <Eye className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('roles.table.actions.view')}</TooltipContent>
@@ -446,7 +449,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('edit');
             }}
           >
-            <Pencil className="size-5" />
+            <Pencil className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('roles.table.actions.edit')}</TooltipContent>
@@ -466,9 +469,9 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
             }}
           >
             {isActive ? (
-              <Ban className="size-5" />
+              <Ban className="size-4" />
             ) : (
-              <Check className="size-5" />
+              <Check className="size-4" />
             )}
           </Button>
         </TooltipTrigger>
@@ -491,7 +494,7 @@ function RolesDataTableRowActions({ row }: RolesDataTableRowActionsProps) {
               setOpenedDialog('delete');
             }}
           >
-            <Trash2 className="size-5" />
+            <Trash2 className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

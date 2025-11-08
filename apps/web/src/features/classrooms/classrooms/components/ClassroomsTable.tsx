@@ -303,33 +303,6 @@ export function useColumns(): ColumnDef<Classroom>[] {
       enableSorting: true,
     },
     {
-      accessorKey: 'accessLink',
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={t('classrooms.table.accessLink')}
-        />
-      ),
-      cell: ({ row }) => {
-        const link = row.getValue('accessLink') as string;
-        return link ? (
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline hover:text-blue-800"
-          >
-            {link}
-          </a>
-        ) : (
-          <div className="text-muted-foreground">-</div>
-        );
-      },
-      meta: { className: 'w-24' },
-      enableHiding: true,
-      enableSorting: false,
-    },
-    {
       id: 'progress',
       header: ({ column }) => (
         <DataTableColumnHeader
@@ -543,7 +516,7 @@ export function ClassroomsDataTableRowActions({
               sessionStorage.setItem('previousUrl', window.location.pathname);
             }}
           >
-            <Eye className="size-5" />
+            <Eye className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.view')}</TooltipContent>
@@ -558,7 +531,7 @@ export function ClassroomsDataTableRowActions({
               setOpenedDialog('edit');
             }}
           >
-            <Edit className="size-5" />
+            <Edit className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.edit')}</TooltipContent>
@@ -573,7 +546,7 @@ export function ClassroomsDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <Trash2 className="size-5" />
+            <Trash2 className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.delete')}</TooltipContent>

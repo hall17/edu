@@ -522,7 +522,7 @@ export const common = {
     edit: 'Edit',
     suspend: 'Suspend',
     activate: 'Activate',
-    changePassword: 'Change Password',
+    resetPassword: 'Reset Password',
     delete: 'Delete',
     loading: 'Loading...',
     loadingContent: 'Please wait while we load your content...',
@@ -703,7 +703,7 @@ export const common = {
       statusUpdateReasonPlaceholderAssessment:
         'Please provide a reason for suspending this assessment...',
     },
-    changePassword: {
+    resetPassword: {
       titleStudent: 'Reset Student Password',
       descriptionStudent: 'Send a password reset email to this student.',
       confirmMessageStudent:

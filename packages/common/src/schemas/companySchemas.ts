@@ -1,13 +1,14 @@
 import { z } from 'zod';
 
 import { CompanyStatus } from '../enums';
+
 import { intIdSchema, DefaultFilterSchema } from './sharedSchemas';
 
 export const companyCreateSchema = z.object({
   name: z.string().min(1).max(50),
   slug: z.string().min(1).max(50),
   status: z.nativeEnum(CompanyStatus),
-  logoUrl: z.string().max(255).optional(),
+  logoUrl: z.string().max(1000).nullable().optional(),
   websiteUrl: z.string().max(255).optional(),
   maximumBranches: z.number().int(),
 });

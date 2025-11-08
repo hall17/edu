@@ -13,7 +13,7 @@ export const uploadFileSchema = zfd.formData({
 export const studentCreateSchema = z.object({
   status: z.nativeEnum(StudentStatus).optional(),
   statusUpdateReason: z.string().optional(),
-  profilePictureUrl: z.string().max(255).optional(),
+  profilePictureUrl: z.string().max(1000).nullable().optional(),
   parentId: z.string().optional(),
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),

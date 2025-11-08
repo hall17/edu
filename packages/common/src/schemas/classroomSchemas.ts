@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { ClassroomStatus, DayOfWeek, EnrollmentStatus } from '../enums';
+
 import { attendanceRecordCreateSchema } from './attendanceSchemas';
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
@@ -54,7 +55,7 @@ export const classroomCreateSchema = z
     name: z.string().min(1).max(100),
     description: z.string().max(500).optional(),
     capacity: z.number().int().min(1).max(1000),
-    imageUrl: z.string().max(255).optional(),
+    imageUrl: z.string().max(1000).nullable().optional(),
     attendancePassPercentage: z.number().int().min(0).max(100).default(80),
     assessmentScorePass: z.number().int().min(0).max(100).default(80),
     assignmentScorePass: z.number().int().min(0).max(100).default(80),

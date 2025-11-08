@@ -2,7 +2,7 @@ import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
 import { prisma } from '@api/libs/prisma';
 import { userAuthInclude } from '@api/libs/prisma/selections';
-import { generateSignedUrl } from '@api/libs/s3';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import { Prisma, User } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
@@ -247,7 +247,12 @@ export class UserService {
     });
 
     if (dto.profilePictureUrl) {
-      const signedAwsS3Url = await this.createSignedAwsS3Url(requestedBy, id);
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        'putObject',
+        requestedBy,
+        id
+      );
+
       return {
         ...user,
         signedAwsS3Url,
@@ -310,6 +315,14 @@ export class UserService {
 
     if (dto.profilePictureUrl) {
       dto.profilePictureUrl = dto.id;
+    } else if (dto.profilePictureUrl === null) {
+      // delete profile picture from s3
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        dto.id
+      );
     }
 
     const { taughtSubjectIds, ...userData } = dto;
@@ -354,9 +367,11 @@ export class UserService {
 
     if (dto.profilePictureUrl) {
       const signedAwsS3Url = await this.createSignedAwsS3Url(
+        'putObject',
         requestedBy,
         dto.id
       );
+
       return {
         ...updatedUser,
         signedAwsS3Url,
@@ -397,6 +412,44 @@ export class UserService {
     return id;
   }
 
+  async deletePermanently(requestedBy: TokenUser, id: string) {
+    const userHasPermission = hasPermission(
+      requestedBy,
+      MODULE_CODES.usersAndRoles,
+      PERMISSIONS.delete
+    );
+
+    if (!userHasPermission) {
+      throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+        branches: { some: { branchId: requestedBy.activeBranchId } },
+      },
+      select: { profilePictureUrl: true },
+    });
+
+    if (user?.profilePictureUrl) {
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        user.profilePictureUrl
+      );
+    }
+
+    await prisma.user.delete({
+      where: {
+        id,
+        branches: { some: { branchId: requestedBy.activeBranchId } },
+      },
+    });
+
+    return id;
+  }
+
   async updateSuspended(requestedBy: TokenUser, dto: UserUpdateSuspendedDto) {
     const userHasPermission = hasPermission(
       requestedBy,
@@ -433,11 +486,9 @@ export class UserService {
     const { password: _, ...userWithoutPassword } = user;
 
     if (userWithoutPassword.profilePictureUrl) {
-      const url = await generateSignedUrl(
+      const url = await this.createSignedAwsS3Url(
         'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        'profile-pictures',
+        requestedBy,
         userWithoutPassword.profilePictureUrl
       );
       userWithoutPassword.profilePictureUrl = url;
@@ -450,13 +501,17 @@ export class UserService {
     return userWithoutPassword;
   }
 
-  private async createSignedAwsS3Url(requestedBy: TokenUser, url: string) {
-    return await generateSignedUrl(
-      'getObject',
-      requestedBy.companyId!,
-      requestedBy.activeBranchId,
-      'profile-pictures',
-      url
-    );
+  private async createSignedAwsS3Url(
+    operation: 'getObject' | 'putObject',
+    requestedBy: TokenUser,
+    url: string
+  ) {
+    return await generateSignedUrl({
+      operation,
+      companyId: requestedBy.companyId!,
+      branchId: requestedBy.activeBranchId,
+      folder: 'profile-pictures',
+      key: url,
+    });
   }
 }

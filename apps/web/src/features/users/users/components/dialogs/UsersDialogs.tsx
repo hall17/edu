@@ -22,7 +22,7 @@ export function UsersDialogs() {
         return <UsersViewDialog />;
       case 'suspend':
         return <UsersSuspendDialog />;
-      case 'changePassword':
+      case 'resetPassword':
         return <UsersChangePasswordDialog />;
       case 'delete':
         return <UsersDeleteDialog />;

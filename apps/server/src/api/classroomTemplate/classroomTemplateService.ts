@@ -398,13 +398,14 @@ export class ClassroomTemplateService {
     classroomTemplate: ClassroomTemplate
   ) {
     if (classroomTemplate.imageUrl) {
-      const url = await generateSignedUrl(
-        'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        'classroom-templates',
-        classroomTemplate.imageUrl
-      );
+      const url = await generateSignedUrl({
+        operation: 'getObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: 'classroom-templates',
+        key: classroomTemplate.imageUrl,
+      });
+
       classroomTemplate.imageUrl = url;
     }
 

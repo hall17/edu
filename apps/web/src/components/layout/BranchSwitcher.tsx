@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/stores/authStore';
 
-export function TeamSwitcher() {
+export function BranchSwitcher() {
   const { isMobile } = useSidebar();
   const { user } = useAuth();
 
@@ -35,9 +35,9 @@ export function TeamSwitcher() {
             >
               <div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center">
                 <img
-                  src={edusama_icon}
+                  src={user?.activeBranch?.logoUrl ?? edusama_icon}
                   alt="logo"
-                  className="size-8 rounded-lg"
+                  className="size-8 rounded-md"
                 />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -58,19 +58,17 @@ export function TeamSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Branches
             </DropdownMenuLabel>
-            {user?.branches?.map((branch, index) => (
+            {user?.branches?.map((branch) => (
               <DropdownMenuItem
                 key={branch.branch.id}
                 // onClick={() => setActiveTeam(branch.branch)}
                 className="gap-2 p-2"
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <img
-                    src={edusama_icon}
-                    alt="logo"
-                    className="size-8 rounded-lg"
-                  />
-                </div>
+                <img
+                  src={branch.branch.logoUrl ?? edusama_icon}
+                  alt="logo"
+                  className="size-8 rounded-md"
+                />
                 {branch.branch.name}
               </DropdownMenuItem>
             ))}

@@ -21,7 +21,10 @@ export function AddBranchDialog() {
 
   const createMutation = useMutation(trpc.branch.create.mutationOptions());
 
-  async function handleSubmit(data: BranchCreateDto, logoFile: File | null) {
+  async function handleSubmit(
+    data: BranchCreateDto,
+    logoFile: File | null | undefined
+  ) {
     try {
       const response = await createMutation.mutateAsync(data);
       if (response && 'signedAwsS3Url' in response && logoFile) {

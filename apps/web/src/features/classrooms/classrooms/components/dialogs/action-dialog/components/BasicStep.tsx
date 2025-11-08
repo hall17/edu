@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 export function BasicStep() {
   const { t } = useTranslation();
@@ -93,10 +94,16 @@ export function BasicStep() {
               <FormControl>
                 <DroppableImage
                   size="2xl"
-                  value={field.value}
+                  value={
+                    classroomImageFile === null
+                      ? undefined
+                      : (field.value ?? undefined)
+                  }
                   onChange={(file) => {
                     console.log('file', file);
-                    field.onChange(file ? file.name : undefined);
+                    field.onChange(
+                      file ? file.name : file === null ? null : undefined
+                    );
                     setClassroomImageFile(file);
                   }}
                   uploadText={t('classrooms.actionDialog.fields.uploadImage')}
@@ -108,7 +115,7 @@ export function BasicStep() {
                   previewSubtitle={t(
                     'classrooms.actionDialog.fields.imagePreview'
                   )}
-                  maxSize={5 * 1024 * 1024} // 5MB for cover images
+                  maxSize={DEFAULT_IMAGE_SIZE}
                   accept={{
                     'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                   }}

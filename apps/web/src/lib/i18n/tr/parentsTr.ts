@@ -34,7 +34,7 @@ export const parents = {
       edit: 'Düzenle',
       suspend: 'Askıya Al',
       activate: 'Aktifleştir',
-      changePassword: 'Şifre Değiştir',
+      resetPassword: 'Şifre Sıfırla',
       delete: 'Sil',
     },
   },

@@ -2,7 +2,7 @@ import { HTTP_EXCEPTIONS } from '@api/constants';
 import emailService from '@api/libs/emailService';
 import { prisma } from '@api/libs/prisma';
 import { studentInclude } from '@api/libs/prisma/selections';
-import { generateSignedUrl } from '@api/libs/s3';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import { Prisma, Student } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
@@ -520,6 +520,14 @@ export class StudentService {
 
     if (dto.profilePictureUrl) {
       dto.profilePictureUrl = dto.id;
+    } else if (dto.profilePictureUrl === null) {
+      // delete profile picture from s3
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        dto.id
+      );
     }
 
     const updatedStudent = await prisma.student.update({
@@ -578,6 +586,38 @@ export class StudentService {
     if (payload.count === 0) {
       throw new CustomError(HTTP_EXCEPTIONS.STUDENT_NOT_FOUND);
     }
+
+    return id;
+  }
+
+  async deletePermanently(requestedBy: TokenUser, id: string) {
+    const userHasPermission = hasPermission(
+      requestedBy,
+      MODULE_CODES.students,
+      PERMISSIONS.delete
+    );
+
+    if (!userHasPermission) {
+      throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+    }
+
+    const student = await prisma.student.findUnique({
+      where: { id, branchId: requestedBy.activeBranchId },
+      select: { profilePictureUrl: true },
+    });
+
+    if (student?.profilePictureUrl) {
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        student.profilePictureUrl
+      );
+    }
+
+    await prisma.student.delete({
+      where: { id, branchId: requestedBy.activeBranchId },
+    });
 
     return id;
   }
@@ -700,12 +740,12 @@ export class StudentService {
     operation: 'getObject' | 'putObject',
     url: string
   ) {
-    return generateSignedUrl(
+    return generateSignedUrl({
       operation,
-      requestedBy.companyId!,
-      requestedBy.activeBranchId,
-      'profile-pictures',
-      url
-    );
+      companyId: requestedBy.companyId!,
+      branchId: requestedBy.activeBranchId,
+      folder: 'profile-pictures',
+      key: url,
+    });
   }
 }

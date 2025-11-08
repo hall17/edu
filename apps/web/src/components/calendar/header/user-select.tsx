@@ -27,6 +27,7 @@ export function UserSelect() {
                 <AvatarImage
                   src={user.picturePath ?? undefined}
                   alt={user.name}
+                  className="object-contain"
                 />
                 <AvatarFallback className="text-xxs">
                   {user.name[0]}
@@ -48,6 +49,7 @@ export function UserSelect() {
                 <AvatarImage
                   src={user.picturePath ?? undefined}
                   alt={user.name}
+                  className="object-contain"
                 />
                 <AvatarFallback className="text-xxs">
                   {user.name[0]}

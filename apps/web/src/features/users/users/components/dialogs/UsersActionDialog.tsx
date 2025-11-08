@@ -54,6 +54,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc, User } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 interface Props {
   currentRow?: User;
@@ -140,9 +141,9 @@ export function UsersActionDialog() {
     trpc.subject.findAll.queryOptions({ all: true })
   );
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
-    null
-  );
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
 
@@ -319,10 +320,15 @@ export function UsersActionDialog() {
                 <FormControl>
                   <DroppableImage
                     size="2xl"
-                    value={field.value}
+                    value={
+                      profilePictureFile === null
+                        ? undefined
+                        : (field.value ?? undefined)
+                    }
                     onChange={(file) => {
-                      console.log('file', file);
-                      field.onChange(file ? file.name : undefined);
+                      field.onChange(
+                        file ? file.name : file === null ? null : undefined
+                      );
                       setProfilePictureFile(file);
                     }}
                     uploadText={t('common.uploadProfilePicture')}
@@ -330,7 +336,7 @@ export function UsersActionDialog() {
                     helpText={t('common.profilePictureUploadHelp')}
                     previewTitle={t('common.profilePicture')}
                     previewSubtitle={t('common.profilePicturePreview')}
-                    maxSize={5 * 1024 * 1024}
+                    maxSize={DEFAULT_IMAGE_SIZE}
                     accept={{
                       'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                     }}

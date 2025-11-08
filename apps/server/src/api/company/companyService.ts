@@ -127,13 +127,13 @@ export class CompanyService {
     });
 
     if (dto.logoUrl) {
-      const signedAwsS3Url = await generateSignedUrl(
-        'putObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        undefined,
-        dto.logoUrl
-      );
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: undefined,
+        key: dto.logoUrl,
+      });
 
       return {
         ...company,
@@ -186,13 +186,13 @@ export class CompanyService {
     });
 
     if (updateData.logoUrl) {
-      const signedAwsS3Url = await generateSignedUrl(
-        'putObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        undefined,
-        updateData.logoUrl
-      );
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: undefined,
+        key: updateData.logoUrl,
+      });
       return {
         ...company,
         signedAwsS3Url,

@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { trpc } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 export function CompaniesActionDialog() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export function CompaniesActionDialog() {
   const updateMutation = useMutation(trpc.company.update.mutationOptions());
 
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null | undefined>(undefined);
 
   const isOpen = openedDialog === 'add' || openedDialog === 'edit';
   const isEdit = openedDialog === 'edit';
@@ -56,35 +57,48 @@ export function CompaniesActionDialog() {
     resolver: zodResolver(companyCreateSchema),
   });
 
-  useEffect(() => {
+  function getDefaultValues(): CompanyCreateDto {
     if (isEdit && currentRow) {
-      form.reset({
+      return {
         name: currentRow.name,
         slug: currentRow.slug,
         status: currentRow.status,
         logoUrl: currentRow.logoUrl || '',
         websiteUrl: currentRow.websiteUrl || '',
         maximumBranches: currentRow.maximumBranches,
-      });
-    } else {
-      form.reset({
-        name: '',
-        slug: '',
-        status: CompanyStatus.ACTIVE,
-        logoUrl: '',
-        websiteUrl: '',
-        maximumBranches: 10,
-      });
+      };
     }
+
+    return {
+      name: '',
+      slug: '',
+      status: CompanyStatus.ACTIVE,
+      logoUrl: '',
+      websiteUrl: '',
+      maximumBranches: 10,
+    };
+  }
+
+  useEffect(() => {
+    form.reset(getDefaultValues());
   }, [isEdit, currentRow, form]);
 
   async function onSubmit(data: CompanyCreateDto) {
     try {
       if (isEdit && currentRow) {
+        const diff = detailedDiff(getDefaultValues(), data);
+
+        if (!Object.keys(diff.updated).length) {
+          return;
+        }
+
+        const updateData = { ...diff.updated } as CompanyCreateDto;
+
         const response = await updateMutation.mutateAsync({
-          ...data,
+          ...updateData,
           id: currentRow.id,
         });
+
         if (response && 'signedAwsS3Url' in response) {
           await fetch(response.signedAwsS3Url, {
             method: 'PUT',
@@ -208,9 +222,15 @@ export function CompaniesActionDialog() {
                     <FormControl>
                       <DroppableImage
                         size="2xl"
-                        value={field.value}
+                        value={
+                          logoFile === null
+                            ? undefined
+                            : (field.value ?? undefined)
+                        }
                         onChange={(file) => {
-                          field.onChange(file ? file.name : undefined);
+                          field.onChange(
+                            file ? file.name : file === null ? null : undefined
+                          );
                           setLogoFile(file);
                         }}
                         uploadText={t('common.uploadLogo')}
@@ -218,7 +238,7 @@ export function CompaniesActionDialog() {
                         helpText={t('common.logoUploadHelp')}
                         previewTitle={t('common.logoUrl')}
                         previewSubtitle={t('common.logoPreview')}
-                        maxSize={5 * 1024 * 1024}
+                        maxSize={DEFAULT_IMAGE_SIZE}
                         accept={{
                           'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                         }}

@@ -10,16 +10,16 @@ Edusama is a comprehensive educational management system designed for schools an
 
 - **Framework**: React 19 with TypeScript
 - **Routing**: TanStack Router for file-based routing
-- **State Management**: Zustand for global state, TanStack Query for server state
+- **State Management**: Zustand for global state, TanStack Query v5 for server state
 - **Styling**: TailwindCSS with Radix UI components
 - **API Client**: tRPC for type-safe API communication
-- **Request Pattern**: React Query (TanStack Query) hooks combined with tRPC for server state management:
+- **Request Pattern**: React Query (TanStack Query v5) hooks combined with tRPC for server state management:
   - `useQuery` for data fetching: `useQuery(trpc.exampleEndpoint.queryOptions(filters))`
   - `useMutation` for data modification: `useMutation(trpc.exampleMutation.mutationOptions())`
 - **Authentication**: Custom JWT-based authentication with bcrypt password hashing
 - **Internationalization**: i18next with English and Turkish support
 - **Forms**: React Hook Form with Zod validation
-- **Build Tool**: Vite
+- **Build Tool**: Vite with SWC for fast compilation
 
 ### Backend (Node.js/TypeScript)
 
@@ -33,15 +33,20 @@ Edusama is a comprehensive educational management system designed for schools an
 - **SMS Service**: Custom SMS service
 - **Logging**: Winston with daily rotate file transport
 - **Validation**: Zod for schema validation
+- **Build Tool**: SWC for fast TypeScript compilation
+- **Development**: tsx/nodemon for hot-reloading
+- **Process Management**: PM2 for production deployment
 
 ### Development & Infrastructure
 
 - **Monorepo**: Yarn workspaces with packages and apps structure
+- **Build Orchestration**: Turborepo for efficient task running and caching
 - **Database Migrations**: Prisma migrations
 - **Containerization**: Docker with docker-compose
 - **Testing**: Vitest for unit and integration tests
 - **Linting**: ESLint with custom configurations
 - **Formatting**: Prettier
+- **Development Tools**: Concurrently for running multiple processes
 
 ## Key Features & Modules
 
@@ -205,14 +210,17 @@ edusama/
 3. **Run migrations**: `yarn workspace @edusama/server prisma:migrate`
 4. **Start development servers**:
    - Frontend: `yarn workspace @edusama/web start`
-   - Backend: `yarn workspace @edusama/server start:dev`
+   - Backend: `yarn workspace @edusama/server start`
+   - Both simultaneously: `yarn start:all`
 
 ### Production Deployment
 
 1. **Build applications**:
-   - Frontend: `yarn workspace @edusama/web build`
-   - Backend: `yarn workspace @edusama/server build`
-2. **Run with Docker**: Use provided Dockerfiles and docker-compose files
+   - All packages: `yarn build` (uses Turborepo)
+   - Frontend only: `yarn workspace @edusama/web build`
+   - Backend only: `yarn workspace @edusama/server build`
+2. **Run backend with PM2**: `yarn workspace @edusama/server start:prod:pm2`
+3. **Run with Docker**: Use provided Dockerfiles and docker-compose files
 
 ## Common Development Tasks
 

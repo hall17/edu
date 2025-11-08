@@ -33,7 +33,7 @@ export const teachers = {
       view: 'Görüntüle',
       edit: 'Düzenle',
       suspend: 'Askıya Al',
-      changePassword: 'Şifre Değiştir',
+      resetPassword: 'Şifre Sıfırla',
       delete: 'Sil',
     },
   },

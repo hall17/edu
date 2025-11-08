@@ -488,7 +488,7 @@ export const common = {
     edit: 'Düzenle',
     suspend: 'Askıya Al',
     activate: 'Aktifleştir',
-    changePassword: 'Şifre Değiştir',
+    resetPassword: 'Şifre Sıfırla',
     delete: 'Sil',
     loading: 'Yükleniyor...',
     loadingContent: 'İçeriğinizi yüklerken lütfen bekleyin...',
@@ -670,7 +670,7 @@ export const common = {
       statusUpdateReasonPlaceholderAssessment:
         'Bu değerlendirmeyi askıya alma nedeninizi belirtin...',
     },
-    changePassword: {
+    resetPassword: {
       titleStudent: 'Öğrenci Şifresini Sıfırla',
       descriptionStudent: 'Bu öğrenciye şifre sıfırlama e-postası gönderin.',
       confirmMessageStudent:

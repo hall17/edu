@@ -33,7 +33,7 @@ export const users = {
       edit: 'Düzenle',
       suspend: 'Askıya Al',
       activate: 'Aktifleştir',
-      changePassword: 'Şifreyi Değiştir',
+      resetPassword: 'Şifre Sıfırla',
       delete: 'Sil',
     },
   },

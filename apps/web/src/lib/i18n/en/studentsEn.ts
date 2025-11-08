@@ -34,7 +34,7 @@ export const students = {
       edit: 'Edit',
       changeStatus: 'Change Status',
       activate: 'Activate',
-      changePassword: 'Change Password',
+      resetPassword: 'Reset Password',
       delete: 'Delete',
       resendInvitation: 'Resend Invitation',
     },
@@ -172,8 +172,8 @@ export const students = {
     updateButton: 'Update Status',
     success: 'Student enrollment status updated successfully.',
   },
-  changePasswordDialog: {
-    title: 'Change Password',
+  resetPasswordDialog: {
+    title: 'Reset Password',
     description: 'Change password for {{name}}.',
     newPassword: 'New Password',
     confirmPassword: 'Confirm Password',

@@ -9,7 +9,7 @@ export const branchCreateSchema = z.object({
   slug: z.string().min(1).max(50),
   status: z.nativeEnum(BranchStatus),
   name: z.string().min(1).max(50),
-  logoUrl: z.string().max(255).optional(),
+  logoUrl: z.string().max(1000).nullable().optional(),
   location: z.string().max(255).optional(),
   contact: z.string().max(255).optional(),
   canBeDeleted: z.boolean(),

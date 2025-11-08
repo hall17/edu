@@ -59,9 +59,9 @@ export const settings = {
       cancel: 'Cancel',
       updateProfileSuccess: 'Profile updated successfully',
       updateProfileError: 'Failed to update profile',
-      changePassword: 'Change password',
-      changePasswordSuccess: 'Password changed successfully',
-      changePasswordError: 'Failed to change password',
+      resetPassword: 'Reset password',
+      resetPasswordSuccess: 'Password reset successfully',
+      resetPasswordError: 'Failed to reset password',
     },
   },
   inventory: {
@@ -90,9 +90,9 @@ export const settings = {
   security: {
     title: 'Security',
     description: 'Update your security settings.',
-    changePasswordTitle: 'Change Password',
-    changePasswordDescription:
-      'Update your account password for better security.',
+    resetPasswordTitle: 'Reset Password',
+    resetPasswordDescription:
+      'Reset your account password for better security.',
   },
   preferences: {
     title: 'Preferences',

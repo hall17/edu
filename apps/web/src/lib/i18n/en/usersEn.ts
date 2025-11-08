@@ -33,7 +33,7 @@ export const users = {
       edit: 'Edit',
       suspend: 'Suspend',
       activate: 'Activate',
-      changePassword: 'Change Password',
+      resetPassword: 'Reset Password',
       delete: 'Delete',
     },
   },

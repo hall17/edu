@@ -168,13 +168,16 @@ function useColumns(): ColumnDef<ClassroomIntegration>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       enableHiding: false,
       cell: ({ row }) => {
         return (
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Eye className="size-5" />,
+                icon: <Eye className="size-4" />,
                 onClick: () => {
                   navigate({
                     to: '/classrooms/$classroomId/calendar',

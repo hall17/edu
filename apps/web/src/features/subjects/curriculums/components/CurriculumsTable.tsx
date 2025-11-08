@@ -195,12 +195,15 @@ function useColumns(): ColumnDef<Curriculum>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       cell: ({ row }) => {
         return (
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Eye className="size-5" />,
+                icon: <Eye className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -208,7 +211,7 @@ function useColumns(): ColumnDef<Curriculum>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <Edit className="size-5" />,
+                icon: <Edit className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -216,7 +219,7 @@ function useColumns(): ColumnDef<Curriculum>[] {
                 tooltip: t('common.edit'),
               },
               {
-                icon: <Trash2 className="size-5" />,
+                icon: <Trash2 className="size-4" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

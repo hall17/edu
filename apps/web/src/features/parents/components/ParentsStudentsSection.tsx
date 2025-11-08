@@ -84,6 +84,7 @@ export function ParentsStudentsSection({
                       <AvatarImage
                         src={student.profilePictureUrl || undefined}
                         alt={`${student.firstName} ${student.lastName}`}
+                        className="object-contain"
                       />
                       <AvatarFallback>
                         {`${student.firstName.charAt(0)}${student.lastName.charAt(0)}`.toUpperCase()}

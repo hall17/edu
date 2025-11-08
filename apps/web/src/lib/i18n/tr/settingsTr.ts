@@ -63,9 +63,9 @@ export const settings = {
       cancel: 'İptal',
       updateProfileSuccess: 'Profil başarıyla güncellendi',
       updateProfileError: 'Profil bilgileri güncellenirken bir hata oluştu',
-      changePassword: 'Şifreyi değiştir',
-      changePasswordSuccess: 'Şifre başarıyla değiştirildi',
-      changePasswordError: 'Şifre değiştirilirken bir hata oluştu',
+      resetPassword: 'Şifre Sıfırla',
+      resetPasswordSuccess: 'Şifre başarıyla sıfırlandı',
+      resetPasswordError: 'Şifre sıfırlanırken bir hata oluştu',
     },
   },
   inventory: {
@@ -94,9 +94,9 @@ export const settings = {
   security: {
     title: 'Güvenlik',
     description: 'Güvenlik ayarlarınızı güncelleyin.',
-    changePasswordTitle: 'Şifre Değiştir',
-    changePasswordDescription:
-      'Daha iyi güvenlik için hesap şifrenizi güncelleyin.',
+    resetPasswordTitle: 'Şifre Sıfırla',
+    resetPasswordDescription:
+      'Daha iyi güvenlik için hesap şifrenizi sıfırlayın.',
   },
   preferences: {
     title: 'Tercihler',

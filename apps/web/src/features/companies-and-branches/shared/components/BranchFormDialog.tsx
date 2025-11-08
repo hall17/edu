@@ -35,21 +35,32 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { trpc, Branch } from '@/lib/trpc';
-
-interface Company {
-  id: number;
-  name: string;
-}
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 interface BranchFormDialogProps {
   mode: 'add' | 'edit';
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: BranchCreateDto, logoFile: File | null) => Promise<void>;
+  onSubmit: (
+    data: BranchCreateDto,
+    logoFile: File | null | undefined
+  ) => Promise<void>;
   currentRow?: Branch;
   selectedCompanyId?: number | null;
   showExtraFields?: boolean;
 }
+
+const defaultValues: BranchCreateDto = {
+  name: '',
+  slug: '',
+  location: '',
+  contact: '',
+  logoUrl: '',
+  status: BranchStatus.ACTIVE,
+  companyId: 0,
+  canBeDeleted: true,
+  maximumStudents: 100,
+};
 
 export function BranchFormDialog({
   mode,
@@ -62,7 +73,7 @@ export function BranchFormDialog({
 }: BranchFormDialogProps) {
   const { t } = useTranslation();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null | undefined>(undefined);
 
   const allCompaniesQuery = useQuery(
     trpc.company.findAll.queryOptions({ all: true })
@@ -77,9 +88,9 @@ export function BranchFormDialog({
 
   const { reset, handleSubmit } = form;
 
-  useEffect(() => {
+  function getDefaultValues(): BranchCreateDto {
     if (isEdit && currentRow) {
-      reset({
+      return {
         name: currentRow.name,
         slug: currentRow.slug,
         location: currentRow.location || '',
@@ -89,25 +100,37 @@ export function BranchFormDialog({
         logoUrl: currentRow.logoUrl || '',
         canBeDeleted: currentRow.canBeDeleted,
         maximumStudents: currentRow.maximumStudents,
-      });
-    } else {
-      reset({
-        name: '',
-        slug: '',
-        location: '',
-        contact: '',
-        logoUrl: '',
-        status: BranchStatus.ACTIVE,
-        companyId: selectedCompanyId || 0,
-        canBeDeleted: true,
-        maximumStudents: showExtraFields ? 250 : 100,
-      });
+      };
     }
-    form.setFocus('name');
+
+    return {
+      name: '',
+      slug: '',
+      location: '',
+      contact: '',
+      logoUrl: '',
+      status: BranchStatus.ACTIVE,
+      companyId: selectedCompanyId || 0,
+      canBeDeleted: true,
+      maximumStudents: showExtraFields ? 250 : 100,
+    };
+  }
+
+  useEffect(() => {
+    reset(getDefaultValues());
   }, [isEdit, currentRow, selectedCompanyId, showExtraFields, reset]);
 
   async function handleSubmitForm(data: BranchCreateDto) {
-    await onSubmit(data, logoFile);
+    if (isEdit) {
+      const diff = detailedDiff(getDefaultValues(), data);
+      if (!Object.keys(diff.updated).length) {
+        return;
+      }
+
+      const updateData = { ...diff.updated } as BranchCreateDto;
+
+      await onSubmit(updateData, logoFile);
+    }
   }
 
   function handleDialogClose(state: boolean) {
@@ -175,9 +198,15 @@ export function BranchFormDialog({
                     <FormControl>
                       <DroppableImage
                         size="2xl"
-                        value={field.value}
+                        value={
+                          logoFile === null
+                            ? undefined
+                            : (field.value ?? undefined)
+                        }
                         onChange={(file) => {
-                          field.onChange(file ? file.name : undefined);
+                          field.onChange(
+                            file ? file.name : file === null ? null : undefined
+                          );
                           setLogoFile(file);
                         }}
                         uploadText={t('common.uploadLogo')}
@@ -185,7 +214,7 @@ export function BranchFormDialog({
                         helpText={t('common.logoUploadHelp')}
                         previewTitle={t('common.logoUrl')}
                         previewSubtitle={t('common.logoPreview')}
-                        maxSize={5 * 1024 * 1024}
+                        maxSize={DEFAULT_IMAGE_SIZE}
                         accept={{
                           'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                         }}

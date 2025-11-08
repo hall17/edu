@@ -85,7 +85,7 @@ export function SettingsSecurity() {
                   <Key className="h-5 w-5 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold">
-                  {t('settings.security.changePasswordTitle')}
+                  {t('settings.security.resetPasswordTitle')}
                 </h3>
               </div>
 

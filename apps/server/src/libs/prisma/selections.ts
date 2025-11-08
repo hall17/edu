@@ -55,11 +55,13 @@ export const studentInclude = {
     select: {
       id: true,
       name: true,
+      logoUrl: true,
       companyId: true,
       company: {
         select: {
           id: true,
           name: true,
+          logoUrl: true,
         },
       },
     },
@@ -79,6 +81,7 @@ export const parentInclude = {
     select: {
       id: true,
       name: true,
+      logoUrl: true,
       companyId: true,
       company: {
         select: {
@@ -220,6 +223,7 @@ export const branchInclude = {
     select: {
       id: true,
       name: true,
+      logoUrl: true,
     },
   },
   users: {

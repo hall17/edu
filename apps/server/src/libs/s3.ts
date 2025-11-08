@@ -16,6 +16,7 @@ const _folderOptions = [
   'profile-pictures',
   'classroom-templates',
   'classrooms',
+  'modules',
 ] as const;
 export type FolderOption = (typeof _folderOptions)[number];
 
@@ -136,16 +137,42 @@ async function retryS3Operation<T>(
   throw new CustomError(HTTP_EXCEPTIONS.INTERNAL_SERVER_ERROR);
 }
 
-export async function generateSignedUrl(
-  operation: 'getObject' | 'putObject',
-  companyId: number,
-  branchId: number,
-  folder: FolderOption | undefined,
-  key: string,
-  options: SignedUrlOptions = {}
-) {
-  // Input validation
-  validateInputs(companyId, branchId, key);
+interface GenerateSignedUrlOptionsBase extends SignedUrlOptions {
+  operation: 'getObject' | 'putObject';
+}
+
+interface GenerateSignUrlOptionsWithPath extends GenerateSignedUrlOptionsBase {
+  path: string;
+}
+
+interface GenerateSignUrlOptionsWithoutPath
+  extends GenerateSignedUrlOptionsBase {
+  companyId: number;
+  branchId: number;
+  folder?: FolderOption;
+  key: string;
+}
+
+type GenerateSignedUrlOptions =
+  | GenerateSignUrlOptionsWithPath
+  | GenerateSignUrlOptionsWithoutPath;
+
+export async function generateSignedUrl(options: GenerateSignedUrlOptions) {
+  const { operation } = options;
+
+  let path = '';
+
+  if ('path' in options) {
+    if (!options.path) {
+      throw new CustomError(HTTP_EXCEPTIONS.BAD_REQUEST);
+    }
+    path = options.path;
+  } else {
+    const { companyId, branchId, folder, key } = options;
+    // Input validation
+    validateInputs(companyId, branchId, key);
+    path = buildS3Path(companyId, branchId, folder, key);
+  }
 
   // File size validation for uploads
   if (
@@ -156,7 +183,6 @@ export async function generateSignedUrl(
     throw new CustomError(HTTP_EXCEPTIONS.BAD_REQUEST);
   }
 
-  const path = buildS3Path(companyId, branchId, folder, key);
   const expires =
     options.expiresInMs ||
     (operation === 'getObject'
@@ -170,14 +196,14 @@ export async function generateSignedUrl(
   // Check cache for getObject operations
   if (operation !== 'putObject') {
     try {
-      const cachedUrl = await cacheManager.get(key);
+      const cachedUrl = await cacheManager.get(path);
       if (cachedUrl) {
-        logger.info(`Returning cached URL for key: ${key}`);
+        logger.info(`Returning cached URL for key: ${path}`);
         return cachedUrl as string;
       }
     } catch (cacheError) {
       logger.warn(
-        `Cache retrieval failed for key ${key}: ${(cacheError as Error).message}`
+        `Cache retrieval failed for key ${path}: ${(cacheError as Error).message}`
       );
     }
   }
@@ -201,11 +227,11 @@ export async function generateSignedUrl(
   if (operation !== 'putObject') {
     try {
       // Fix TTL calculation: expires is in seconds for S3, cache-manager expects milliseconds
-      await cacheManager.set(key, url, expires * 1000);
-      logger.info(`Cached URL for key: ${key} with TTL: ${expires * 1000}ms`);
+      await cacheManager.set(path, url, expires * 1000);
+      logger.info(`Cached URL for key: ${path} with TTL: ${expires * 1000}ms`);
     } catch (cacheError) {
       logger.warn(
-        `Cache storage failed for key ${key}: ${(cacheError as Error).message}`
+        `Cache storage failed for key ${path}: ${(cacheError as Error).message}`
       );
     }
   }
@@ -289,6 +315,20 @@ export async function deleteMultipleS3Objects(objects: BulkDeleteObject[]) {
   }
 
   logger.info(`Successfully deleted ${result.Deleted?.length || 0} S3 objects`);
+  return result;
+}
+
+export async function deleteS3ObjectByPath(path: string) {
+  const result = await retryS3Operation(async () => {
+    return s3
+      .deleteObject({
+        Bucket: env.AWS_S3_BUCKET_NAME,
+        Key: path,
+      })
+      .promise();
+  }, 'S3 deleteObject');
+
+  logger.info(`Successfully deleted S3 object: ${path}`);
   return result;
 }
 

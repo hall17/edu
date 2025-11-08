@@ -341,6 +341,9 @@ export function useColumns(): ColumnDef<ClassroomTemplate>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       cell: ClassroomTemplatesDataTableRowActions,
       enableHiding: false,
     },
@@ -371,7 +374,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('view');
             }}
           >
-            <Eye className="size-5" />
+            <Eye className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.view')}</TooltipContent>
@@ -386,7 +389,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('edit');
             }}
           >
-            <Pencil className="size-5" />
+            <Pencil className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.edit')}</TooltipContent>
@@ -401,7 +404,7 @@ export function ClassroomTemplatesDataTableRowActions({
               setOpenedDialog('delete');
             }}
           >
-            <Trash2 className="size-5" />
+            <Trash2 className="size-4" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{t('classrooms.table.actions.delete')}</TooltipContent>

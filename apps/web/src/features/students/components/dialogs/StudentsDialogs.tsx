@@ -22,7 +22,7 @@ export function StudentsDialogs() {
         return <StudentsViewDialog />;
       case 'suspend':
         return <StudentsSuspendDialog />;
-      case 'changePassword':
+      case 'resetPassword':
         return <StudentsChangePasswordDialog />;
       case 'delete':
         return <StudentsDeleteDialog />;

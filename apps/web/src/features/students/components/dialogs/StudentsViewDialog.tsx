@@ -104,6 +104,7 @@ export function StudentsViewDialog() {
                 <AvatarImage
                   src={currentRow.profilePictureUrl || undefined}
                   alt={`${currentRow.firstName} ${currentRow.lastName}`}
+                  className="object-contain"
                 />
                 <AvatarFallback>
                   {`${currentRow.firstName.charAt(0)}${currentRow.lastName.charAt(0)}`.toUpperCase()}

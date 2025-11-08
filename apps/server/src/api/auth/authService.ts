@@ -8,7 +8,7 @@ import {
   studentInclude,
   userAuthInclude,
 } from '@api/libs/prisma/selections';
-import { generateSignedUrl } from '@api/libs/s3';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import smsService from '@api/libs/smsService';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, Token, TokenUser } from '@api/types';
@@ -305,6 +305,18 @@ export class AuthService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = requestedBy.id;
+    } else if (dto.profilePictureUrl === null) {
+      // delete profile picture from s3
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'profile-pictures',
+        requestedBy.id
+      );
+    }
+
     let updatedAccount: CreateTokenUser | null = null;
 
     if (this.isUser(maybeAccount)) {
@@ -366,6 +378,21 @@ export class AuthService {
     const userData = await this.createUserData(
       updatedAccount as CreateTokenUser
     );
+
+    if (userData.profilePictureUrl) {
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: 'profile-pictures',
+        key: requestedBy.id,
+      });
+
+      return {
+        ...userData,
+        signedAwsS3Url,
+      };
+    }
 
     return userData;
   }
@@ -996,6 +1023,12 @@ export class AuthService {
         select: {
           id: true,
           email: true,
+          branch: {
+            select: {
+              id: true,
+              companyId: true,
+            },
+          },
           tokens: {
             where: {
               type: { in: ['RESET_PASSWORD', 'INVITATION'] },
@@ -1054,7 +1087,11 @@ export class AuthService {
       throw new CustomError(HTTP_EXCEPTIONS.USER_NOT_FOUND);
     }
 
-    await prisma.$transaction(
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = maybeAccount.id;
+    }
+
+    const updatedUser = await prisma.$transaction(
       async (tx) => {
         const hashedPassword = dto.password
           ? await hash(dto.password, 10)
@@ -1124,6 +1161,21 @@ export class AuthService {
       },
       { timeout: 30000 }
     );
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: 'profile-pictures',
+        key: requestedBy.id,
+      });
+
+      return {
+        userType: requestedBy.userType,
+        signedAwsS3Url,
+      };
+    }
 
     return {
       userType: requestedBy.userType,
@@ -1462,10 +1514,7 @@ export class AuthService {
       maybeStudent?.branchId ??
       maybeParent?.branchId ??
       -1;
-    const activeBranch =
-      maybeUser?.branches[0]?.branch ??
-      maybeStudent?.branch ??
-      maybeParent?.branch;
+
     const userType: UserType = maybeUser
       ? USER_TYPES.user
       : maybeStudent
@@ -1476,13 +1525,13 @@ export class AuthService {
       : null;
 
     if (user.profilePictureUrl) {
-      const url = await generateSignedUrl(
-        'getObject',
+      const url = await generateSignedUrl({
+        operation: 'getObject',
         companyId,
-        activeBranchId,
-        'profile-pictures',
-        user.profilePictureUrl
-      );
+        branchId: activeBranchId,
+        folder: 'profile-pictures',
+        key: user.profilePictureUrl,
+      });
       user.profilePictureUrl = url;
     }
 
@@ -1494,18 +1543,35 @@ export class AuthService {
       await Promise.all(
         maybeUser.branches.map(async (branch) => {
           if (branch.branch.logoUrl) {
-            const url = await generateSignedUrl(
-              'getObject',
+            const url = await generateSignedUrl({
+              operation: 'getObject',
               companyId,
-              branch.branch.id,
-              undefined,
-              branch.branch.logoUrl
-            );
+              branchId: branch.branch.id,
+              folder: undefined,
+              key: branch.branch.logoUrl,
+            });
 
             branch.branch.logoUrl = url;
           }
         })
       );
+    }
+
+    const activeBranch =
+      maybeUser?.branches[0]?.branch ??
+      maybeStudent?.branch ??
+      maybeParent?.branch;
+
+    if (!maybeUser && activeBranch?.logoUrl) {
+      const url = await generateSignedUrl({
+        operation: 'getObject',
+        companyId,
+        branchId: activeBranch.id,
+        folder: undefined,
+        key: activeBranch.logoUrl,
+      });
+
+      activeBranch.logoUrl = url;
     }
 
     return {

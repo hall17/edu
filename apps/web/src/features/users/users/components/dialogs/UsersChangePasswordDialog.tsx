@@ -25,12 +25,12 @@ export function UsersChangePasswordDialog() {
   const sendResetPasswordEmailMutation = useMutation(
     trpc.auth.sendResetPasswordEmail.mutationOptions({
       onSuccess: () => {
-        toast.success(t('dialogs.changePassword.successMessage'));
+        toast.success(t('dialogs.resetPassword.successMessage'));
         setOpenedDialog(null);
       },
       onError: (error) => {
         console.error('Failed to send password reset email:', error);
-        toast.error(t('dialogs.changePassword.errorMessage'));
+        toast.error(t('dialogs.resetPassword.errorMessage'));
       },
     })
   );
@@ -52,10 +52,10 @@ export function UsersChangePasswordDialog() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            {t('dialogs.changePassword.titleUser')}
+            {t('dialogs.resetPassword.titleUser')}
           </DialogTitle>
           <DialogDescription>
-            {t('dialogs.changePassword.descriptionUser')}
+            {t('dialogs.resetPassword.descriptionUser')}
           </DialogDescription>
         </DialogHeader>
 
@@ -81,14 +81,14 @@ export function UsersChangePasswordDialog() {
 
           <Alert>
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>{t('dialogs.changePassword.warningTitle')}</AlertTitle>
+            <AlertTitle>{t('dialogs.resetPassword.warningTitle')}</AlertTitle>
             <AlertDescription>
-              {t('dialogs.changePassword.warningDescriptionUser')}
+              {t('dialogs.resetPassword.warningDescriptionUser')}
             </AlertDescription>
           </Alert>
 
           <div className="text-muted-foreground text-sm">
-            {t('dialogs.changePassword.confirmMessageUser', {
+            {t('dialogs.resetPassword.confirmMessageUser', {
               email: currentRow.email,
             })}
           </div>
@@ -100,7 +100,7 @@ export function UsersChangePasswordDialog() {
             onClick={handleCancel}
             disabled={sendResetPasswordEmailMutation.isPending}
           >
-            {t('dialogs.changePassword.cancel')}
+            {t('dialogs.resetPassword.cancel')}
           </Button>
           <LoadingButton
             onClick={handleConfirm}
@@ -108,7 +108,7 @@ export function UsersChangePasswordDialog() {
             className="bg-blue-600 hover:bg-blue-700"
           >
             <Mail className="mr-2 h-4 w-4" />
-            {t('dialogs.changePassword.confirmButtonText')}
+            {t('dialogs.resetPassword.confirmButtonText')}
           </LoadingButton>
         </DialogFooter>
       </DialogContent>

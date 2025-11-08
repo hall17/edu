@@ -19,7 +19,7 @@ export function TeachersDialogs() {
         return <TeachersInviteDialog />;
       case 'view':
         return <TeachersViewDialog />;
-      case 'changePassword':
+      case 'resetPassword':
         return <TeachersChangePasswordDialog />;
       case 'suspend':
         return <TeachersSuspendDialog />;

@@ -33,7 +33,7 @@ export const students = {
       edit: 'Düzenle',
       changeStatus: 'Durumu Değiştir',
       activate: 'Aktifleştir',
-      changePassword: 'Şifreyi Değiştir',
+      resetPassword: 'Şifre Sıfırla',
       delete: 'Sil',
       resendInvitation: 'Yeniden Davet Gönder',
     },
@@ -175,7 +175,7 @@ export const students = {
     updateButton: 'Durumu Güncelle',
     success: 'Öğrenci kayıt durumu başarıyla güncellendi.',
   },
-  changePasswordDialog: {
+  resetPasswordDialog: {
     title: 'Şifre Değiştir',
     description: '{{name}} için şifre değiştirin.',
     newPassword: 'Yeni Şifre',

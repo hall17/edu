@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 interface BasicStepProps {
   form: UseFormReturn<AssessmentFormData>;
@@ -83,7 +84,7 @@ export function BasicStep({ form }: BasicStepProps) {
                       changeText={t('common.changeImage')}
                       helpText={t('common.imageUploadHelp')}
                       previewTitle={t('common.imagePreview')}
-                      maxSize={5 * 1024 * 1024}
+                      maxSize={DEFAULT_IMAGE_SIZE}
                       accept={{
                         'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                       }}

@@ -171,13 +171,13 @@ export class BranchService {
     });
 
     if (dto.logoUrl) {
-      const signedAwsS3Url = await generateSignedUrl(
-        'putObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        undefined,
-        dto.logoUrl
-      );
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: undefined,
+        key: dto.logoUrl,
+      });
 
       return {
         ...branch,
@@ -238,13 +238,13 @@ export class BranchService {
     });
 
     if (updateData.logoUrl) {
-      const signedAwsS3Url = await generateSignedUrl(
-        'putObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        undefined,
-        updateData.logoUrl
-      );
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: undefined,
+        key: updateData.logoUrl,
+      });
 
       return {
         ...branch,
@@ -378,13 +378,14 @@ export class BranchService {
     branch: T
   ) {
     if (branch.logoUrl) {
-      const url = await generateSignedUrl(
-        'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        undefined,
-        branch.logoUrl
-      );
+      const url = await generateSignedUrl({
+        operation: 'getObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: undefined,
+        key: branch.logoUrl,
+      });
+
       branch.logoUrl = url;
     }
 

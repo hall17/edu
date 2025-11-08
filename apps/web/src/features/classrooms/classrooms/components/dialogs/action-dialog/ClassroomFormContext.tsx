@@ -17,9 +17,9 @@ import { trpc } from '@/lib/trpc';
 
 function useProviderValue() {
   const { t } = useTranslation();
-  const [classroomImageFile, setClassroomImageFile] = useState<File | null>(
-    null
-  );
+  const [classroomImageFile, setClassroomImageFile] = useState<
+    File | null | undefined
+  >(undefined);
 
   const subjectsQuery = useQuery(
     trpc.subject.findAll.queryOptions({ all: true })

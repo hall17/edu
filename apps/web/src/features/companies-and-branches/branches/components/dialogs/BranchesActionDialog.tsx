@@ -24,7 +24,10 @@ export function BranchesActionDialog() {
   const createMutation = useMutation(trpc.branch.create.mutationOptions());
   const updateMutation = useMutation(trpc.branch.update.mutationOptions());
 
-  async function handleSubmit(data: BranchCreateDto, logoFile: File | null) {
+  async function handleSubmit(
+    data: BranchCreateDto,
+    logoFile: File | null | undefined
+  ) {
     try {
       if (isEdit && currentRow) {
         const response = await updateMutation.mutateAsync({
@@ -37,6 +40,13 @@ export function BranchesActionDialog() {
             body: logoFile,
           });
         }
+
+        await branchesQuery.refetch();
+
+        toast.success(
+          t('companiesAndBranches.branches.actionDialog.updateSuccess')
+        );
+        handleClose();
       } else {
         const response = await createMutation.mutateAsync(data);
         if (response && 'signedAwsS3Url' in response && logoFile) {

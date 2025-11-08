@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { Gender, Language, Theme, TokenType } from '../enums';
+
 import { userCreateSchema } from './userSchemas';
 
 export const loginSchema = z.object({
@@ -39,7 +40,7 @@ export const resetPasswordSchema = z.object({
 
 export const completeSignupSchema = userCreateSchema.merge(
   z.object({
-    profilePictureUrl: z.string().max(255).optional(),
+    profilePictureUrl: z.string().max(1000).nullable().optional(),
     nationalId: z.string(),
     firstName: z.string().min(1).max(50),
     lastName: z.string().min(1).max(50),
@@ -82,13 +83,13 @@ export const changePasswordSchema = z.object({
 });
 
 export type LoginDto = z.infer<typeof loginSchema>;
-export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
+export type ChangePasswordDto = z.infer<typeof changePasswordSchema>;
 export type UpdateMeDto = z.infer<typeof updateMeSchema>;
 export type ChangeActiveBranchDto = z.infer<typeof changeActiveBranchSchema>;
 export type UpdateUserPreferencesDto = z.infer<
   typeof updateUserPreferencesSchema
 >;
-export type ChangePasswordDto = z.infer<typeof changePasswordSchema>;
+export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
 export type SendResetPasswordEmailDto = z.infer<
   typeof sendResetPasswordEmailSchema
 >;
@@ -96,4 +97,3 @@ export type SendInvitationEmailDto = z.infer<typeof sendInvitationEmailSchema>;
 export type CompleteSignupDto = z.infer<typeof completeSignupSchema>;
 export type SendOtpSmsDto = z.infer<typeof sendOtpSmsSchema>;
 export type VerifyTokenDto = z.infer<typeof verifyTokenSchema>;
-

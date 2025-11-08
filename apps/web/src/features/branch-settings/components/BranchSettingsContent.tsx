@@ -44,6 +44,7 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/stores/authStore';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 type BranchUpdateFormData = BranchUpdateDto;
 
@@ -73,7 +74,7 @@ export function BranchSettingsContent({
   );
   const updateBranch = useMutation(trpc.branch.update.mutationOptions());
 
-  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null | undefined>(undefined);
 
   const form = useForm<BranchUpdateMyBranchDto>({
     resolver: zodResolver(branchUpdateMyBranchSchema),
@@ -186,9 +187,19 @@ export function BranchSettingsContent({
                     <FormItem>
                       <FormControl>
                         <DroppableImage
-                          value={field.value}
+                          value={
+                            logoFile === null
+                              ? undefined
+                              : (field.value ?? undefined)
+                          }
                           onChange={(file) => {
-                            field.onChange(file ? file.name : undefined);
+                            field.onChange(
+                              file
+                                ? file.name
+                                : file === null
+                                  ? null
+                                  : undefined
+                            );
                             setLogoFile(file);
                           }}
                           customSize="!size-[88px] !w-[140px]"
@@ -196,7 +207,7 @@ export function BranchSettingsContent({
                           changeText={t('branchSettings.form.changeLogo')}
                           helpText={t('branchSettings.form.logoHelpText')}
                           previewTitle={t('branchSettings.form.logoPreview')}
-                          maxSize={5 * 1024 * 1024} // 5MB for logos
+                          maxSize={DEFAULT_IMAGE_SIZE}
                           accept={{
                             'image/*': [
                               '.jpeg',

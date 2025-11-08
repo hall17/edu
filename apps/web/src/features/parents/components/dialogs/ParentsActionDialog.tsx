@@ -53,6 +53,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ParentsStudentsSection } from '@/features/parents/components/ParentsStudentsSection';
 import { useParentsContext } from '@/features/parents/ParentsContext';
 import { Parent, trpc } from '@/lib/trpc';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 function getFormSchema(t: TFunction) {
   return z
@@ -63,7 +64,7 @@ function getFormSchema(t: TFunction) {
       gender: z.nativeEnum(Gender),
       dateOfBirth: z.date(),
       email: z.string().email().max(100),
-      profilePictureUrl: z.url().max(255).optional(),
+      profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50),
       phoneNumber: z.string().min(1).max(15),
       countryCode: z.string().min(1).max(2),
@@ -142,9 +143,9 @@ export function ParentsActionDialog() {
     trpc.parent.update.mutationOptions()
   );
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
-    null
-  );
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
 
@@ -331,10 +332,15 @@ export function ParentsActionDialog() {
                 <FormControl>
                   <DroppableImage
                     size="2xl"
-                    value={field.value}
+                    value={
+                      profilePictureFile === null
+                        ? undefined
+                        : (field.value ?? undefined)
+                    }
                     onChange={(file) => {
-                      console.log('file', file);
-                      field.onChange(file ? file.name : undefined);
+                      field.onChange(
+                        file ? file.name : file === null ? null : undefined
+                      );
                       setProfilePictureFile(file);
                     }}
                     uploadText={t('common.uploadProfilePicture')}
@@ -342,7 +348,7 @@ export function ParentsActionDialog() {
                     helpText={t('common.profilePictureUploadHelp')}
                     previewTitle={t('common.profilePicture')}
                     previewSubtitle={t('common.profilePicturePreview')}
-                    maxSize={5 * 1024 * 1024}
+                    maxSize={DEFAULT_IMAGE_SIZE}
                     accept={{
                       'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                     }}

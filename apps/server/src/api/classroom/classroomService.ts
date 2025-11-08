@@ -7,7 +7,7 @@ import {
   classroomIntegrationSessionInclude,
   classroomStudentInclude,
 } from '@api/libs/prisma/selections';
-import { generateSignedUrl } from '@api/libs/s3';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import { Classroom, Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt } from '@api/utils';
@@ -186,10 +186,6 @@ export class ClassroomService {
     const { moduleIds, integrations, classroomTemplateId, ...classroomData } =
       dto;
 
-    if (classroomData.imageUrl) {
-      classroomData.imageUrl = crypto.randomUUID();
-    }
-
     // Get classroom template with modules and schedules if provided
     let classroomTemplate = null;
 
@@ -279,6 +275,7 @@ export class ClassroomService {
     const classroom = await prisma.$transaction(
       async (tx) => {
         const id = crypto.randomUUID();
+
         if (finalClassroomData.imageUrl) {
           finalClassroomData.imageUrl = id;
         }
@@ -363,6 +360,7 @@ export class ClassroomService {
         'putObject',
         classroom.id
       );
+
       return {
         ...classroom,
         signedAwsS3Url,
@@ -390,6 +388,14 @@ export class ClassroomService {
 
     if (updateData.imageUrl) {
       updateData.imageUrl = id;
+    } else if (updateData.imageUrl === null) {
+      // delete profile picture from s3
+      await deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'classrooms',
+        id
+      );
     }
 
     const existingClassroom = await prisma.classroom.findUnique({
@@ -1493,12 +1499,12 @@ export class ClassroomService {
     operation: 'getObject' | 'putObject',
     url: string
   ) {
-    return await generateSignedUrl(
+    return await generateSignedUrl({
       operation,
-      requestedBy.companyId!,
-      requestedBy.activeBranchId,
-      'classrooms',
-      url
-    );
+      companyId: requestedBy.companyId!,
+      branchId: requestedBy.activeBranchId,
+      folder: 'classrooms',
+      key: url,
+    });
   }
 }

@@ -11,7 +11,7 @@ type TeachersDialogType =
   | 'delete'
   | 'view'
   | 'suspend'
-  | 'changePassword';
+  | 'resetPassword';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =

@@ -88,6 +88,7 @@ function useColumns(): ColumnDef<Parent>[] {
                 `https://testingbot.com/free-online-tools/random-avatar/100?u=${row.original.id}`
               }
               alt={`${row.original.firstName} ${row.original.lastName}`}
+              className="object-contain"
             />
             <AvatarFallback className="text-xs">
               {row.original.firstName.charAt(0) +
@@ -167,6 +168,9 @@ function useColumns(): ColumnDef<Parent>[] {
     {
       id: 'actions-item',
       header: t('common.actions'),
+      meta: {
+        className: 'text-end',
+      },
       enableHiding: false,
       cell: ({ row }) => {
         const isActive = row.original.status === 'ACTIVE';
@@ -175,7 +179,7 @@ function useColumns(): ColumnDef<Parent>[] {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Eye className="size-5" />,
+                icon: <Eye className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('view');
@@ -183,7 +187,7 @@ function useColumns(): ColumnDef<Parent>[] {
                 tooltip: t('common.view'),
               },
               {
-                icon: <Edit className="size-5" />,
+                icon: <Edit className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
                   setOpenedDialog('edit');
@@ -191,18 +195,18 @@ function useColumns(): ColumnDef<Parent>[] {
                 tooltip: t('common.edit'),
               },
               {
-                icon: <Lock className="size-5" />,
+                icon: <Lock className="size-4" />,
                 onClick: () => {
                   setCurrentRow(row.original);
-                  setOpenedDialog('changePassword');
+                  setOpenedDialog('resetPassword');
                 },
-                tooltip: t('common.changePassword'),
+                tooltip: t('common.resetPassword'),
               },
               {
                 icon: isActive ? (
-                  <Ban className="size-5" />
+                  <Ban className="size-4" />
                 ) : (
-                  <Check className="size-5" />
+                  <Check className="size-4" />
                 ),
                 className: isActive
                   ? 'hover:text-destructive'
@@ -215,7 +219,7 @@ function useColumns(): ColumnDef<Parent>[] {
               },
 
               {
-                icon: <Trash2 className="size-5" />,
+                icon: <Trash2 className="size-4" />,
                 className: 'hover:text-red-500',
                 onClick: () => {
                   setCurrentRow(row.original);

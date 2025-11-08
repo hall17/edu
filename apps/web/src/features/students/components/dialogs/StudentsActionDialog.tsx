@@ -58,6 +58,7 @@ import { useStudentsContext } from '@/features/students/StudentsContext';
 import { Student, trpc } from '@/lib/trpc';
 import { cn } from '@/lib/utils';
 import { getAcceptedFileTypes } from '@/utils';
+import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 interface Props {
   currentRow?: Student;
@@ -75,7 +76,7 @@ function getFormSchema(t: TFunction) {
       gender: z.nativeEnum(Gender),
       dateOfBirth: z.date(),
       email: z.string().email().max(100),
-      profilePictureUrl: z.url().max(255).optional(),
+      profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50),
       phoneNumber: z.string().min(1).max(15),
       countryCode: z.string().min(1).max(2),
@@ -144,9 +145,9 @@ export function StudentsActionDialog() {
   >('single-import');
 
   const [file, setFile] = useState<File | null>(null);
-  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
-    null
-  );
+  const [profilePictureFile, setProfilePictureFile] = useState<
+    File | null | undefined
+  >(undefined);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const isEdit = !!currentRow;
@@ -425,9 +426,15 @@ export function StudentsActionDialog() {
                 <FormControl>
                   <DroppableImage
                     size="2xl"
-                    value={field.value}
+                    value={
+                      profilePictureFile === null
+                        ? undefined
+                        : (field.value ?? undefined)
+                    }
                     onChange={(file) => {
-                      field.onChange(file ? file.name : undefined);
+                      field.onChange(
+                        file ? file.name : file === null ? null : undefined
+                      );
                       setProfilePictureFile(file);
                     }}
                     uploadText={t('common.uploadProfilePicture')}
@@ -435,7 +442,7 @@ export function StudentsActionDialog() {
                     helpText={t('common.profilePictureUploadHelp')}
                     previewTitle={t('common.profilePicture')}
                     previewSubtitle={t('common.profilePicturePreview')}
-                    maxSize={5 * 1024 * 1024}
+                    maxSize={DEFAULT_IMAGE_SIZE}
                     accept={{
                       'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
                     }}

@@ -21,7 +21,7 @@ export function ParentsDialogs() {
         return <ParentsViewDialog />;
       case 'suspend':
         return <ParentsSuspendDialog />;
-      case 'changePassword':
+      case 'resetPassword':
         return <ParentsChangePasswordDialog />;
       case 'delete':
         return <ParentsDeleteDialog />;

@@ -34,7 +34,7 @@ export const parents = {
       edit: 'Edit',
       suspend: 'Suspend',
       activate: 'Activate',
-      changePassword: 'Change Password',
+      resetPassword: 'Reset Password',
       delete: 'Delete',
     },
   },

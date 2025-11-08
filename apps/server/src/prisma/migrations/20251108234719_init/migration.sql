@@ -134,6 +134,8 @@ CREATE TABLE "Module" (
     "description" TEXT,
     "version" TEXT DEFAULT '1.0.0',
     "status" "ModuleStatus" NOT NULL DEFAULT 'ACTIVE',
+    "videoUrl" VARCHAR(255),
+    "videoThumbnailUrl" VARCHAR(255),
     "canBeDeleted" BOOLEAN NOT NULL DEFAULT true,
     "isDefault" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -180,6 +182,15 @@ CREATE TABLE "User" (
     "titleId" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserMeetingIntegration" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "data" JSONB NOT NULL,
+
+    CONSTRAINT "UserMeetingIntegration_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1267,6 +1278,9 @@ ALTER TABLE "User" ADD CONSTRAINT "User_statusUpdatedBy_fkey" FOREIGN KEY ("stat
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserMeetingIntegration" ADD CONSTRAINT "UserMeetingIntegration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Student" ADD CONSTRAINT "Student_branchId_fkey" FOREIGN KEY ("branchId") REFERENCES "Branch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
