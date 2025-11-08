@@ -19,7 +19,7 @@ export class PermissionService {
   async findAll(requestedBy: TokenUser, filterDto: PermissionFindAllDto) {
     const { q, sort, size = PAGE_SIZE } = filterDto;
 
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.PermissionOrderByWithRelationInput = {};
 
     if (sort) {

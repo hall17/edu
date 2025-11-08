@@ -76,7 +76,7 @@ export class AssessmentService {
     }
 
     const { q, sort, size = PAGE_SIZE } = filterDto;
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.AssessmentOrderByWithRelationInput = {};
 
     if (sort) {
@@ -431,7 +431,7 @@ export class AssessmentService {
     }
 
     const { q, sort, size = PAGE_SIZE } = filterDto;
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.AssessmentQuestionOrderByWithRelationInput = {};
 
     if (sort) {
@@ -585,7 +585,7 @@ export class AssessmentService {
     }
 
     const { q, sort, size = PAGE_SIZE } = filterDto;
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.ClassroomIntegrationAssessmentOrderByWithRelationInput =
       {};
 

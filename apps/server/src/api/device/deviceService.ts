@@ -41,7 +41,7 @@ export class DeviceService {
 
     const { q, sort, size = PAGE_SIZE } = filterDto;
 
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.DeviceOrderByWithRelationInput = {};
 
     if (sort) {
@@ -510,7 +510,7 @@ export class DeviceService {
 
     const { q, sort, size = PAGE_SIZE } = filterDto;
 
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.UserDeviceOrderByWithRelationInput = {};
 
     if (sort) {

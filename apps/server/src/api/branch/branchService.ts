@@ -27,7 +27,7 @@ export class BranchService {
   async findAll(requestedBy: TokenUser, filterDto: BranchFindAllDto) {
     const { q, sort, size = PAGE_SIZE } = filterDto;
 
-    const page = filterDto.page || 0;
+    const page = filterDto.page || 1;
     let orderBy: Prisma.BranchOrderByWithRelationInput = {};
 
     if (sort) {

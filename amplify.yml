@@ -8,8 +8,9 @@ applications:
             - yarn install
         build:
           commands:
+            - yarn global add turbo
             - yarn workspace @edusama/server prisma:generate
-            - turbo run build
+            - yarn turbo run build
       artifacts:
         baseDirectory: apps/web/dist
         files:
