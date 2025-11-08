@@ -11,6 +11,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "turbo run build",
     "start": "yarn start:web",
     "start:web": "yarn workspace @edusama/web start",
     "start:server": "yarn workspace @edusama/server start",

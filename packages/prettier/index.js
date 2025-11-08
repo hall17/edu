@@ -10,7 +10,9 @@ const config = {
   tabWidth: 2,
   trailingComma: 'es5',
   plugins: ['prettier-plugin-tailwindcss'],
-  tailwindConfig: fileURLToPath(new URL('../../tooling/tailwind/web.ts', import.meta.url)),
+  tailwindConfig: fileURLToPath(
+    new URL('../../tooling/tailwind/web.ts', import.meta.url)
+  ),
   tailwindFunctions: ['cn', 'cva'],
   overrides: [
     {

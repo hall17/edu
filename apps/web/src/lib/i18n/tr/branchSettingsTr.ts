@@ -42,9 +42,6 @@ export const branchSettings = {
     logo: 'Logo',
     suspendedReason: 'Askıya Alınma Nedeni',
     suspendedAt: 'Askıya Alınma Tarihi',
-    statusUpdateReason: 'Statü Güncelleme Nedeni',
-    statusUpdateReasonDescription: 'Mevcut statünün nedeni (varsa).',
-    statusUpdateReasonPlaceholder: 'Statü güncelleme nedeni girin...',
     // Form placeholders and help text
     namePlaceholder: 'Şube adını girin',
     locationPlaceholder: 'Şube konumunu girin',

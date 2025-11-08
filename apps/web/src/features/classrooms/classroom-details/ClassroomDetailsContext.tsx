@@ -17,6 +17,8 @@ function useProviderValue() {
 
   const classroom = classroomQuery.data;
 
+  console.log('classroom context', classroom);
+
   return {
     classroom,
     classroomQuery,

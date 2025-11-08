@@ -29,6 +29,7 @@ export const companiesAndBranches = {
       },
       actions: {
         openMenu: 'Open menu',
+        addBranch: 'Add Branch',
         view: 'View',
         edit: 'Edit',
         delete: 'Delete',
@@ -77,6 +78,8 @@ export const companiesAndBranches = {
       form: {
         name: 'Name',
         slug: 'Slug',
+        websiteUrl: 'Website URL',
+        maximumBranches: 'Maximum Branches',
         location: 'Location',
         contact: 'Contact',
         company: 'Company',
@@ -142,10 +145,13 @@ export const companiesAndBranches = {
         slug: 'Slug',
         location: 'Location',
         contact: 'Contact',
+        canBeDeleted: 'Can Be Deleted',
+        maximumStudents: 'Maximum Students',
         company: 'Company',
         status: 'Status',
         selectCompany: 'Select company',
         selectStatus: 'Select status',
+        selectCanBeDeleted: 'Select option',
       },
     },
     deleteDialog: {

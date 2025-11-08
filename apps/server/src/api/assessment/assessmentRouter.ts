@@ -1,13 +1,3 @@
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-import { idSchema } from '../../types';
-import {
-  questionCreateSchema,
-  questionFindAllSchema,
-  questionUpdateSchema,
-} from '../question/questionModel';
-
 import {
   assessmentCreateSchema,
   assessmentFindAllSchema,
@@ -26,7 +16,17 @@ import {
   assessmentNotificationCreateSchema,
   assessmentNotificationFindAllSchema,
   assessmentUpdateStatusSchema,
-} from './assessmentModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+import { idSchema } from '../../types';
+import {
+  questionCreateSchema,
+  questionFindAllSchema,
+  questionUpdateSchema,
+} from '../question/questionModel';
+
 import { AssessmentService } from './assessmentService';
 
 const assessmentService = Container.get(AssessmentService);

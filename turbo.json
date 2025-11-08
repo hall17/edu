@@ -5,6 +5,13 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "format": {
+      "outputs": [".cache/.prettiercache"],
+      "dependsOn": ["^format"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
     "check-types": {
       "dependsOn": ["^check-types"]
     },

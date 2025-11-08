@@ -216,6 +216,11 @@ export class UserService {
     const hashedToken = await hash(token, 10);
 
     const { taughtSubjectIds, ...userData } = dto;
+
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = id;
+    }
+
     const user = await prisma.user.create({
       data: {
         ...userData,
@@ -240,6 +245,14 @@ export class UserService {
         tokens: true,
       },
     });
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(requestedBy, id);
+      return {
+        ...user,
+        signedAwsS3Url,
+      };
+    }
 
     // send invitation email
     await emailService.sendInvitationMail(
@@ -295,6 +308,10 @@ export class UserService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = dto.id;
+    }
+
     const { taughtSubjectIds, ...userData } = dto;
 
     if (taughtSubjectIds) {
@@ -334,6 +351,17 @@ export class UserService {
       },
       include: userAuthInclude({ branchId: requestedBy.activeBranchId }),
     });
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        dto.id
+      );
+      return {
+        ...updatedUser,
+        signedAwsS3Url,
+      };
+    }
 
     return this.createUserData(requestedBy, updatedUser);
   }
@@ -420,5 +448,15 @@ export class UserService {
       : null;
 
     return userWithoutPassword;
+  }
+
+  private async createSignedAwsS3Url(requestedBy: TokenUser, url: string) {
+    return await generateSignedUrl(
+      'getObject',
+      requestedBy.companyId!,
+      requestedBy.activeBranchId,
+      'profile-pictures',
+      url
+    );
   }
 }

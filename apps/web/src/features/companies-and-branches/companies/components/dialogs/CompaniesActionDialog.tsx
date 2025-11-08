@@ -1,4 +1,5 @@
 import { CompanyStatus } from '@edusama/common';
+import { companyCreateSchema, CompanyCreateDto } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
@@ -6,11 +7,11 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
 import { useCompaniesContext } from '../../CompaniesContext';
 
 import { LoadingButton, UnsavedChangesDialog } from '@/components';
+import { DroppableImage } from '@/components/DroppableImage';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -38,86 +39,91 @@ import {
 } from '@/components/ui/select';
 import { trpc } from '@/lib/trpc';
 
-const companyFormSchema = z.object({
-  name: z.string().min(1).max(50),
-  slug: z.string().min(1).max(50),
-  status: z.nativeEnum(CompanyStatus),
-});
-
-type CompanyFormData = z.infer<typeof companyFormSchema>;
-
 export function CompaniesActionDialog() {
   const { t } = useTranslation();
-  const { openedDialog, setOpenedDialog, currentRow } = useCompaniesContext();
+  const { companiesQuery, openedDialog, setOpenedDialog, currentRow } =
+    useCompaniesContext();
+  const createMutation = useMutation(trpc.company.create.mutationOptions());
+  const updateMutation = useMutation(trpc.company.update.mutationOptions());
+
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
 
   const isOpen = openedDialog === 'add' || openedDialog === 'edit';
   const isEdit = openedDialog === 'edit';
 
-  const form = useForm<CompanyFormData>({
-    resolver: zodResolver(companyFormSchema),
-    defaultValues: {
-      name: '',
-      slug: '',
-      status: CompanyStatus.ACTIVE,
-    },
+  const form = useForm<CompanyCreateDto>({
+    resolver: zodResolver(companyCreateSchema),
   });
-
-  const { reset, handleSubmit, formState } = form;
 
   useEffect(() => {
     if (isEdit && currentRow) {
-      reset({
+      form.reset({
         name: currentRow.name,
         slug: currentRow.slug,
         status: currentRow.status,
+        logoUrl: currentRow.logoUrl || '',
+        websiteUrl: currentRow.websiteUrl || '',
+        maximumBranches: currentRow.maximumBranches,
       });
     } else {
-      reset({
+      form.reset({
         name: '',
         slug: '',
         status: CompanyStatus.ACTIVE,
+        logoUrl: '',
+        websiteUrl: '',
+        maximumBranches: 10,
       });
     }
-  }, [isEdit, currentRow, reset]);
+  }, [isEdit, currentRow, form]);
 
-  const createMutation = useMutation(
-    trpc.company.create.mutationOptions({
-      onSuccess: (company) => {
-        toast.success(
-          t('companiesAndBranches.companies.actionDialog.createSuccess')
-        );
-        handleFormSuccess();
-      },
-      onError: () => {
-        toast.error(
-          t('companiesAndBranches.companies.actionDialog.createError')
-        );
-      },
-    })
-  );
+  async function onSubmit(data: CompanyCreateDto) {
+    try {
+      if (isEdit && currentRow) {
+        const response = await updateMutation.mutateAsync({
+          ...data,
+          id: currentRow.id,
+        });
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: logoFile,
+          });
+        }
 
-  const updateMutation = useMutation(
-    trpc.company.update.mutationOptions({
-      onSuccess: (company) => {
+        await companiesQuery.refetch();
+
         toast.success(
           t('companiesAndBranches.companies.actionDialog.updateSuccess')
         );
         handleFormSuccess();
-      },
-      onError: () => {
+      } else {
+        const response = await createMutation.mutateAsync(data);
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: logoFile,
+          });
+        }
+
+        await companiesQuery.refetch();
+
+        toast.success(
+          t('companiesAndBranches.companies.actionDialog.createSuccess')
+        );
+        handleFormSuccess();
+      }
+    } catch (error) {
+      if (isEdit) {
         toast.error(
           t('companiesAndBranches.companies.actionDialog.updateError')
         );
-      },
-    })
-  );
-
-  function onSubmit(data: CompanyFormData) {
-    if (isEdit && currentRow) {
-      updateMutation.mutate({ ...data, id: currentRow.id });
-    } else {
-      createMutation.mutate(data);
+      } else {
+        toast.error(
+          t('companiesAndBranches.companies.actionDialog.createError')
+        );
+      }
     }
   }
 
@@ -183,7 +189,45 @@ export function CompaniesActionDialog() {
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+              tabIndex={0}
+            >
+              <FormField
+                control={form.control}
+                name="logoUrl"
+                render={({ field }) => (
+                  <FormItem
+                    className="md:col-span-2 lg:col-span-1"
+                    autoFocus={false}
+                  >
+                    <FormLabel className="justify-center">
+                      {t('common.logoUrl')}
+                    </FormLabel>
+                    <FormControl>
+                      <DroppableImage
+                        size="2xl"
+                        value={field.value}
+                        onChange={(file) => {
+                          field.onChange(file ? file.name : undefined);
+                          setLogoFile(file);
+                        }}
+                        uploadText={t('common.uploadLogo')}
+                        changeText={t('common.changeLogo')}
+                        helpText={t('common.logoUploadHelp')}
+                        previewTitle={t('common.logoUrl')}
+                        previewSubtitle={t('common.logoPreview')}
+                        maxSize={5 * 1024 * 1024}
+                        accept={{
+                          'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="name"
@@ -220,6 +264,46 @@ export function CompaniesActionDialog() {
               />
               <FormField
                 control={form.control}
+                name="websiteUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t(
+                        'companiesAndBranches.companies.actionDialog.form.websiteUrl'
+                      )}
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="maximumBranches"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t(
+                        'companiesAndBranches.companies.actionDialog.form.maximumBranches'
+                      )}
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="status"
                 render={({ field }) => (
                   <FormItem>
@@ -233,7 +317,7 @@ export function CompaniesActionDialog() {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue
                             placeholder={t(
                               'companiesAndBranches.companies.actionDialog.form.selectStatus'

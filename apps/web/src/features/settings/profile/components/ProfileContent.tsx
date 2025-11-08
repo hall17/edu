@@ -202,7 +202,11 @@ export function ProfileContent({ onCancel }: ProfileContentProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+            tabIndex={0}
+          >
             {/* Personal Information */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">

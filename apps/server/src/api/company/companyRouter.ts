@@ -1,14 +1,14 @@
 import { intIdSchema } from '@api/types';
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-
 import {
   companyCreateSchema,
   companyFindAllSchema,
   companyUpdateStatusSchema,
   companyUpdateSchema,
-} from './companyModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+
 import { CompanyService } from './companyService';
 
 const companyService = Container.get(CompanyService);

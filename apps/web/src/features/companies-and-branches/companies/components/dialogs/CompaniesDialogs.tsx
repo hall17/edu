@@ -1,5 +1,6 @@
 import { useCompaniesContext } from '../../CompaniesContext';
 
+import { AddBranchDialog } from './AddBranchDialog';
 import { CompaniesActionDialog } from './CompaniesActionDialog';
 import { CompaniesDeleteDialog } from './CompaniesDeleteDialog';
 import { CompaniesSuspendDialog } from './CompaniesSuspendDialog';
@@ -24,5 +25,10 @@ export function CompaniesDialogs() {
         return null;
     }
   }
-  return <>{getActiveDialog()}</>;
+  return (
+    <>
+      {getActiveDialog()}
+      <AddBranchDialog />
+    </>
+  );
 }

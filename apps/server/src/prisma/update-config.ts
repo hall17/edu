@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -7,6 +8,18 @@ const classFilePath = path.join(
   'prisma',
   'internal',
   'class.ts'
+);
+
+const enumsFilePath = path.join(__dirname, 'generated', 'prisma', 'enums.ts');
+
+const commonPackagePath = path.join(
+  __dirname,
+  '..',
+  '..',
+  '..',
+  '..',
+  'packages',
+  'common'
 );
 
 function updateConfig(): void {
@@ -22,4 +35,16 @@ function updateConfig(): void {
   }
 }
 
+function copyEnumsToCommon(): void {
+  fs.copyFileSync(
+    enumsFilePath,
+    path.join(commonPackagePath, 'src', 'enums.ts')
+  );
+  console.log('Successfully copied enums.ts to packages/common/src/enums.ts.');
+
+  // take new build for @edusama/common
+  execSync('yarn workspace @edusama/common build');
+}
+
 updateConfig();
+copyEnumsToCommon();

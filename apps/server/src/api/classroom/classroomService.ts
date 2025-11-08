@@ -8,16 +8,10 @@ import {
   classroomStudentInclude,
 } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
-import { Prisma } from '@api/prisma/generated/prisma/client';
+import { Classroom, Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import Container, { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-import { hasPermission } from '../../utils/hasPermission';
-import { StudentService } from '../student/studentService';
-
 import {
   ClassroomCreateDto,
   ClassroomFindAllDto,
@@ -34,7 +28,12 @@ import {
   ClassroomUpdateStatusDto,
   FindAllIntegrationSessionsDto,
   FindAllClassroomIntegrationAssessmentsDto,
-} from './classroomModel';
+} from '@edusama/common';
+import Container, { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
+import { hasPermission } from '../../utils/hasPermission';
+import { StudentService } from '../student/studentService';
 
 type ClassroomStudentReturnType = Prisma.ClassroomStudentGetPayload<{
   include: typeof classroomStudentInclude;
@@ -167,7 +166,7 @@ export class ClassroomService {
       throw new CustomError(HTTP_EXCEPTIONS.CLASSROOM_NOT_FOUND);
     }
 
-    return classroom;
+    return this.createClassroomData(requestedBy, classroom);
   }
 
   async create(requestedBy: TokenUser, dto: ClassroomCreateDto) {
@@ -186,6 +185,10 @@ export class ClassroomService {
 
     const { moduleIds, integrations, classroomTemplateId, ...classroomData } =
       dto;
+
+    if (classroomData.imageUrl) {
+      classroomData.imageUrl = crypto.randomUUID();
+    }
 
     // Get classroom template with modules and schedules if provided
     let classroomTemplate = null;
@@ -275,9 +278,14 @@ export class ClassroomService {
     // Create classroom with modules and schedules in a transaction
     const classroom = await prisma.$transaction(
       async (tx) => {
+        const id = crypto.randomUUID();
+        if (finalClassroomData.imageUrl) {
+          finalClassroomData.imageUrl = id;
+        }
         // Create the classroom
         const createdClassroom = await tx.classroom.create({
           data: {
+            id,
             ...finalClassroomData,
             branchId: requestedBy.activeBranchId,
             ...(moduleIdsToCreate &&
@@ -296,7 +304,6 @@ export class ClassroomService {
 
         for (const integration of integrations ?? []) {
           const { schedules, sessions, ...integrationData } = integration;
-          console.log('sessions', sessions);
           const classroomIntegration = await tx.classroomIntegration.create({
             data: {
               ...integrationData,
@@ -350,6 +357,18 @@ export class ClassroomService {
       { timeout: 30000 }
     );
 
+    if (classroom && dto.imageUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        classroom.id
+      );
+      return {
+        ...classroom,
+        signedAwsS3Url,
+      };
+    }
+
     return classroom!;
   }
 
@@ -368,6 +387,10 @@ export class ClassroomService {
     }
 
     const { id, moduleIds, integrations, ...updateData } = dto;
+
+    if (updateData.imageUrl) {
+      updateData.imageUrl = id;
+    }
 
     const existingClassroom = await prisma.classroom.findUnique({
       where: {
@@ -543,6 +566,18 @@ export class ClassroomService {
         include: classroomInclude,
       });
     });
+
+    if (dto.imageUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        classroom!.imageUrl!
+      );
+      return {
+        ...classroom!,
+        signedAwsS3Url,
+      };
+    }
 
     return classroom!;
   }
@@ -1425,11 +1460,9 @@ export class ClassroomService {
       : null;
 
     if (studentWithoutPassword.profilePictureUrl) {
-      const url = await generateSignedUrl(
+      const url = await this.createSignedAwsS3Url(
+        requestedBy,
         'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        'profile-pictures',
         studentWithoutPassword.profilePictureUrl
       );
       studentWithoutPassword.profilePictureUrl = url;
@@ -1439,5 +1472,33 @@ export class ClassroomService {
       ...studentOnClassroom,
       student: studentWithoutPassword,
     };
+  }
+
+  private async createClassroomData<T extends Classroom>(
+    requestedBy: TokenUser,
+    classroom: T
+  ) {
+    return {
+      ...classroom,
+      imageUrl: await this.createSignedAwsS3Url(
+        requestedBy,
+        'getObject',
+        classroom.id
+      ),
+    };
+  }
+
+  private async createSignedAwsS3Url(
+    requestedBy: TokenUser,
+    operation: 'getObject' | 'putObject',
+    url: string
+  ) {
+    return await generateSignedUrl(
+      operation,
+      requestedBy.companyId!,
+      requestedBy.activeBranchId,
+      'classrooms',
+      url
+    );
   }
 }

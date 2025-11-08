@@ -26,7 +26,7 @@
     "build": "npx rimraf dist && yarn build:js && yarn build:types",
     "build:js": "swc src -d dist --source-maps --copy-files",
     "build:types": "tsc",
-    "build:watch": "swc src -d dist --source-maps --copy-files -w",
+    "build:watch": "swc src -d dist --source-maps --copy-files -w && yarn build:types",
     "clean:generated": "rm -rf src/prisma/generated",
     "prisma:generate": "node clean-generated.js && yarn prisma generate && tsx src/prisma/update-config.ts",
     "prisma:script": "tsx --env-file=.env src/prisma/script.ts",
@@ -93,7 +93,7 @@
   },
   "devDependencies": {
     "@edusama/common": "*",
-    "@edusama/eslint-config-custom": "*",
+    "@edusama/eslint": "*",
     "@edusama/prettier": "*",
     "@swc/cli": "^0.7.7",
     "@swc/core": "^1.3.96",

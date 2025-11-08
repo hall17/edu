@@ -1,5 +1,3 @@
-import z from 'zod';
-
 export type CountryCode =
   | 'AD' // Andorra
   | 'AE' // United Arab Emirates
@@ -251,15 +249,3 @@ export type CountryCode =
   | 'ZA' // South Africa
   | 'ZM' // Zambia
   | 'ZW'; // Zimbabwe
-
-export const DefaultFilterSchema = z.object({
-  q: z.string().optional(),
-  sort: z.string().optional(),
-  page: z.number().optional(),
-  size: z.number().optional(),
-  all: z.boolean().optional(),
-  global: z.boolean().optional(),
-  branchIds: z.array(z.number().int()).optional(),
-});
-
-export type DefaultFilter = z.infer<typeof DefaultFilterSchema>;

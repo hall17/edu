@@ -85,4 +85,20 @@ export const parents = {
     updateButton: 'Durumu Güncelle',
     success: 'Veli durumu başarıyla güncellendi',
   },
+  students: {
+    title: 'Öğrenciler',
+    addStudent: 'Öğrenci Ekle',
+    removeStudent: 'Kaldır',
+    noStudents: 'Henüz öğrenci atanmamış',
+    enrollment: {
+      title: 'Veliye Öğrenci Ekle',
+      description: 'Bu veliye öğrenci ara ve ata',
+      searchPlaceholder: 'İsim, e-posta veya TC kimlik no ile öğrenci ara...',
+      noResults: 'Öğrenci bulunamadı',
+      availableStudents: 'Mevcut Öğrenciler',
+      assign: 'Ata',
+      alreadyAssigned: 'Zaten Atanmış',
+      success: 'Öğrenci başarıyla atandı',
+    },
+  },
 };

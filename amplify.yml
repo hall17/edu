@@ -6,12 +6,10 @@ applications:
         preBuild:
           commands:
             - yarn install
-            - yarn workspace @edusama/server prisma:generate
-            - yarn workspace @edusama/common build
-            - yarn workspace @edusama/server build
         build:
           commands:
-            - yarn workspace @edusama/web build
+            - yarn workspace @edusama/server prisma:generate
+            - turbo run build
       artifacts:
         baseDirectory: apps/web/dist
         files:
@@ -19,4 +17,5 @@ applications:
       cache:
         paths:
           - node_modules/**/*
+          - .turbo/**/*
       buildPath: /

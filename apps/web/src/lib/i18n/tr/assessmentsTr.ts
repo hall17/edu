@@ -1,7 +1,15 @@
 export const assessments = {
-  title: 'Değerlendirme Listesi',
-  description: 'Değerlendirmelerinizi ve bilgilerini burada yönetin.',
+  title: 'Değerlendirme Şablonları',
+  description: 'Değerlendirme şablonlarınızı ve bilgilerini burada yönetin.',
   addAssessment: 'Değerlendirme Ekle',
+  tabs: {
+    templates: 'Değerlendirme Şablonları',
+    assigned: 'Atanmış Değerlendirmeler',
+  },
+  assigned: {
+    title: 'Atanmış Değerlendirmeler',
+    description: 'Sınıflara atanmış değerlendirmeleri görüntüleyin ve yönetin.',
+  },
   table: {
     filterPlaceholder: 'Değerlendirmeleri filtrele...',
     searchPlaceholder: 'Değerlendirmeleri ara...',
@@ -23,7 +31,7 @@ export const assessments = {
     availableClassrooms: 'Mevcut Sınıflar',
     assign: 'Ata',
     alreadyAssigned: 'Zaten Atanmış',
-    noIntegration: 'Entegrasyon Yok',
+    noIntegration: 'Ders Planı Yok',
     success: 'Değerlendirme sınıfa başarıyla atandı.',
     error: 'Değerlendirme sınıfa atanamadı.',
   },

@@ -24,6 +24,7 @@ import {
   UnsavedChangesDialog,
 } from '@/components';
 import { DatePicker } from '@/components/DatePicker';
+import { DroppableImage } from '@/components/DroppableImage';
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ParentsStudentsSection } from '@/features/parents/components/ParentsStudentsSection';
 import { useParentsContext } from '@/features/parents/ParentsContext';
 import { Parent, trpc } from '@/lib/trpc';
 
@@ -140,6 +142,9 @@ export function ParentsActionDialog() {
     trpc.parent.update.mutationOptions()
   );
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
+    null
+  );
 
   const formSchema = useMemo(() => getFormSchema(t), [t]);
 
@@ -272,6 +277,14 @@ export function ParentsActionDialog() {
 
         toast.success(t('dialogs.action.success.updateParent'));
         updateParent(response as Parent);
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response['signedAwsS3Url'] as string, {
+            method: 'PUT',
+            body: profilePictureFile,
+          });
+          console.log('profilePictureFile', profilePictureFile);
+        }
       } else {
         const createData = {
           ...values,
@@ -284,6 +297,14 @@ export function ParentsActionDialog() {
 
         toast.success(t('dialogs.action.success.createParent'));
         createParent(response as Parent);
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response['signedAwsS3Url'] as string, {
+            method: 'PUT',
+            body: profilePictureFile,
+          });
+          console.log('profilePictureFile', profilePictureFile);
+        }
       }
       form.reset();
       setOpenedDialog(null);
@@ -298,147 +319,142 @@ export function ParentsActionDialog() {
             {t('students.actionDialog.sections.personalInformation')}
           </span>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid w-full grid-cols-1 space-y-4 gap-x-2 md:grid-cols-6">
           <FormField
             control={form.control}
-            name="firstName"
+            name="profilePictureUrl"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.firstName')}</FormLabel>
+              <FormItem className="md:col-span-2 lg:col-span-1">
+                <FormLabel className="justify-center">
+                  {t('common.profilePicture')}
+                </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.firstName'
-                    )}
-                    autoComplete="off"
-                    {...field}
+                  <DroppableImage
+                    size="2xl"
+                    value={field.value}
+                    onChange={(file) => {
+                      console.log('file', file);
+                      field.onChange(file ? file.name : undefined);
+                      setProfilePictureFile(file);
+                    }}
+                    uploadText={t('common.uploadProfilePicture')}
+                    changeText={t('common.changeProfilePicture')}
+                    helpText={t('common.profilePictureUploadHelp')}
+                    previewTitle={t('common.profilePicture')}
+                    previewSubtitle={t('common.profilePicturePreview')}
+                    maxSize={5 * 1024 * 1024}
+                    accept={{
+                      'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.lastName')}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.lastName'
-                    )}
-                    autoComplete="off"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="nationalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.nationalId')}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.nationalId'
-                    )}
-                    {...field}
-                    value={field.value ?? ''}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.dateOfBirth')}</FormLabel>
-                <div>
-                  <DatePicker
-                    selected={field.value ?? undefined}
-                    onSelect={field.onChange}
-                    placeholder={t('common.selectDateOfBirth')}
-                  />
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.gender')}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value ?? undefined}
-                >
+          <div className="grid w-full grid-cols-1 items-start gap-4 md:col-span-4 md:grid-cols-2 lg:col-span-5">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.firstName')}</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={t('common.selectGender')} />
-                    </SelectTrigger>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.firstName'
+                      )}
+                      autoComplete="off"
+                      {...field}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {Object.values(Gender).map((gender) => (
-                      <SelectItem key={gender} value={gender}>
-                        {t(`genders.${gender}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="studentIds"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.myChildren')}</FormLabel>
-                <FormControl>
-                  <MultiSelect
-                    options={
-                      studentsQuery.data?.students
-                        ?.map((student) => ({
-                          label: `${student.firstName} ${student.lastName} (${t('common.nationalId')} ${student.nationalId})`,
-                          value: student.id,
-                        }))
-                        .concat(
-                          currentRow?.students?.map((student) => ({
-                            label: `${student.firstName} ${student.lastName} (${t('common.nationalId')} ${student.nationalId})`,
-                            value: student.id,
-                          })) ?? []
-                        ) ?? []
-                    }
-                    onValueChange={(value) => {
-                      field.onChange(value);
-                    }}
-                    onSearchValueChange={(value) => {
-                      setStudentFilters({
-                        ...studentFilters,
-                        q: value,
-                      });
-                    }}
-                    defaultValue={field.value || []}
-                    placeholder={t('common.search')}
-                    searchable={true}
-                    maxCount={5}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.lastName')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.lastName'
+                      )}
+                      autoComplete="off"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nationalId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.nationalId')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.nationalId'
+                      )}
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.dateOfBirth')}</FormLabel>
+                  <div>
+                    <DatePicker
+                      selected={field.value ?? undefined}
+                      onSelect={field.onChange}
+                      placeholder={t('common.selectDateOfBirth')}
+                    />
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.gender')}</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? undefined}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('common.selectGender')} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(Gender).map((gender) => (
+                        <SelectItem key={gender} value={gender}>
+                          {t(`genders.${gender}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -756,6 +772,13 @@ export function ParentsActionDialog() {
     <div className="space-y-2">
       {renderPersonalInformationSection()}
       {renderContactInformationSection()}
+      <ParentsStudentsSection
+        students={
+          studentsQuery.data?.students?.filter((student) =>
+            form.watch('studentIds')?.includes(student.id)
+          ) ?? []
+        }
+      />
       {isEdit && renderStatusSection()}
       {renderSocialLinksSection()}
     </div>
@@ -784,6 +807,7 @@ export function ParentsActionDialog() {
                 id="parent-form"
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4 p-0.5"
+                tabIndex={0}
               >
                 {renderFormFields()}
               </form>

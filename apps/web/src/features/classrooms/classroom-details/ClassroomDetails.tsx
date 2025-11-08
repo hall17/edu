@@ -1,5 +1,5 @@
 import { Outlet, useNavigate } from '@tanstack/react-router';
-import { Calendar, Users } from 'lucide-react';
+import { Calendar, Users, BarChart3 } from 'lucide-react';
 import { House } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -23,9 +23,14 @@ export function ClassroomDetails() {
       href: '/classrooms/$classroomId/students',
     },
     {
-      title: t('classrooms.details.tabs.sessions'),
+      title: t('classrooms.details.tabs.calendar'),
       icon: <Calendar size={18} />,
-      href: '/classrooms/$classroomId/sessions',
+      href: '/classrooms/$classroomId/calendar',
+    },
+    {
+      title: t('classrooms.details.tabs.attendance'),
+      icon: <BarChart3 size={18} />,
+      href: '/classrooms/$classroomId/attendance',
     },
   ];
 

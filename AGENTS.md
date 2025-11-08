@@ -186,7 +186,7 @@ edusama/
 │       │   └── middlewares/ # Express middlewares
 ├── packages/
 │   ├── common/              # Shared types and utilities
-│   ├── eslint-config-custom # ESLint configurations
+│   ├── eslint # ESLint configurations
 │   └── prettier/            # Prettier configuration
 ```
 

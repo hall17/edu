@@ -47,6 +47,8 @@ function ClassroomsActionDialogContent() {
     integrationFields,
     appendIntegration,
     resetFormToInitialValues,
+    classroomImageFile,
+    setClassroomImageFile,
   } = useClassroomForm();
 
   const isEdit = !!currentRow;
@@ -151,8 +153,8 @@ function ClassroomsActionDialogContent() {
         Object.keys(diff.deleted).length > 0;
     }
 
-    if (!state && isDirty) {
-      // User is trying to close and form is dirty
+    if (!state && (isDirty || classroomImageFile)) {
+      // User is trying to close and form is dirty or image file is selected
       setShowConfirmDialog(true);
     } else {
       // Safe to close
@@ -164,6 +166,7 @@ function ClassroomsActionDialogContent() {
   function handleConfirmClose() {
     setShowConfirmDialog(false);
     form.reset();
+    setClassroomImageFile(null);
     setOpenedDialog(null);
   }
 

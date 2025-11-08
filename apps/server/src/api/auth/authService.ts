@@ -27,14 +27,6 @@ import {
   USER_TYPES,
   UserType,
 } from '@edusama/common';
-import { compare, hash } from 'bcrypt';
-import { Request } from 'express';
-import { sign } from 'jsonwebtoken';
-import { Service } from 'typedi';
-import z from 'zod';
-
-import { randomInt } from 'crypto';
-
 import {
   CompleteSignupDto,
   LoginDto,
@@ -45,7 +37,14 @@ import {
   UpdateMeDto,
   UpdateUserPreferencesDto,
   VerifyTokenDto,
-} from './authModel';
+} from '@edusama/common';
+import { compare, hash } from 'bcrypt';
+import { Request } from 'express';
+import { sign } from 'jsonwebtoken';
+import { Service } from 'typedi';
+import z from 'zod';
+
+import { randomInt } from 'crypto';
 
 type CreateTokenUser =
   | Prisma.UserGetPayload<{

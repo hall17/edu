@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY apps/server/package.json ./apps/server/package.json
 COPY packages/common/package.json ./packages/common/package.json
-COPY packages/eslint-config-custom/package.json ./packages/eslint-config-custom/package.json
+COPY packages/eslint/package.json ./packages/eslint/package.json
 COPY packages/prettier/package.json ./packages/prettier/package.json
 
 

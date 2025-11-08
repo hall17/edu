@@ -1,13 +1,13 @@
 import { idSchema } from '@api/types';
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-
 import {
   curriculumCreateSchema,
   curriculumFindAllSchema,
   curriculumUpdateSchema,
-} from './curriculumModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+
 import { CurriculumService } from './curriculumService';
 
 const curriculumService = Container.get(CurriculumService);

@@ -1,7 +1,15 @@
 export const assessments = {
-  title: 'Assessment List',
-  description: 'Manage your assessments and their information here.',
+  title: 'Assessment Templates',
+  description: 'Manage your assessment templates and their information here.',
   addAssessment: 'Add Assessment',
+  tabs: {
+    templates: 'Assessment Templates',
+    assigned: 'Assigned Assessments',
+  },
+  assigned: {
+    title: 'Assigned Assessments',
+    description: 'View and manage assessments assigned to classrooms.',
+  },
   table: {
     filterPlaceholder: 'Filter assessments...',
     searchPlaceholder: 'Search assessments...',
@@ -23,7 +31,7 @@ export const assessments = {
     availableClassrooms: 'Available Classrooms',
     assign: 'Assign',
     alreadyAssigned: 'Already Assigned',
-    noIntegration: 'No Integration',
+    noIntegration: 'No Lesson Plan',
     success: 'Assessment assigned to classroom successfully.',
     error: 'Failed to assign assessment to classroom.',
   },

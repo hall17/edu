@@ -1,6 +1,7 @@
 import { CalendarRange, List, Columns, Grid3X3, Grid2X2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useCalendar } from '../contexts/calendar-context';
 import { TCalendarView } from '../types';
@@ -8,36 +9,37 @@ import { TCalendarView } from '../types';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 
-const tabs = [
-  {
-    name: 'Agenda',
-    value: 'agenda',
-    icon: () => <CalendarRange className="h-4 w-4" />,
-  },
-  {
-    name: 'Day',
-    value: 'day',
-    icon: () => <List className="h-4 w-4" />,
-  },
-  {
-    name: 'Week',
-    value: 'week',
-    icon: () => <Columns className="h-4 w-4" />,
-  },
-  {
-    name: 'Month',
-    value: 'month',
-    icon: () => <Grid3X3 className="h-4 w-4" />,
-  },
-  {
-    name: 'Year',
-    value: 'year',
-    icon: () => <Grid2X2 className="h-4 w-4" />,
-  },
-];
-
 function Views() {
+  const { t } = useTranslation();
   const { view, setView, availableViews } = useCalendar();
+
+  const tabs = [
+    {
+      nameKey: t('calendar.views.agenda'),
+      value: 'agenda',
+      icon: () => <CalendarRange className="h-4 w-4" />,
+    },
+    {
+      nameKey: t('calendar.views.day'),
+      value: 'day',
+      icon: () => <List className="h-4 w-4" />,
+    },
+    {
+      nameKey: t('calendar.views.week'),
+      value: 'week',
+      icon: () => <Columns className="h-4 w-4" />,
+    },
+    {
+      nameKey: t('calendar.views.month'),
+      value: 'month',
+      icon: () => <Grid3X3 className="h-4 w-4" />,
+    },
+    {
+      nameKey: t('calendar.views.year'),
+      value: 'year',
+      icon: () => <Grid2X2 className="h-4 w-4" />,
+    },
+  ];
 
   const filteredTabs = availableViews
     ? tabs.filter((tab) => availableViews.includes(tab.value as TCalendarView))
@@ -50,7 +52,7 @@ function Views() {
       className="w-full gap-4 sm:w-auto"
     >
       <TabsList className="h-auto w-full gap-2 rounded-xl p-1">
-        {filteredTabs.map(({ icon: Icon, name, value }) => {
+        {filteredTabs.map(({ icon: Icon, nameKey, value }) => {
           const isActive = view === value;
 
           return (
@@ -89,7 +91,7 @@ function Views() {
                         transition={{ duration: 0.25, ease: 'easeOut' }}
                         style={{ originX: 0 }}
                       >
-                        {name}
+                        {t(nameKey as any)}
                       </motion.span>
                     )}
                   </AnimatePresence>

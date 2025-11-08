@@ -4,17 +4,16 @@ import { curriculumInclude, subjectInclude } from '@api/libs/prisma/selections';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
+import {
+  CurriculumCreateDto,
+  CurriculumFindAllDto,
+  CurriculumUpdateDto,
+} from '@edusama/common';
 import { Service } from 'typedi';
 import z from 'zod';
 
 import { PAGE_SIZE } from '../../utils/constants';
 import { hasPermission } from '../../utils/hasPermission';
-
-import {
-  CurriculumCreateDto,
-  CurriculumFindAllDto,
-  CurriculumUpdateDto,
-} from './curriculumModel';
 
 @Service()
 export class CurriculumService {

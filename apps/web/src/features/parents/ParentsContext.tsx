@@ -17,7 +17,8 @@ type ParentsDialogType =
   | 'delete'
   | 'view'
   | 'suspend'
-  | 'changePassword';
+  | 'changePassword'
+  | 'enrollStudents';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =
@@ -31,12 +32,21 @@ function useProviderValue() {
     parentId: null,
   });
 
+  const [parentId, setParentId] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   const parentsQuery = useQuery(trpc.parent.findAll.queryOptions(filters));
 
   const queryKey = trpc.parent.findAll.queryKey(filters);
 
   const studentsQuery = useQuery(
     trpc.student.findAll.queryOptions(studentFilters)
+  );
+
+  const searchStudentsQuery = useQuery(
+    trpc.student.findAll.queryOptions({
+      q: searchQuery,
+    })
   );
 
   function createParent(parent: Parent) {
@@ -93,6 +103,11 @@ function useProviderValue() {
     studentsQuery,
     studentFilters,
     setStudentFilters,
+    parentId,
+    setParentId,
+    searchQuery,
+    setSearchQuery,
+    searchStudentsQuery,
   };
 }
 

@@ -5,16 +5,15 @@ import { generateSignedUrl } from '@api/libs/s3';
 import { Prisma, ClassroomTemplate } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-import { hasPermission } from '../../utils/hasPermission';
-
 import {
   ClassroomTemplateCreateDto,
   ClassroomTemplateFindAllDto,
   ClassroomTemplateUpdateDto,
-} from './classroomTemplateModel';
+} from '@edusama/common';
+import { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
+import { hasPermission } from '../../utils/hasPermission';
 
 type ClassroomTemplateData = Prisma.ClassroomTemplateGetPayload<{
   include: typeof classroomTemplateInclude;

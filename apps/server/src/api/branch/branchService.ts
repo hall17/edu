@@ -1,22 +1,26 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
 import { branchInclude } from '@api/libs/prisma/selections';
-import { Prisma } from '@api/prisma/generated/prisma/client';
+import { generateSignedUrl } from '@api/libs/s3';
+import { Branch, Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
-import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import dayjs from 'dayjs';
-import { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-
+import {
+  BranchUpdateMyBranchDto,
+  MODULE_CODES,
+  PERMISSIONS,
+} from '@edusama/common';
 import {
   BranchCreateDto,
   BranchFindAllDto,
   BranchUpdateDto,
   BranchUpdateStatusDto,
   ModuleUpdateStatusDto,
-} from './branchModel';
+} from '@edusama/common';
+import dayjs from 'dayjs';
+import { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
 
 @Service()
 export class BranchService {
@@ -62,6 +66,7 @@ export class BranchService {
         ...where,
         OR: [
           { name: { contains: q, mode: 'insensitive' } },
+          { slug: { contains: q, mode: 'insensitive' } },
           { location: { contains: q, mode: 'insensitive' } },
           { contact: { contains: q, mode: 'insensitive' } },
         ],
@@ -85,8 +90,12 @@ export class BranchService {
       }),
     ]);
 
+    const branchesWithData = await Promise.all(
+      branches.map((branch) => this.createBranchData(requestedBy, branch))
+    );
+
     return {
-      branches,
+      branches: branchesWithData,
       pagination: {
         page,
         size,
@@ -121,7 +130,7 @@ export class BranchService {
       throw new CustomError(HTTP_EXCEPTIONS.BRANCH_NOT_FOUND);
     }
 
-    return branch;
+    return this.createBranchData(requestedBy, branch);
   }
 
   async create(requestedBy: TokenUser, dto: BranchCreateDto) {
@@ -151,10 +160,30 @@ export class BranchService {
       throw new CustomError(HTTP_EXCEPTIONS.BRANCH_ALREADY_EXISTS);
     }
 
+    if (dto.logoUrl) {
+      const extension = dto.logoUrl.split('.').pop();
+      dto.logoUrl = `logo.${extension}`;
+    }
+
     const branch = await prisma.branch.create({
       data: dto,
       include: branchInclude,
     });
+
+    if (dto.logoUrl) {
+      const signedAwsS3Url = await generateSignedUrl(
+        'putObject',
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        undefined,
+        dto.logoUrl
+      );
+
+      return {
+        ...branch,
+        signedAwsS3Url,
+      };
+    }
 
     return branch;
   }
@@ -208,22 +237,30 @@ export class BranchService {
       include: branchInclude,
     });
 
-    return branch;
+    if (updateData.logoUrl) {
+      const signedAwsS3Url = await generateSignedUrl(
+        'putObject',
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        undefined,
+        updateData.logoUrl
+      );
+
+      return {
+        ...branch,
+        signedAwsS3Url,
+      };
+    }
+
+    return this.createBranchData(requestedBy, branch);
+  }
+
+  async updateMyBranch(requestedBy: TokenUser, dto: BranchUpdateMyBranchDto) {
+    return this.update(requestedBy, dto);
   }
 
   async updateStatus(requestedBy: TokenUser, dto: BranchUpdateStatusDto) {
-    if (!requestedBy.isSuperAdmin) {
-      throw new CustomError(HTTP_EXCEPTIONS.FORBIDDEN);
-    }
-
-    const { id, ...updateData } = dto;
-
-    const branch = await prisma.branch.update({
-      where: { id },
-      data: updateData,
-    });
-
-    return branch;
+    return this.update(requestedBy, dto);
   }
 
   async delete(requestedBy: TokenUser, id: number) {
@@ -334,5 +371,23 @@ export class BranchService {
     });
 
     return { success: true };
+  }
+
+  private async createBranchData<T extends Branch>(
+    requestedBy: TokenUser,
+    branch: T
+  ) {
+    if (branch.logoUrl) {
+      const url = await generateSignedUrl(
+        'getObject',
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        undefined,
+        branch.logoUrl
+      );
+      branch.logoUrl = url;
+    }
+
+    return branch;
   }
 }

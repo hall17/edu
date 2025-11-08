@@ -1,9 +1,5 @@
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-import { idSchema } from '../../types';
-
 import {
+  idSchema,
   attendanceRecordCreateSchema,
   attendanceRecordFindAllSchema,
   attendanceRecordUpdateSchema,
@@ -14,7 +10,11 @@ import {
   attendanceNotificationFindAllSchema,
   attendanceNotificationUpdateSchema,
   attendanceRecordBulkCreateSchema,
-} from './attendanceModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+
 import { AttendanceService } from './attendanceService';
 
 const attendanceService = Container.get(AttendanceService);

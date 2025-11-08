@@ -1,5 +1,5 @@
-import baseConfig from '@edusama/eslint-config-custom/base';
-import viteConfig from '@edusama/eslint-config-custom/vite';
+import baseConfig from 'packages/eslint/base';
+import viteConfig from 'packages/eslint/vite';
 import pluginRouter from '@tanstack/eslint-plugin-router';
 
 /** @type {import('typescript-eslint').Config} */

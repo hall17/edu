@@ -16,7 +16,7 @@ import {
 
 interface DroppableImageProps {
   value?: string;
-  onChange: (value: string | undefined) => void;
+  onChange: (file: File | null) => void;
   disabled?: boolean;
   accept?: Record<string, string[]>;
   maxSize?: number; // in bytes
@@ -135,7 +135,7 @@ export function DroppableImage({
         reader.onload = (e) => {
           const base64 = e.target?.result as string;
           setImagePreview(base64);
-          onChange(base64);
+          onChange(file);
         };
         reader.readAsDataURL(file);
       }
@@ -144,7 +144,7 @@ export function DroppableImage({
   );
 
   const removeImage = useCallback(() => {
-    onChange(undefined);
+    onChange(null);
     setImagePreview(null);
     setIsPreviewOpen(false);
   }, [onChange]);
@@ -191,7 +191,7 @@ export function DroppableImage({
   );
 
   return (
-    <FormItem className="justify-center">
+    <FormItem className="justify-center" autoFocus={false}>
       {label && (
         <div className="mb-4 text-center">
           <p className="text-sm font-medium">{label}</p>
@@ -200,107 +200,104 @@ export function DroppableImage({
       <div className="flex items-center justify-center gap-4">
         {/* Droppable Image */}
         <div className="relative">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                {...getImageRootProps()}
+                className={`group relative cursor-pointer transition-all duration-200 ${
+                  disabled ? 'cursor-not-allowed opacity-50' : ''
+                } ${className} ${
+                  isImageDragActive && !disabled
+                    ? 'ring-primary scale-105 ring-2 ring-offset-2'
+                    : ''
+                }`}
+                onClick={handleClick}
+              >
+                <FormControl>
+                  <input
+                    {...getImageInputProps()}
+                    ref={combinedInputRef}
+                    disabled={disabled}
+                  />
+                </FormControl>
                 <div
-                  {...getImageRootProps()}
-                  className={`group relative cursor-pointer transition-all duration-200 ${
-                    disabled ? 'cursor-not-allowed opacity-50' : ''
-                  } ${className} ${
-                    isImageDragActive && !disabled
-                      ? 'ring-primary scale-105 ring-2 ring-offset-2'
-                      : ''
-                  }`}
-                  onClick={handleClick}
+                  className={`border-muted-foreground/25 group-hover:border-primary/50 overflow-hidden rounded-lg border-2 border-dashed transition-all duration-200 ${
+                    sizeClasses[size]
+                  } ${customSize} }`}
                 >
-                  <FormControl>
-                    <input
-                      {...getImageInputProps()}
-                      ref={combinedInputRef}
-                      disabled={disabled}
+                  {imagePreview || value ? (
+                    <img
+                      src={imagePreview || value}
+                      alt="Image preview"
+                      className="h-full w-full object-cover transition-all duration-200 group-hover:brightness-75"
                     />
-                  </FormControl>
-                  <div
-                    className={`border-muted-foreground/25 group-hover:border-primary/50 overflow-hidden rounded-lg border-2 border-dashed transition-all duration-200 ${
-                      sizeClasses[size]
-                    } ${customSize} }`}
-                  >
-                    {imagePreview || value ? (
-                      <img
-                        src={imagePreview || value}
-                        alt="Image preview"
-                        className="h-full w-full object-cover transition-all duration-200 group-hover:brightness-75"
+                  ) : (
+                    <div className="bg-muted/20 flex h-full items-center justify-center">
+                      <Camera
+                        className={`${iconSizes[size]} text-muted-foreground`}
                       />
-                    ) : (
-                      <div className="bg-muted/20 flex h-full items-center justify-center">
-                        <Camera
-                          className={`${iconSizes[size]} text-muted-foreground`}
-                        />
+                    </div>
+                  )}
+                </div>
+
+                {/* Hover Overlay with Actions */}
+                {!disabled && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    {value || imagePreview ? (
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className={`${buttonSizes[size]} rounded-full bg-white/20 p-0 text-white hover:bg-white/30`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            dropzoneInputRef.current?.click();
+                          }}
+                        >
+                          <Edit className={actionIconSizes[size]} />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className={`${buttonSizes[size]} rounded-full bg-white/20 p-0 text-white hover:bg-red-500/80`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeImage();
+                          }}
+                        >
+                          <Trash2 className={actionIconSizes[size]} />
+                        </Button>
                       </div>
+                    ) : (
+                      <Camera className={`${iconSizes[size]} text-white`} />
                     )}
                   </div>
+                )}
 
-                  {/* Hover Overlay with Actions */}
-                  {!disabled && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                      {value || imagePreview ? (
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className={`${buttonSizes[size]} rounded-full bg-white/20 p-0 text-white hover:bg-white/30`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              dropzoneInputRef.current?.click();
-                            }}
-                          >
-                            <Edit className={actionIconSizes[size]} />
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className={`${buttonSizes[size]} rounded-full bg-white/20 p-0 text-white hover:bg-red-500/80`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeImage();
-                            }}
-                          >
-                            <Trash2 className={actionIconSizes[size]} />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Camera className={`${iconSizes[size]} text-white`} />
-                      )}
-                    </div>
-                  )}
+                {/* Drag Active Overlay */}
+                {isImageDragActive && !disabled && (
+                  <div className="bg-primary/20 ring-primary absolute inset-0 flex items-center justify-center rounded-lg ring-2">
+                    <Upload className={`${iconSizes[size]} text-primary`} />
+                  </div>
+                )}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <div className="text-center">
+                <p className="font-medium">
+                  {value || imagePreview
+                    ? changeText || t('common.changeImage')
+                    : uploadText || t('common.uploadImage')}
+                </p>
+                <p className="text-xs">
+                  {helpText || t('common.imageUploadHelp')}
+                </p>
+              </div>
+            </TooltipContent>
+          </Tooltip>
 
-                  {/* Drag Active Overlay */}
-                  {isImageDragActive && !disabled && (
-                    <div className="bg-primary/20 ring-primary absolute inset-0 flex items-center justify-center rounded-lg ring-2">
-                      <Upload className={`${iconSizes[size]} text-primary`} />
-                    </div>
-                  )}
-                </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <div className="text-center">
-                  <p className="font-medium">
-                    {value || imagePreview
-                      ? changeText || t('common.changeImage')
-                      : uploadText || t('common.uploadImage')}
-                  </p>
-                  <p className="text-xs">
-                    {helpText || t('common.imageUploadHelp')}
-                  </p>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-
-          {/* Image Preview Dialog */}
           <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
             <DialogTrigger asChild>
               <div className="hidden" />

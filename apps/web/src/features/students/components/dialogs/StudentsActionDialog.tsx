@@ -25,6 +25,7 @@ import {
   UnsavedChangesDialog,
 } from '@/components';
 import { DatePicker } from '@/components/DatePicker';
+import { DroppableImage } from '@/components/DroppableImage';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
 import {
@@ -143,6 +144,9 @@ export function StudentsActionDialog() {
   >('single-import');
 
   const [file, setFile] = useState<File | null>(null);
+  const [profilePictureFile, setProfilePictureFile] = useState<File | null>(
+    null
+  );
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const isEdit = !!currentRow;
@@ -243,6 +247,13 @@ export function StudentsActionDialog() {
 
         toast.success(t('dialogs.action.success.updateStudent'));
         updateStudent(response as unknown as Student);
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: profilePictureFile,
+          });
+        }
       } else {
         const createData = {
           ...values,
@@ -255,6 +266,14 @@ export function StudentsActionDialog() {
 
         toast.success(t('dialogs.action.success.createStudent'));
         createStudent(response as unknown as Student);
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: profilePictureFile,
+          });
+          console.log('profilePictureFile', profilePictureFile);
+        }
       }
     } catch {}
 
@@ -365,7 +384,7 @@ export function StudentsActionDialog() {
         Object.keys(diff.deleted).length > 0;
     }
 
-    if (!state && (isDirty || file)) {
+    if (!state && (isDirty || file || profilePictureFile)) {
       // User is trying to close and form is dirty or file is selected
       setShowConfirmDialog(true);
     } else {
@@ -378,6 +397,7 @@ export function StudentsActionDialog() {
     setShowConfirmDialog(false);
     form.reset();
     setFile(null);
+    setProfilePictureFile(null);
     setOpenedDialog(null);
   }
 
@@ -393,135 +413,170 @@ export function StudentsActionDialog() {
             {t('students.actionDialog.sections.personalInformation')}
           </span>
         </div>
-        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+        <div className="grid w-full grid-cols-1 space-y-4 gap-x-2 md:grid-cols-6">
           <FormField
             control={form.control}
-            name="firstName"
+            name="profilePictureUrl"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.firstName')}</FormLabel>
+              <FormItem className="md:col-span-2 lg:col-span-1">
+                <FormLabel className="justify-center">
+                  {t('common.profilePicture')}
+                </FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.firstName'
-                    )}
-                    autoComplete="off"
-                    {...field}
+                  <DroppableImage
+                    size="2xl"
+                    value={field.value}
+                    onChange={(file) => {
+                      field.onChange(file ? file.name : undefined);
+                      setProfilePictureFile(file);
+                    }}
+                    uploadText={t('common.uploadProfilePicture')}
+                    changeText={t('common.changeProfilePicture')}
+                    helpText={t('common.profilePictureUploadHelp')}
+                    previewTitle={t('common.profilePicture')}
+                    previewSubtitle={t('common.profilePicturePreview')}
+                    maxSize={5 * 1024 * 1024}
+                    accept={{
+                      'image/*': ['.jpeg', '.jpg', '.png', '.webp'],
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.lastName')}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.lastName'
-                    )}
-                    autoComplete="off"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="nationalId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.nationalId')}</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t(
-                      'students.actionDialog.placeholders.nationalId'
-                    )}
-                    {...field}
-                    value={field.value ?? ''}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.dateOfBirth')}</FormLabel>
-                <div>
-                  <DatePicker
-                    selected={field.value ?? undefined}
-                    onSelect={field.onChange}
-                    placeholder={t('common.selectDateOfBirth')}
-                  />
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel required>{t('common.gender')}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value ?? undefined}
-                >
+          <div className="grid w-full grid-cols-1 items-start gap-4 md:col-span-4 md:grid-cols-2 lg:col-span-5">
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.firstName')}</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={t('common.selectGender')} />
-                    </SelectTrigger>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.firstName'
+                      )}
+                      autoComplete="off"
+                      {...field}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {Object.values(Gender).map((gender) => (
-                      <SelectItem key={gender} value={gender}>
-                        {t(`genders.${gender}`)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="parentId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('common.parent')}</FormLabel>
-                <div>
-                  <Combobox
-                    options={
-                      parentsQuery.data?.parents?.map((parent) => ({
-                        label: `${parent.firstName} ${parent.lastName}`,
-                        value: parent.id,
-                      })) ?? []
-                    }
-                    value={field.value ?? ''}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.lastName')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.lastName'
+                      )}
+                      autoComplete="off"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="nationalId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.nationalId')}</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={t(
+                        'students.actionDialog.placeholders.nationalId'
+                      )}
+                      {...field}
+                      value={field.value ?? ''}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.dateOfBirth')}</FormLabel>
+                  <div>
+                    <DatePicker
+                      selected={field.value ?? undefined}
+                      onSelect={field.onChange}
+                      placeholder={t('common.selectDateOfBirth')}
+                    />
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel required>{t('common.gender')}</FormLabel>
+                  <Select
                     onValueChange={field.onChange}
-                    placeholder={t('students.actionDialog.placeholders.parent')}
-                    searchPlaceholder={t('combobox.searchParents')}
-                    emptyText={t('combobox.noParentsFound')}
-                    disabled={parentsQuery.isLoading}
-                  />
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    value={field.value ?? undefined}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t('common.selectGender')} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(Gender).map((gender) => (
+                        <SelectItem key={gender} value={gender}>
+                          {t(`genders.${gender}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="parentId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('common.parent')}</FormLabel>
+                  <div>
+                    <Combobox
+                      options={
+                        parentsQuery.data?.parents?.map((parent) => ({
+                          label: `${parent.firstName} ${parent.lastName}`,
+                          value: parent.id,
+                        })) ?? []
+                      }
+                      value={field.value ?? ''}
+                      onValueChange={field.onChange}
+                      placeholder={t(
+                        'students.actionDialog.placeholders.parent'
+                      )}
+                      searchPlaceholder={t('combobox.searchParents')}
+                      emptyText={t('combobox.noParentsFound')}
+                      disabled={parentsQuery.isLoading}
+                    />
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -887,6 +942,7 @@ export function StudentsActionDialog() {
                     id="student-form"
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-4 p-0.5"
+                    tabIndex={0}
                   >
                     {renderFormFields()}
                   </form>

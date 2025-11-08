@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -17,6 +17,9 @@ import { trpc } from '@/lib/trpc';
 
 function useProviderValue() {
   const { t } = useTranslation();
+  const [classroomImageFile, setClassroomImageFile] = useState<File | null>(
+    null
+  );
 
   const subjectsQuery = useQuery(
     trpc.subject.findAll.queryOptions({ all: true })
@@ -63,6 +66,8 @@ function useProviderValue() {
     watchedIntegrations,
     subjects: subjectsQuery.data?.subjects ?? [],
     subjectsQuery,
+    classroomImageFile,
+    setClassroomImageFile,
   };
 }
 

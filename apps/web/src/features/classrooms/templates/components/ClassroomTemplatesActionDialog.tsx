@@ -239,6 +239,7 @@ export function ClassroomTemplatesActionDialog() {
                 noValidate
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex-1 space-y-6"
+                tabIndex={0}
               >
                 <Tabs
                   value={activeTab}

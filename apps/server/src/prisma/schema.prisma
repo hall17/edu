@@ -209,20 +209,22 @@ enum WidgetStatus {
 
 // 1. Top-level entities (no dependencies)
 model Company {
-  id      Int           @id @default(autoincrement())
-  slug    String        @unique @db.VarChar(50)
-  name    String        @db.VarChar(50)
-  status  CompanyStatus @default(ACTIVE)
-  logoUrl String?       @db.VarChar(255)
-
-  statusUpdateReason String?   @db.VarChar(500)
-  statusUpdatedAt    DateTime?
-  statusUpdatedBy    String?
+  id              Int           @id @default(autoincrement())
+  slug            String        @unique @db.VarChar(50)
+  name            String        @db.VarChar(50)
+  status          CompanyStatus @default(ACTIVE)
+  logoUrl         String?       @db.VarChar(255)
+  websiteUrl      String?       @db.VarChar(255)
+  maximumBranches Int           @default(50)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
   deletedBy String?
+
+  statusUpdatedAt    DateTime?
+  statusUpdatedBy    String?
+  statusUpdateReason String?   @db.VarChar(500)
 
   statusUpdatedByUser User? @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
   deletedByUser       User? @relation("DeletedBy", fields: [deletedBy], references: [id])
@@ -237,6 +239,7 @@ model Module {
   description  String?
   version      String?      @default("1.0.0")
   status       ModuleStatus @default(ACTIVE)
+  videoUrl     String?      @db.VarChar(255)
   canBeDeleted Boolean      @default(true)
   isDefault    Boolean      @default(false)
 
@@ -334,6 +337,15 @@ model User {
   createdNotifications                                    AssessmentNotification[]                @relation("AssessmentNotificationCreator")
   evaluatedAssessments                                    StudentClassroomIntegrationAssessment[] @relation("EvaluatedBy")
   attendanceRecordCompletedByClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("AttendanceRecordCompletedBy")
+  meetingIntegrations                                     UserMeetingIntegration[]
+}
+
+model UserMeetingIntegration {
+  id     String @id @default(uuid())
+  userId String
+  data   Json
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Title {
@@ -458,18 +470,15 @@ model Widget {
 // 2. Direct children of top-level entities
 model Branch {
   id              Int          @id @default(autoincrement())
+  companyId       Int
   slug            String       @unique @db.VarChar(50)
-  status          BranchStatus @default(ACTIVE)
   name            String       @db.VarChar(50)
+  status          BranchStatus @default(ACTIVE)
   logoUrl         String?      @db.VarChar(255)
   location        String?      @db.VarChar(255)
   contact         String?      @db.VarChar(255)
   canBeDeleted    Boolean      @default(true)
   maximumStudents Int          @default(250)
-  zoomApiKey      String?      @db.VarChar(255)
-  zoomApiSecret   String?      @db.VarChar(255)
-
-  companyId Int
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -1271,6 +1280,7 @@ model Question {
   type         QuestionType
   difficulty   QuestionDifficulty
   questionText String
+  imageUrl     String?
 
   // Polymorphic fields for different question types
   questionData Json?

@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { ColumnFiltersState } from '@tanstack/react-table';
-import { Ban, Check, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Ban, Check, Eye, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useCompaniesContext } from '../CompaniesContext';
@@ -53,7 +53,8 @@ export function CompaniesTable() {
 
 export function useColumns(): ColumnDef<Company>[] {
   const { t } = useTranslation();
-  const { setOpenedDialog, setCurrentRow } = useCompaniesContext();
+  const { setOpenedDialog, setCurrentRow, openAddBranchDialog } =
+    useCompaniesContext();
 
   return [
     SelectItemColumnDef as ColumnDef<Company>,
@@ -186,6 +187,16 @@ export function useColumns(): ColumnDef<Company>[] {
         return (
           <CustomDataTableRowActions
             items={[
+              {
+                icon: <Plus className="size-5" />,
+                className: 'hover:text-green-500',
+                onClick: () => {
+                  openAddBranchDialog(row.original.id);
+                },
+                tooltip: t(
+                  'companiesAndBranches.companies.table.actions.addBranch'
+                ),
+              },
               {
                 icon: <Eye className="size-5" />,
                 onClick: () => {

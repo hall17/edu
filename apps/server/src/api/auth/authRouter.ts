@@ -1,8 +1,4 @@
 import { verifyToken } from '@api/middlewares/trpc';
-import Container from 'typedi';
-
-import { protectedProcedure, publicProcedure, t } from '../../trpc';
-
 import {
   changeActiveBranchSchema,
   completeSignupSchema,
@@ -13,7 +9,11 @@ import {
   updateMeSchema,
   updateUserPreferencesSchema,
   verifyTokenSchema,
-} from './authModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, publicProcedure, t } from '../../trpc';
+
 import { AuthService } from './authService';
 
 const authService = Container.get(AuthService);

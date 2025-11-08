@@ -41,10 +41,6 @@ export const branchSettings = {
     logo: 'Logo',
     suspendedReason: 'Suspended Reason',
     suspendedAt: 'Suspended At',
-    statusUpdateReason: 'Status Update Reason',
-    statusUpdateReasonDescription:
-      'Reason for the current status (if applicable).',
-    statusUpdateReasonPlaceholder: 'Enter reason for status update...',
     // Form placeholders and help text
     namePlaceholder: 'Enter branch name',
     locationPlaceholder: 'Enter branch location',

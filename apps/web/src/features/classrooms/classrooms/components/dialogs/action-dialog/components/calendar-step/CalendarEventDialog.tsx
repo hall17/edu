@@ -1,11 +1,9 @@
-import { AttendanceStatus } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { detailedDiff } from 'deep-object-diff';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'sonner';
 import z from 'zod';
 
 import { useClassroomForm } from '../../ClassroomFormContext';
@@ -36,13 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ClassroomSessionFormProvider } from '@/context/ClassroomSessionFormContext';
-import { ClassroomSessionInformationForm } from '@/features/classrooms/classroom-details/sessions/dialogs/action-dialog/ClassroomSessionInformationForm';
-import {
-  type ClassroomSessionFormData,
-  classroomSessionFormSchema,
-} from '@/lib/schemas/classroomSessionFormSchema';
-import { ClassroomFromFindOne, ClassroomIntegrationSession } from '@/lib/trpc';
+import { ClassroomIntegrationSession } from '@/lib/trpc';
 
 const formSchema = z.object({
   teacherId: z.string().min(1),
@@ -171,7 +163,9 @@ export function CalendarEventDialog(props: Props) {
       <Dialog open={!!event} onOpenChange={handleDialogClose}>
         <DialogContent className="min-w-[60vw]">
           <DialogHeader>
-            <DialogTitle>{t('sessions.createDialog.editTitle')}</DialogTitle>
+            <DialogTitle>
+              {t('classrooms.calendar.actionDialog.editTitle')}
+            </DialogTitle>
             <DialogDescription>
               {event && (
                 <>
@@ -196,14 +190,14 @@ export function CalendarEventDialog(props: Props) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel required>
-                      {t('sessions.createDialog.teacherLabel')}
+                      {t('classrooms.calendar.actionDialog.teacherLabel')}
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl className="w-full">
                         <SelectTrigger>
                           <SelectValue
                             placeholder={t(
-                              'sessions.createDialog.teacherPlaceholder'
+                              'classrooms.calendar.actionDialog.teacherPlaceholder'
                             )}
                           />
                         </SelectTrigger>
@@ -229,7 +223,7 @@ export function CalendarEventDialog(props: Props) {
                   return (
                     <FormItem>
                       <FormLabel>
-                        {t('sessions.createDialog.lessonLabel')}
+                        {t('classrooms.calendar.actionDialog.lessonLabel')}
                       </FormLabel>
                       <FormControl>
                         <MultiSelect
@@ -244,7 +238,7 @@ export function CalendarEventDialog(props: Props) {
                           defaultValue={field.value || []}
                           onValueChange={field.onChange}
                           placeholder={t(
-                            'sessions.createDialog.lessonPlaceholder'
+                            'classrooms.calendar.actionDialog.lessonPlaceholder'
                           )}
                         />
                       </FormControl>
@@ -259,13 +253,13 @@ export function CalendarEventDialog(props: Props) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      {t('sessions.createDialog.descriptionLabel')}
+                      {t('classrooms.calendar.actionDialog.descriptionLabel')}
                     </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         placeholder={t(
-                          'sessions.createDialog.descriptionPlaceholder'
+                          'classrooms.calendar.actionDialog.descriptionPlaceholder'
                         )}
                       />
                     </FormControl>
@@ -282,10 +276,10 @@ export function CalendarEventDialog(props: Props) {
               variant="outline"
               onClick={handleConfirmClose}
             >
-              {t('sessions.createDialog.cancel')}
+              {t('classrooms.calendar.actionDialog.cancel')}
             </Button>
             <Button type="submit" form="session-form">
-              {t('sessions.createDialog.update')}
+              {t('classrooms.calendar.actionDialog.update')}
             </Button>
           </DialogFooter>
         </DialogContent>

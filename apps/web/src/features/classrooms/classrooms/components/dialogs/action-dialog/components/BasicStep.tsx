@@ -20,7 +20,12 @@ import { trpc } from '@/lib/trpc';
 
 export function BasicStep() {
   const { t } = useTranslation();
-  const { form, resetFormToInitialValues } = useClassroomForm();
+  const {
+    form,
+    resetFormToInitialValues,
+    classroomImageFile,
+    setClassroomImageFile,
+  } = useClassroomForm();
 
   const templatesQuery = useQuery(
     trpc.classroomTemplate.findAll.queryOptions({ all: true })
@@ -76,9 +81,7 @@ export function BasicStep() {
 
   return (
     <div className="space-y-4">
-      {/* Template Selection */}
       <div className="grid w-full grid-cols-1 space-y-4 gap-x-2 md:grid-cols-6">
-        {/* Image Upload Field */}
         <FormField
           control={form.control}
           name="imageUrl"
@@ -91,7 +94,11 @@ export function BasicStep() {
                 <DroppableImage
                   size="2xl"
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(file) => {
+                    console.log('file', file);
+                    field.onChange(file ? file.name : undefined);
+                    setClassroomImageFile(file);
+                  }}
                   uploadText={t('classrooms.actionDialog.fields.uploadImage')}
                   changeText={t('classrooms.actionDialog.fields.changeImage')}
                   helpText={t('classrooms.actionDialog.fields.imageUploadHelp')}

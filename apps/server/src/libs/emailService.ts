@@ -17,9 +17,9 @@
  * 3. Use the App Password as SMTP_PASSWORD
  */
 
-import { SendInvitationEmailDto } from '@api/api/auth/authModel';
 import { StudentUpdateSignupStatusDto } from '@api/api/student/studentModel';
 import { env } from '@api/env';
+import { SendInvitationEmailDto } from '@edusama/common';
 import ejs from 'ejs';
 import nodemailer from 'nodemailer';
 

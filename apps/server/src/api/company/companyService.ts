@@ -1,18 +1,18 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
 import { companyInclude } from '@api/libs/prisma/selections';
+import { generateSignedUrl } from '@api/libs/s3';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
-import { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-
 import {
   CompanyCreateDto,
   CompanyFindAllDto,
   CompanyUpdateStatusDto,
   CompanyUpdateDto,
-} from './companyModel';
+} from '@edusama/common';
+import { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
 
 @Service()
 export class CompanyService {
@@ -46,7 +46,10 @@ export class CompanyService {
     if (q) {
       where = {
         ...where,
-        OR: [{ name: { contains: q, mode: 'insensitive' } }],
+        OR: [
+          { name: { contains: q, mode: 'insensitive' } },
+          { slug: { contains: q, mode: 'insensitive' } },
+        ],
       };
     }
 
@@ -102,6 +105,11 @@ export class CompanyService {
       throw new CustomError(HTTP_EXCEPTIONS.FORBIDDEN);
     }
 
+    if (dto.logoUrl) {
+      const extension = dto.logoUrl.split('.').pop();
+      dto.logoUrl = `logo.${extension}`;
+    }
+
     // Check if company with same name already exists
     const existingCompany = await prisma.company.findFirst({
       where: {
@@ -117,6 +125,21 @@ export class CompanyService {
       data: dto,
       include: companyInclude,
     });
+
+    if (dto.logoUrl) {
+      const signedAwsS3Url = await generateSignedUrl(
+        'putObject',
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        undefined,
+        dto.logoUrl
+      );
+
+      return {
+        ...company,
+        signedAwsS3Url,
+      };
+    }
 
     return company;
   }
@@ -151,11 +174,30 @@ export class CompanyService {
       }
     }
 
+    if (updateData.logoUrl) {
+      const extension = updateData.logoUrl.split('.').pop();
+      updateData.logoUrl = `logo.${extension}`;
+    }
+
     const company = await prisma.company.update({
       where: { id },
       data: updateData,
       include: companyInclude,
     });
+
+    if (updateData.logoUrl) {
+      const signedAwsS3Url = await generateSignedUrl(
+        'putObject',
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        undefined,
+        updateData.logoUrl
+      );
+      return {
+        ...company,
+        signedAwsS3Url,
+      };
+    }
 
     return company;
   }

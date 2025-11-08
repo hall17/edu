@@ -29,6 +29,7 @@ export const companiesAndBranches = {
       },
       actions: {
         openMenu: 'Menüyü aç',
+        addBranch: 'Şube Ekle',
         view: 'Görüntüle',
         edit: 'Düzenle',
         delete: 'Sil',
@@ -77,6 +78,8 @@ export const companiesAndBranches = {
       form: {
         name: 'Ad',
         slug: 'Kısa Ad',
+        websiteUrl: 'Web Sitesi URL',
+        maximumBranches: 'Maksimum Şube Sayısı',
         location: 'Konum',
         contact: 'İletişim',
         company: 'Şirket',
@@ -143,10 +146,13 @@ export const companiesAndBranches = {
         slug: 'Kısa Ad',
         location: 'Konum',
         contact: 'İletişim',
+        canBeDeleted: 'Silinebilir',
+        maximumStudents: 'Maksimum Öğrenci Sayısı',
         company: 'Şirket',
         status: 'Statü',
         selectCompany: 'Şirket seçin',
         selectStatus: 'Statü seçin',
+        selectCanBeDeleted: 'Seçenek seçin',
       },
     },
     deleteDialog: {

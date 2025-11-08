@@ -1,8 +1,4 @@
 import { idSchema } from '@api/types';
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-
 import {
   classroomCreateSchema,
   classroomFindAllSchema,
@@ -18,7 +14,11 @@ import {
   updateIntegrationSessionSchema,
   classroomUpdateStatusSchema,
   findAllIntegrationSessionsSchema,
-} from './classroomModel';
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+
 import { ClassroomService } from './classroomService';
 
 const classroomService = Container.get(ClassroomService);

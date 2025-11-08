@@ -409,6 +409,18 @@ export const common = {
     address: 'Adres',
     zipCode: 'Posta Kodu',
     profilePictureUrl: 'Profil Fotoğrafı',
+    profilePicture: 'Profil Fotoğrafı',
+    uploadProfilePicture: 'Fotoğraf Yükle',
+    changeProfilePicture: 'Fotoğrafı Değiştir',
+    profilePictureUploadHelp:
+      'Resme tıklayın veya sürükleyin • PNG, JPG, WEBP en fazla 5MB',
+    profilePicturePreview: 'Profil Fotoğrafı Önizleme',
+    logoUrl: 'Logo',
+    uploadLogo: 'Logo Yükle',
+    changeLogo: 'Logoyu Değiştir',
+    logoUploadHelp:
+      'Resme tıklayın veya sürükleyin • PNG, JPG, WEBP en fazla 5MB',
+    logoPreview: 'Logo Önizleme',
     fullName: 'Ad Soyad',
     status: 'Statü',
     type: 'Tür',

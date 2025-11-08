@@ -2,6 +2,7 @@ import { assessments } from './tr/assessmentsTr';
 import { attendance } from './tr/attendanceTr';
 import { auth } from './tr/authTr';
 import { branchSettings } from './tr/branchSettingsTr';
+import { calendar } from './tr/calendarTr';
 import { classrooms } from './tr/classroomsTr';
 import { common } from './tr/commonTr';
 import { companiesAndBranches } from './tr/companiesAndBranchesTr';
@@ -11,7 +12,6 @@ import { modules } from './tr/modulesTr';
 import { parents } from './tr/parentsTr';
 import { questionBank } from './tr/questionBankTr';
 import { roles } from './tr/rolesTr';
-import { sessions } from './tr/sessionsTr';
 import { settings } from './tr/settingsTr';
 import { students } from './tr/studentsTr';
 import { subjects } from './tr/subjectsTr';
@@ -33,7 +33,7 @@ export const tr = {
     parents,
     questionBank,
     roles,
-    sessions,
+    calendar,
     settings,
     students,
     subjects,

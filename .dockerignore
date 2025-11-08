@@ -33,7 +33,7 @@
 **/.husky*
 **/.lintstagedrc.json
 **/.prettier*
-!packages/eslint-config-custom/package.json
+!packages/eslint/package.json
 !packages/prettier/*
 
 # Docker files

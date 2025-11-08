@@ -1,4 +1,8 @@
-import { BranchStatus } from '@edusama/common';
+import {
+  BranchUpdateDto,
+  BranchUpdateMyBranchDto,
+  branchUpdateMyBranchSchema,
+} from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
@@ -8,12 +12,12 @@ import {
   MapPin,
   Phone,
   Save,
+  Settings,
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
 import { LoadingButton } from '@/components';
 import { DroppableImage } from '@/components/DroppableImage';
@@ -41,14 +45,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/stores/authStore';
 
-const branchUpdateSchema = z.object({
-  name: z.string().min(1).max(50),
-  location: z.string().optional(),
-  contact: z.string().optional(),
-  logoUrl: z.string().optional(),
-});
-
-type BranchUpdateFormData = z.infer<typeof branchUpdateSchema>;
+type BranchUpdateFormData = BranchUpdateDto;
 
 interface BranchSettingsContentProps {
   onCancel: () => void;
@@ -60,7 +57,11 @@ export function BranchSettingsContent({
   const { t } = useTranslation();
   const { user } = useAuth();
 
-  const { data: branch, isLoading } = useQuery(
+  const {
+    data: branch,
+    isLoading,
+    refetch,
+  } = useQuery(
     trpc.branch.findOne.queryOptions(
       {
         id: user?.activeBranchId ?? 0,
@@ -70,34 +71,18 @@ export function BranchSettingsContent({
       }
     )
   );
+  const updateBranch = useMutation(trpc.branch.update.mutationOptions());
 
-  const updateBranch = useMutation(
-    trpc.branch.update.mutationOptions({
-      onSuccess: () => {
-        toast.success(t('branchSettings.updateSuccess'));
-        onCancel();
-      },
-      onError: (error) => {
-        toast.error(t('branchSettings.updateError'));
-        console.error('Branch update error:', error);
-      },
-    })
-  );
+  const [logoFile, setLogoFile] = useState<File | null>(null);
 
-  const form = useForm<BranchUpdateFormData>({
-    resolver: zodResolver(branchUpdateSchema),
-    defaultValues: {
-      name: '',
-      location: '',
-      contact: '',
-      logoUrl: '',
-    },
+  const form = useForm<BranchUpdateMyBranchDto>({
+    resolver: zodResolver(branchUpdateMyBranchSchema),
   });
 
-  // Update form values when branch data is loaded
   React.useEffect(() => {
     if (branch) {
       form.reset({
+        id: branch.id,
         name: branch.name,
         location: branch.location || '',
         contact: branch.contact || '',
@@ -106,14 +91,27 @@ export function BranchSettingsContent({
     }
   }, [branch, form]);
 
-  const onSubmit = (data: BranchUpdateFormData) => {
-    if (!user?.activeBranchId) return;
+  async function onSubmit(data: BranchUpdateMyBranchDto) {
+    try {
+      if (!user?.activeBranchId) return;
 
-    updateBranch.mutate({
-      id: user.activeBranchId,
-      ...data,
-    });
-  };
+      const response = await updateBranch.mutateAsync(data);
+
+      if (response && 'signedAwsS3Url' in response && logoFile) {
+        await fetch(response.signedAwsS3Url, {
+          method: 'PUT',
+          body: logoFile,
+        });
+      }
+
+      await refetch();
+      toast.success(t('branchSettings.updateSuccess'));
+      onCancel();
+    } catch (error) {
+      toast.error(t('branchSettings.updateError'));
+      console.error('Branch update error:', error);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -157,7 +155,11 @@ export function BranchSettingsContent({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8"
+            tabIndex={0}
+          >
             {/* Basic Information */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
@@ -185,7 +187,10 @@ export function BranchSettingsContent({
                       <FormControl>
                         <DroppableImage
                           value={field.value}
-                          onChange={field.onChange}
+                          onChange={(file) => {
+                            field.onChange(file ? file.name : undefined);
+                            setLogoFile(file);
+                          }}
                           customSize="!size-[88px] !w-[140px]"
                           uploadText={t('branchSettings.form.uploadLogo')}
                           changeText={t('branchSettings.form.changeLogo')}
@@ -232,6 +237,7 @@ export function BranchSettingsContent({
                   )}
                 />
               </div>
+
               {/* </div> */}
             </div>
 

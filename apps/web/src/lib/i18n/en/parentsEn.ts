@@ -85,4 +85,20 @@ export const parents = {
     updateButton: 'Update Status',
     success: 'Parent status updated successfully',
   },
+  students: {
+    title: 'Students',
+    addStudent: 'Add Student',
+    removeStudent: 'Remove',
+    noStudents: 'No students assigned yet',
+    enrollment: {
+      title: 'Add Students to Parent',
+      description: 'Search and assign students to this parent',
+      searchPlaceholder: 'Search students by name, email, or national ID...',
+      noResults: 'No students found',
+      availableStudents: 'Available Students',
+      assign: 'Assign',
+      alreadyAssigned: 'Already Assigned',
+      success: 'Student assigned successfully',
+    },
+  },
 } as const;

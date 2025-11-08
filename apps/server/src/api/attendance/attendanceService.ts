@@ -4,10 +4,6 @@ import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-
 import {
   AttendanceRecordCreateDto,
   AttendanceRecordBulkCreateDto,
@@ -19,7 +15,10 @@ import {
   AttendanceNotificationCreateDto,
   AttendanceNotificationUpdateDto,
   AttendanceNotificationFindAllDto,
-} from './attendanceModel';
+} from '@edusama/common';
+import { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
 
 @Service()
 export class AttendanceService {

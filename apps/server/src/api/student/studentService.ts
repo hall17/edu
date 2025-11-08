@@ -3,7 +3,7 @@ import emailService from '@api/libs/emailService';
 import { prisma } from '@api/libs/prisma';
 import { studentInclude } from '@api/libs/prisma/selections';
 import { generateSignedUrl } from '@api/libs/s3';
-import { Prisma } from '@api/prisma/generated/prisma/client';
+import { Prisma, Student } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { decrypt, encrypt, generateToken, hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
@@ -22,10 +22,6 @@ import {
   StudentUpdateSignupStatusDto,
   StudentUpdateSuspendedDto,
 } from './studentModel';
-
-type StudentReturnType = Prisma.StudentGetPayload<{
-  include: typeof studentInclude;
-}>;
 
 @Service()
 export class StudentService {
@@ -196,6 +192,10 @@ export class StudentService {
     const token = generateToken(tokenData, INVITATION_EXPIRATION_TIME);
     const hashedToken = await hash(token, 10);
 
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = id;
+    }
+
     const student = await prisma.student.create({
       data: {
         ...dto,
@@ -224,7 +224,25 @@ export class StudentService {
 
     const { tokens: _, ...studentWithoutTokens } = student;
 
-    return this.createStudentData(requestedBy, studentWithoutTokens);
+    const studentData = await this.createStudentData(
+      requestedBy,
+      studentWithoutTokens
+    );
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        id
+      );
+
+      return {
+        ...studentData,
+        signedAwsS3Url,
+      };
+    }
+
+    return studentData;
   }
 
   async createFromExcel(requestedBy: TokenUser, file: File) {
@@ -500,6 +518,10 @@ export class StudentService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = dto.id;
+    }
+
     const updatedStudent = await prisma.student.update({
       where: { id: dto.id },
       data: {
@@ -510,7 +532,25 @@ export class StudentService {
       include: studentInclude,
     });
 
-    return this.createStudentData(requestedBy, updatedStudent);
+    const studentData = await this.createStudentData(
+      requestedBy,
+      updatedStudent
+    );
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        dto.id
+      );
+
+      return {
+        ...studentData,
+        signedAwsS3Url,
+      };
+    }
+
+    return studentData;
   }
 
   async delete(requestedBy: TokenUser, id: string) {
@@ -633,7 +673,7 @@ export class StudentService {
     return this.createStudentData(requestedBy, student);
   }
 
-  async createStudentData<T extends StudentReturnType>(
+  async createStudentData<T extends Student>(
     requestedBy: TokenUser,
     student: T
   ) {
@@ -644,16 +684,28 @@ export class StudentService {
       : null;
 
     if (studentWithoutPassword.profilePictureUrl) {
-      const url = await generateSignedUrl(
+      const url = await this.createSignedAwsS3Url(
+        requestedBy,
         'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        'profile-pictures',
         studentWithoutPassword.profilePictureUrl
       );
       studentWithoutPassword.profilePictureUrl = url;
     }
 
     return studentWithoutPassword;
+  }
+
+  private async createSignedAwsS3Url(
+    requestedBy: TokenUser,
+    operation: 'getObject' | 'putObject',
+    url: string
+  ) {
+    return generateSignedUrl(
+      operation,
+      requestedBy.companyId!,
+      requestedBy.activeBranchId,
+      'profile-pictures',
+      url
+    );
   }
 }

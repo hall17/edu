@@ -17,7 +17,7 @@ function useProviderValue() {
     useDialogState<AssessmentsDialogType>(null);
   const [currentRow, setCurrentRow] = useState<Assessment | null>(null);
   const { filters, setFilters, resetFilters } = useSearchFilters(
-    '/_authenticated/assessments/'
+    '/_authenticated/_assessments/assessments/'
   );
 
   const assessmentsQuery = useQuery(

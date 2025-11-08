@@ -5,12 +5,20 @@ import { useDialogState, useSearchFilters } from '@/hooks';
 import { queryClient, trpc, Company } from '@/lib/trpc';
 
 type CompaniesDialogType = 'add' | 'edit' | 'delete' | 'view' | 'suspend';
+type BranchDialogType = 'add' | 'edit';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =
     useDialogState<CompaniesDialogType>(null);
 
   const [currentRow, setCurrentRow] = useState<Company | null>(null);
+
+  const [branchDialogOpen, setBranchDialogOpen] =
+    useDialogState<BranchDialogType>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    null
+  );
+
   const { filters, setFilters, resetFilters } = useSearchFilters(
     '/_authenticated/_super-management/companies/'
   );
@@ -76,6 +84,21 @@ function useProviderValue() {
     }
   }
 
+  function setBranchDialogOpenFn(dialog: BranchDialogType | null) {
+    setBranchDialogOpen(dialog);
+
+    if (!dialog) {
+      setTimeout(() => {
+        setSelectedCompanyId(null);
+      }, 500);
+    }
+  }
+
+  function openAddBranchDialog(companyId: number) {
+    setSelectedCompanyId(companyId);
+    setBranchDialogOpen('add');
+  }
+
   return {
     openedDialog,
     setOpenedDialog: setOpenedDialogFn,
@@ -90,6 +113,10 @@ function useProviderValue() {
     updateCompany,
     deleteCompany,
     companies,
+    branchDialogOpen,
+    setBranchDialogOpen: setBranchDialogOpenFn,
+    selectedCompanyId,
+    openAddBranchDialog,
   };
 }
 

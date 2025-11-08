@@ -12,7 +12,11 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const MAX_RETRIES = 3;
 
 // Type definitions
-const _folderOptions = ['profile-pictures', 'classroom-templates'] as const;
+const _folderOptions = [
+  'profile-pictures',
+  'classroom-templates',
+  'classrooms',
+] as const;
 export type FolderOption = (typeof _folderOptions)[number];
 
 export interface SignedUrlOptions {

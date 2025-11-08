@@ -2,6 +2,7 @@ import { assessments } from './en/assessmentsEn';
 import { attendance } from './en/attendanceEn';
 import { auth } from './en/authEn';
 import { branchSettings } from './en/branchSettingsEn';
+import { calendar } from './en/calendarEn';
 import { classrooms } from './en/classroomsEn';
 import { common } from './en/commonEn';
 import { companiesAndBranches } from './en/companiesAndBranchesEn';
@@ -11,7 +12,6 @@ import { modules } from './en/modulesEn';
 import { parents } from './en/parentsEn';
 import { questionBank } from './en/questionBankEn';
 import { roles } from './en/rolesEn';
-import { sessions } from './en/sessionsEn';
 import { settings } from './en/settingsEn';
 import { students } from './en/studentsEn';
 import { subjects } from './en/subjectsEn';
@@ -33,7 +33,7 @@ export const en = {
     parents,
     questionBank,
     roles,
-    sessions,
+    calendar,
     students,
     settings,
     subjects,

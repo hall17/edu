@@ -25,15 +25,25 @@ export function ClassroomActionStepper() {
   const { currentRow, createClassroom, updateClassroom, setOpenedDialog } =
     useClassroomsContext();
   const methods = useStepper();
-  const { form, schemasById, updateIntegration } = useClassroomForm();
+  const { form, schemasById, updateIntegration, classroomImageFile } =
+    useClassroomForm();
   const watchedIntegrations = form.watch('integrations');
   const isEdit = !!currentRow;
 
   const createMutation = useMutation(
     trpc.classroom.create.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         createClassroom(data);
         toast.success(t('classrooms.actionDialog.createSuccess'));
+
+        if (data && 'signedAwsS3Url' in data && classroomImageFile) {
+          await fetch(data.signedAwsS3Url as string, {
+            method: 'PUT',
+            body: classroomImageFile,
+          });
+          console.log('classroomImageFile', classroomImageFile);
+        }
+
         setOpenedDialog(null);
       },
       onError: (error) => {
@@ -45,9 +55,18 @@ export function ClassroomActionStepper() {
 
   const updateMutation = useMutation(
     trpc.classroom.update.mutationOptions({
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         updateClassroom(data);
         toast.success(t('classrooms.actionDialog.updateSuccess'));
+
+        if (data && 'signedAwsS3Url' in data && classroomImageFile) {
+          await fetch(data.signedAwsS3Url as string, {
+            method: 'PUT',
+            body: classroomImageFile,
+          });
+          console.log('classroomImageFile', classroomImageFile);
+        }
+
         setOpenedDialog(null);
       },
       onError: (error) => {

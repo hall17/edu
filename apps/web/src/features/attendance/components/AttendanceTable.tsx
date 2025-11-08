@@ -177,7 +177,7 @@ function useColumns(): ColumnDef<ClassroomIntegration>[] {
                 icon: <Eye className="size-5" />,
                 onClick: () => {
                   navigate({
-                    to: '/classrooms/$classroomId/sessions',
+                    to: '/classrooms/$classroomId/calendar',
                     params: { classroomId: row.original.classroom.id },
                     search: { subjectIds: [row.original.subject.id] } as any,
                     from: '/attendance',

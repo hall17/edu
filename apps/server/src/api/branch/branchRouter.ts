@@ -1,15 +1,16 @@
 import { intIdSchema } from '@api/types';
-import Container from 'typedi';
-
-import { protectedProcedure, t } from '../../trpc';
-
 import {
   branchCreateSchema,
   branchFindAllSchema,
   branchUpdateSchema,
   moduleUpdateStatusSchema,
   branchUpdateStatusSchema,
-} from './branchModel';
+  branchUpdateMyBranchSchema,
+} from '@edusama/common';
+import Container from 'typedi';
+
+import { protectedProcedure, t } from '../../trpc';
+
 import { BranchService } from './branchService';
 
 const branchService = Container.get(BranchService);
@@ -34,6 +35,11 @@ export const branchRouter = t.router({
     .input(branchUpdateSchema)
     .mutation(async ({ ctx: { req }, input }) => {
       return branchService.update(req.user, input);
+    }),
+  updateMyBranch: protectedProcedure
+    .input(branchUpdateMyBranchSchema)
+    .mutation(async ({ ctx: { req }, input }) => {
+      return branchService.updateMyBranch(req.user, input);
     }),
   updateStatus: protectedProcedure
     .input(branchUpdateStatusSchema)

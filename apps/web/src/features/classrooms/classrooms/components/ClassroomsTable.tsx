@@ -17,6 +17,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
 import { Edit, Eye, Trash2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,6 +38,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { Progress } from '@/components/ui/progress';
 import {
   Select,
   SelectContent,
@@ -278,7 +280,7 @@ export function useColumns(): ColumnDef<Classroom>[] {
       ),
       cell: ({ row }) => {
         const date = new Date(row.getValue('startDate'));
-        return <div>{date.toLocaleDateString()}</div>;
+        return <div>{format(date, 'dd/MM/yyyy')}</div>;
       },
       meta: { className: 'w-32' },
       enableHiding: true,
@@ -294,7 +296,7 @@ export function useColumns(): ColumnDef<Classroom>[] {
       ),
       cell: ({ row }) => {
         const date = new Date(row.getValue('endDate'));
-        return <div>{date.toLocaleDateString()}</div>;
+        return <div>{format(date, 'dd/MM/yyyy')}</div>;
       },
       meta: { className: 'w-32' },
       enableHiding: true,
@@ -328,6 +330,19 @@ export function useColumns(): ColumnDef<Classroom>[] {
       enableSorting: false,
     },
     {
+      id: 'progress',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title={t('classrooms.table.progress')}
+        />
+      ),
+      cell: ({ row }) => <ClassroomProgressCell row={row} />,
+      meta: { className: 'w-48' },
+      enableHiding: true,
+      enableSorting: false,
+    },
+    {
       accessorKey: 'status',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t('common.status')} />
@@ -346,6 +361,57 @@ export function useColumns(): ColumnDef<Classroom>[] {
       enableHiding: false,
     },
   ];
+}
+
+interface ClassroomProgressCellProps {
+  row: Row<Classroom>;
+}
+
+function ClassroomProgressCell({ row }: ClassroomProgressCellProps) {
+  const { t } = useTranslation();
+  const classroom = row.original;
+
+  const totalSessions = classroom.integrations.reduce((total, integration) => {
+    return total + (integration.classroomIntegrationSessions?.length ?? 0);
+  }, 0);
+
+  const completedSessions = classroom.integrations.reduce(
+    (completed, integration) => {
+      const integrationCompleted =
+        integration.classroomIntegrationSessions?.filter(
+          (session) => session.isAttendanceRecordCompleted
+        ).length ?? 0;
+      return completed + integrationCompleted;
+    },
+    0
+  );
+
+  const progressPercentage =
+    totalSessions > 0
+      ? Math.round((completedSessions / totalSessions) * 100)
+      : 0;
+
+  const getProgressVariant = (percentage: number) => {
+    if (percentage >= 80) return 'success';
+    if (percentage >= 50) return 'warning';
+    return 'destructive';
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-muted-foreground">
+          {completedSessions} / {totalSessions}
+        </span>
+        <span className="font-medium">{progressPercentage}%</span>
+      </div>
+      <Progress
+        value={progressPercentage}
+        variant={getProgressVariant(progressPercentage)}
+        className="h-2"
+      />
+    </div>
+  );
 }
 
 interface ClassroomsStatusCellProps {

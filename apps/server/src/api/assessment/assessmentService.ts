@@ -4,15 +4,6 @@ import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
-import { Service } from 'typedi';
-
-import { PAGE_SIZE } from '../../utils/constants';
-import {
-  QuestionCreateDto,
-  QuestionUpdateDto,
-  QuestionFindAllDto,
-} from '../question/questionModel';
-
 import {
   AssessmentCreateDto,
   AssessmentUpdateDto,
@@ -23,15 +14,11 @@ import {
   ClassroomIntegrationAssessmentCreateDto,
   ClassroomIntegrationAssessmentUpdateDto,
   ClassroomIntegrationAssessmentFindAllDto,
-  AssessmentLogCreateDto,
-  AssessmentLogFindAllDto,
-  AssessmentGradingRubricCreateDto,
-  AssessmentGradingRubricUpdateDto,
-  AssessmentGradingRubricFindAllDto,
-  AssessmentNotificationCreateDto,
-  AssessmentNotificationFindAllDto,
   AssessmentUpdateStatusDto,
-} from './assessmentModel';
+} from '@edusama/common';
+import { Service } from 'typedi';
+
+import { PAGE_SIZE } from '../../utils/constants';
 
 @Service()
 export class AssessmentService {

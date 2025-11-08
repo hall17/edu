@@ -11,7 +11,6 @@ export function BranchesDialogs() {
   function getActiveDialog() {
     switch (openedDialog) {
       case 'add':
-        return <BranchesActionDialog />;
       case 'edit':
         return <BranchesActionDialog />;
       case 'view':

@@ -85,7 +85,7 @@
   "devDependencies": {
     "@edusama/tsconfig": "*",
     "@edusama/common": "*",
-    "@edusama/eslint-config-custom": "*",
+    "@edusama/eslint": "*",
     "@edusama/prettier": "*",
     "@edusama/server": "*",
     "@tanstack/eslint-plugin-router": "^1.115.0",

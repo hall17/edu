@@ -187,6 +187,10 @@ export class ParentService {
 
     const { studentIds, ...rest } = dto;
 
+    if (rest.profilePictureUrl) {
+      rest.profilePictureUrl = id;
+    }
+
     const parent = await prisma.parent.create({
       data: {
         ...rest,
@@ -220,6 +224,19 @@ export class ParentService {
     //   token
     // );
 
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        parent.id
+      );
+
+      return {
+        ...this.createParentData(requestedBy, parent as any),
+        signedAwsS3Url,
+      };
+    }
+
     return this.createParentData(requestedBy, parent as any);
   }
 
@@ -250,7 +267,12 @@ export class ParentService {
       dto.nationalId = encrypt(dto.nationalId);
     }
 
-    const { students, ...parentData } = parent;
+    if (dto.profilePictureUrl) {
+      dto.profilePictureUrl = dto.id;
+    }
+
+    const { students } = parent;
+    const { studentIds, ...parentData } = dto;
 
     await prisma.$transaction(
       async (tx) => {
@@ -263,12 +285,12 @@ export class ParentService {
           },
         });
 
-        const addedStudentIds = dto.studentIds?.filter(
+        const addedStudentIds = studentIds?.filter(
           (id) => !students.some((student) => student.id === id)
         );
 
         const deletedStudentIds = students.filter(
-          (student) => !dto.studentIds?.includes(student.id)
+          (student) => !studentIds?.includes(student.id)
         );
 
         if (addedStudentIds?.length) {
@@ -302,6 +324,21 @@ export class ParentService {
       where: { id: dto.id },
       include: parentInclude,
     });
+
+    if (dto.profilePictureUrl) {
+      const signedAwsS3Url = await this.createSignedAwsS3Url(
+        requestedBy,
+        'putObject',
+        dto.id
+      );
+      return {
+        ...this.createParentData(
+          requestedBy,
+          updatedParent as ParentReturnType
+        ),
+        signedAwsS3Url,
+      };
+    }
 
     return this.createParentData(
       requestedBy,
@@ -359,12 +396,12 @@ export class ParentService {
       include: parentInclude,
     });
 
-    return this.createParentData(requestedBy, parent as ParentReturnType);
+    return this.createParentData(requestedBy, parent);
   }
 
-  private async createParentData(
+  private async createParentData<T extends Parent>(
     requestedBy: TokenUser,
-    parent: ParentReturnType
+    parent: T
   ) {
     const { password: _, ...parentWithoutPassword } = parent;
 
@@ -373,16 +410,28 @@ export class ParentService {
       : null;
 
     if (parentWithoutPassword.profilePictureUrl) {
-      const url = await generateSignedUrl(
+      const url = await this.createSignedAwsS3Url(
+        requestedBy,
         'getObject',
-        requestedBy.companyId!,
-        requestedBy.activeBranchId,
-        'profile-pictures',
         parentWithoutPassword.profilePictureUrl
       );
       parentWithoutPassword.profilePictureUrl = url;
     }
 
-    return parentWithoutPassword as ParentReturnType;
+    return parentWithoutPassword;
+  }
+
+  private async createSignedAwsS3Url(
+    requestedBy: TokenUser,
+    operation: 'getObject' | 'putObject',
+    url: string
+  ) {
+    return await generateSignedUrl(
+      operation,
+      requestedBy.companyId!,
+      requestedBy.activeBranchId,
+      'profile-pictures',
+      url
+    );
   }
 }

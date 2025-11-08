@@ -8,6 +8,7 @@ import {
   Users,
   Pencil,
   Image as ImageIcon,
+  Settings,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -35,11 +36,6 @@ export function BranchSettingsView({ onEditClick }: BranchSettingsViewProps) {
       }
     )
   );
-
-  const formatDate = (date?: string | Date | null) => {
-    if (!date) return '-';
-    return new Date(date).toLocaleDateString();
-  };
 
   if (isLoading) {
     return (
@@ -88,7 +84,6 @@ export function BranchSettingsView({ onEditClick }: BranchSettingsViewProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-5">
-        {/* Basic Information */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
@@ -133,14 +128,26 @@ export function BranchSettingsView({ onEditClick }: BranchSettingsViewProps) {
             </div>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <Users className="text-muted-foreground h-4 w-4" />
+                <Settings className="text-muted-foreground h-4 w-4" />
                 <label className="text-muted-foreground text-sm font-medium">
-                  {t('branchSettings.form.maximumStudents')}
+                  {t('branchSettings.form.slug')}
                 </label>
               </div>
               <div className="bg-card rounded-lg border p-4">
-                <p className="font-medium">{branch.maximumStudents || '-'}</p>
+                <p className="font-medium">{branch.slug || '-'}</p>
               </div>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Users className="text-muted-foreground h-4 w-4" />
+              <label className="text-muted-foreground text-sm font-medium">
+                {t('branchSettings.form.maximumStudents')}
+              </label>
+            </div>
+            <div className="bg-card rounded-lg border p-4">
+              <p className="font-medium">{branch.maximumStudents || '-'}</p>
             </div>
           </div>
         </div>

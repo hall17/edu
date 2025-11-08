@@ -65,7 +65,7 @@ export function CalendarStep() {
         availableViews={['agenda', 'week', 'month']}
         view="week"
         events={events}
-        addEventButtonText={t('classrooms.sessions.addNew')}
+        addEventButtonText={t('classrooms.calendar.addNew')}
         allowAddEvent={false}
         onClickEventCard={(eventId) => {
           const event = events.find((event) => event.id === eventId);
