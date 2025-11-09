@@ -18,8 +18,8 @@ export const classroomSessionFormSchema = z
     teacherId: z.string().min(1),
     description: z.string().optional(),
     lessonIds: z.array(z.string()).optional(),
-    startDate: z.string().min(1),
-    endDate: z.string().min(1),
+    startDate: z.date(),
+    endDate: z.date(),
     attendanceRecords: z
       .array(
         attendanceRecordSchema.extend({
@@ -63,8 +63,13 @@ export const classroomSessionFormInitialValues: ClassroomSessionFormData = {
   teacherId: '',
   description: '',
   lessonIds: [],
-  startDate: '',
-  endDate: '',
+  startDate: new Date(),
+  endDate: (() => {
+    const date = new Date();
+    // add 1 hour
+    date.setHours(date.getHours() + 1);
+    return date;
+  })(),
   attendanceRecords: [],
   isAttendanceRecordCompleted: false,
 };

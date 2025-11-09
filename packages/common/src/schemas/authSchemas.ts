@@ -46,7 +46,7 @@ export const completeSignupSchema = userCreateSchema.merge(
     lastName: z.string().min(1).max(50),
     email: z.string().email().max(100),
     gender: z.nativeEnum(Gender),
-    dateOfBirth: z.string().transform((stringDate) => new Date(stringDate)),
+    dateOfBirth: z.date().nullable().optional(),
     phoneCountryCode: z.string().max(5),
     phoneNumber: z.string().max(15),
     countryCode: z.string().max(2).optional(),

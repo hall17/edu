@@ -1091,7 +1091,7 @@ export class AuthService {
       dto.profilePictureUrl = maybeAccount.id;
     }
 
-    const updatedUser = await prisma.$transaction(
+    await prisma.$transaction(
       async (tx) => {
         const hashedPassword = dto.password
           ? await hash(dto.password, 10)

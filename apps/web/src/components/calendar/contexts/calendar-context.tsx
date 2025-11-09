@@ -113,8 +113,8 @@ function useProviderValue(props: CalendarProviderProps) {
   const updateEvent = (event: IEvent) => {
     const updated = {
       ...event,
-      startDate: new Date(event.startDate).toISOString(),
-      endDate: new Date(event.endDate).toISOString(),
+      startDate: event.startDate,
+      endDate: event.endDate,
     };
 
     setAllEvents((prev) => prev.map((e) => (e.id === event.id ? updated : e)));

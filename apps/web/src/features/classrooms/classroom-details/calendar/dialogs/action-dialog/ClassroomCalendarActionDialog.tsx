@@ -144,8 +144,6 @@ function ClassroomCalendarContent() {
 
     const payload = {
       ...data,
-      startDate: new Date(data.startDate),
-      endDate: new Date(data.endDate),
       attendanceRecords: recordsToSave,
     };
 
@@ -163,15 +161,11 @@ function ClassroomCalendarContent() {
 
       updateMutation.mutate({
         ...payload,
-        startDate: data.startDate,
-        endDate: data.endDate,
         id: currentRow.id,
       });
     } else if (isCreate) {
       createMutation.mutate({
         ...payload,
-        startDate: data.startDate,
-        endDate: data.endDate,
       });
     }
   }
@@ -246,6 +240,7 @@ function ClassroomCalendarContent() {
             <form
               id="calendar-form"
               onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                console.log('errors', errors);
                 toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
               })}
               className="space-y-4"

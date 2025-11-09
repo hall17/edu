@@ -5,7 +5,11 @@ export function RecentSales() {
     <div className="space-y-8">
       <div className="flex items-center gap-4">
         <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/01.png" alt="Avatar" className="object-contain" />
+          <AvatarImage
+            src="/avatars/01.png"
+            alt="Avatar"
+            className="object-contain"
+          />
           <AvatarFallback>OM</AvatarFallback>
         </Avatar>
         <div className="flex flex-1 flex-wrap items-center justify-between">
@@ -20,7 +24,11 @@ export function RecentSales() {
       </div>
       <div className="flex items-center gap-4">
         <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
-          <AvatarImage src="/avatars/02.png" alt="Avatar" className="object-contain" />
+          <AvatarImage
+            src="/avatars/02.png"
+            alt="Avatar"
+            className="object-contain"
+          />
           <AvatarFallback>JL</AvatarFallback>
         </Avatar>
         <div className="flex flex-1 flex-wrap items-center justify-between">
@@ -35,7 +43,11 @@ export function RecentSales() {
       </div>
       <div className="flex items-center gap-4">
         <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/03.png" alt="Avatar" className="object-contain" />
+          <AvatarImage
+            src="/avatars/03.png"
+            alt="Avatar"
+            className="object-contain"
+          />
           <AvatarFallback>IN</AvatarFallback>
         </Avatar>
         <div className="flex flex-1 flex-wrap items-center justify-between">
@@ -51,7 +63,11 @@ export function RecentSales() {
 
       <div className="flex items-center gap-4">
         <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/04.png" alt="Avatar" className="object-contain" />
+          <AvatarImage
+            src="/avatars/04.png"
+            alt="Avatar"
+            className="object-contain"
+          />
           <AvatarFallback>WK</AvatarFallback>
         </Avatar>
         <div className="flex flex-1 flex-wrap items-center justify-between">
@@ -65,7 +81,11 @@ export function RecentSales() {
 
       <div className="flex items-center gap-4">
         <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/05.png" alt="Avatar" className="object-contain" />
+          <AvatarImage
+            src="/avatars/05.png"
+            alt="Avatar"
+            className="object-contain"
+          />
           <AvatarFallback>SD</AvatarFallback>
         </Avatar>
         <div className="flex flex-1 flex-wrap items-center justify-between">

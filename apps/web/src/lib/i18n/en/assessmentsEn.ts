@@ -123,4 +123,9 @@ export const assessments = {
     lesson: 'Lesson',
     noDescription: 'No description',
   },
+  assignmentStatuses: {
+    upcoming: 'Upcoming',
+    active: 'Active',
+    completed: 'Completed',
+  },
 } as const;

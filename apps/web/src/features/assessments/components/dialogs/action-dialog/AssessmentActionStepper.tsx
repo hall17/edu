@@ -18,8 +18,9 @@ import { LoadingButton } from '@/components';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useAssessmentsContext } from '@/features/assessments/AssessmentsContext';
-import { trpc } from '@/lib/trpc';
+import { Assessment, trpc } from '@/lib/trpc';
 import { detailedDiff } from 'deep-object-diff';
+import { useState } from 'react';
 
 interface AssessmentActionStepperProps {
   form: UseFormReturn<AssessmentFormData>;
@@ -42,6 +43,10 @@ export function AssessmentActionStepper({
   const createMutation = useMutation(trpc.assessment.create.mutationOptions());
   const updateMutation = useMutation(trpc.assessment.update.mutationOptions());
 
+  const [coverImageFile, setCoverImageFile] = useState<File | null | undefined>(
+    undefined
+  );
+
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
   async function onSubmit(data: AssessmentFormData) {
@@ -54,19 +59,34 @@ export function AssessmentActionStepper({
         }
 
         console.log('diff', diff);
-        return;
 
         const updateData = { ...diff.updated } as AssessmentFormData;
 
-        await updateMutation.mutateAsync({
+        const response = await updateMutation.mutateAsync({
           id: currentRow.id,
           ...updateData,
         });
         toast.success(t('assessments.actionDialog.updateSuccessMessage'));
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: coverImageFile,
+          });
+        }
+
         assessmentsQuery.refetch();
       } else {
-        await createMutation.mutateAsync(data);
+        const response = await createMutation.mutateAsync(data);
         toast.success(t('assessments.actionDialog.createSuccessMessage'));
+
+        if (response && 'signedAwsS3Url' in response) {
+          await fetch(response.signedAwsS3Url, {
+            method: 'PUT',
+            body: coverImageFile,
+          });
+        }
+
         assessmentsQuery.refetch();
       }
       form.reset();
@@ -137,7 +157,13 @@ export function AssessmentActionStepper({
           ))}
         </Stepper.Navigation>
         {methods.switch({
-          basic: () => <BasicStep form={form} />,
+          basic: () => (
+            <BasicStep
+              form={form}
+              coverImageFile={coverImageFile}
+              setCoverImageFile={setCoverImageFile}
+            />
+          ),
           questions: () => <QuestionsStep form={form} />,
         })}
         <Stepper.Controls>

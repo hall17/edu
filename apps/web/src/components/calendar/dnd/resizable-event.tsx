@@ -38,8 +38,8 @@ export function ResizableEvent({
     end: string;
   } | null>(null);
 
-  const start = useMemo(() => parseISO(event.startDate), [event.startDate]);
-  const end = useMemo(() => parseISO(event.endDate), [event.endDate]);
+  const start = useMemo(() => event.startDate, [event.startDate]);
+  const end = useMemo(() => event.endDate, [event.endDate]);
   const durationInMinutes = useMemo(
     () => differenceInMinutes(end, start),
     [start, end]
@@ -91,8 +91,8 @@ export function ResizableEvent({
 
       updateEvent({
         ...event,
-        startDate: newStart.toISOString(),
-        endDate: newEnd.toISOString(),
+        startDate: newStart,
+        endDate: newEnd,
       });
     },
     [

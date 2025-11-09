@@ -1,5 +1,6 @@
 import { initTRPC } from '@trpc/server';
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
+import superjson from 'superjson';
 import { ZodError } from 'zod';
 
 import { logger } from '../libs/logger';
@@ -13,6 +14,7 @@ export const createContext = ({ req, res }: CreateExpressContextOptions) => {
 export type Context = Awaited<ReturnType<typeof createContext>>;
 
 export const t = initTRPC.context<Context>().create({
+  transformer: superjson,
   errorFormatter(opts) {
     const { shape, error } = opts;
     if (opts.error.cause instanceof CustomError) {

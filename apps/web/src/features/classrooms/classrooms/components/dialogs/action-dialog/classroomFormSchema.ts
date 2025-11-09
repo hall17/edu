@@ -37,26 +37,16 @@ export const integrationsSchema = z.object({
           .array(
             z.object({
               dayOfWeek: z.nativeEnum(DayOfWeek),
-              startTime: z
-                .string()
-                .regex(
-                  /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                  'Invalid time format (HH:MM)'
-                ),
-              endTime: z
-                .string()
-                .regex(
-                  /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
-                  'Invalid time format (HH:MM)'
-                ),
+              startTime: z.date(),
+              endTime: z.date(),
             })
           )
           .optional(),
         sessions: z.array(
           z.object({
             id: z.uuid(),
-            startDate: z.string().min(1),
-            endDate: z.string().min(1),
+            startDate: z.date(),
+            endDate: z.date(),
             description: z.string().max(500).optional().nullable(),
             teacherId: z.uuid().optional().nullable(),
             lessonIds: z.array(z.string()).optional(),

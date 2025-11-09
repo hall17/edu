@@ -49,8 +49,8 @@ function ClassroomCalendarContent() {
           onClickAddEvent={(time) => {
             setOpenedDialog('create');
             setCurrentRow({
-              startDate: time.toLocaleString(),
-              endDate: addMinutes(time, 30).toLocaleString(),
+              startDate: time,
+              endDate: addMinutes(time, 30),
             } as any);
           }}
           onClickEditEvent={(eventId) => {

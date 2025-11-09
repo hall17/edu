@@ -72,8 +72,8 @@ export function MonthEventBadge({
 }: IProps) {
   const { badgeVariant, use24HourFormat } = useCalendar();
 
-  const itemStart = startOfDay(parseISO(event.startDate));
-  const itemEnd = endOfDay(parseISO(event.endDate));
+  const itemStart = startOfDay(event.startDate);
+  const itemEnd = endOfDay(event.endDate);
 
   if (cellDate < itemStart || cellDate > itemEnd) return null;
 

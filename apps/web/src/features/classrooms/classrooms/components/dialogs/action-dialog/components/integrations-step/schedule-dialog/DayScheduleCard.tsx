@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { parseHourAndMinutesUTC } from '@/utils';
+import { set, setHours } from 'date-fns';
 
 function calculateTotalTime(
   startHour: string,
@@ -80,8 +81,8 @@ export function DayScheduleCard({
     if (checked) {
       const scheduleData = {
         dayOfWeek: day,
-        startTime: '09:00',
-        endTime: '10:00',
+        startTime: setHours(new Date(), 9),
+        endTime: setHours(new Date(), 10),
         isActive: true,
       };
 
@@ -105,9 +106,13 @@ export function DayScheduleCard({
                   <TimeInput
                     value={`${startHour}:${startMinute}`}
                     onChange={(value) => {
+                      const [hours, minutes] = value.split(':');
                       const updatedSchedule = {
                         ...schedule!,
-                        startTime: value,
+                        startTime: set(new Date(), {
+                          hours: hours ? parseInt(hours) : 0,
+                          minutes: minutes ? parseInt(minutes) : 0,
+                        }),
                       };
                       updateSchedule(updatedSchedule);
                     }}
@@ -115,9 +120,13 @@ export function DayScheduleCard({
                   <TimeInput
                     value={`${endHour}:${endMinute}`}
                     onChange={(value) => {
+                      const [hours, minutes] = value.split(':');
                       const updatedSchedule = {
                         ...schedule!,
-                        endTime: value,
+                        endTime: set(new Date(), {
+                          hours: hours ? parseInt(hours) : 0,
+                          minutes: minutes ? parseInt(minutes) : 0,
+                        }),
                       };
                       updateSchedule(updatedSchedule);
                     }}

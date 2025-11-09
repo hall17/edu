@@ -36,7 +36,7 @@ export const AgendaEvents: FC = () => {
 
   const agendaEvents = Object.groupBy(monthEvents, (event) => {
     return agendaModeGroupBy === 'date'
-      ? format(parseISO(event.startDate), 'yyyy-MM-dd')
+      ? format(event.startDate, 'dd/MM/yyyy')
       : event.color;
   });
 
@@ -79,7 +79,11 @@ export const AgendaEvents: FC = () => {
                         <EventBullet color={event.color} />
                       ) : (
                         <Avatar>
-                          <AvatarImage src="" alt="@shadcn" className="object-contain" />
+                          <AvatarImage
+                            src=""
+                            alt="@shadcn"
+                            className="object-contain"
+                          />
                           <AvatarFallback className={getBgColor(event.color)}>
                             {getFirstLetters(event.title)}
                           </AvatarFallback>

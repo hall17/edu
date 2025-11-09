@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 
 import i18n from '@/lib/i18n';
 import { localizedCustomErrorMessageSchema } from '@/types';
+import superjson from 'superjson';
 
 export const queryClient = new QueryClient({
   defaultOptions: {},
@@ -78,6 +79,7 @@ export const trpcClient: ReturnType<typeof createTRPCClient<AppRouter>> =
               credentials: 'include',
             }).catch();
           },
+          transformer: superjson,
         }),
         false: httpBatchLink({
           url: `${import.meta.env.VITE_API_URL}/api/trpc`,
@@ -88,6 +90,7 @@ export const trpcClient: ReturnType<typeof createTRPCClient<AppRouter>> =
               credentials: 'include',
             }).catch();
           },
+          transformer: superjson,
         }),
       }),
       // httpBatchLink({

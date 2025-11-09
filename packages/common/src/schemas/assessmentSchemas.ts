@@ -86,8 +86,8 @@ export const assessmentQuestionFindAllSchema = z
 export const classroomIntegrationAssessmentCreateSchema = z.object({
   classroomIntegrationId: z.string().uuid(),
   assessmentId: z.string().uuid(),
-  startDate: z.string().transform((stringDate) => new Date(stringDate)),
-  endDate: z.string().transform((stringDate) => new Date(stringDate)),
+  startDate: z.date(),
+  endDate: z.date(),
 });
 
 export const classroomIntegrationAssessmentUpdateSchema = z

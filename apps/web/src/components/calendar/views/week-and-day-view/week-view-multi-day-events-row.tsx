@@ -35,8 +35,8 @@ export function WeekViewMultiDayEventsRow({
   const processedEvents = useMemo(() => {
     return multiDayEvents
       .map((event) => {
-        const start = parseISO(event.startDate);
-        const end = parseISO(event.endDate);
+        const start = event.startDate;
+        const end = event.endDate;
         const adjustedStart = isBefore(start, weekStart) ? weekStart : start;
         const adjustedEnd = isAfter(end, weekEnd) ? weekEnd : end;
         const startIndex = differenceInDays(adjustedStart, weekStart);
@@ -80,8 +80,8 @@ export function WeekViewMultiDayEventsRow({
 
   const hasEventsInWeek = useMemo(() => {
     return multiDayEvents.some((event) => {
-      const start = parseISO(event.startDate);
-      const end = parseISO(event.endDate);
+      const start = event.startDate;
+      const end = event.endDate;
 
       return (
         // Event starts within the week

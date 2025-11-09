@@ -92,23 +92,22 @@ export function getEventsCount(
   };
 
   const compareFn = compareFns[view];
-  return events.filter((event) => compareFn(parseISO(event.startDate), date))
-    .length;
+  return events.filter((event) => compareFn(event.startDate, date)).length;
 }
 
 export function groupEvents(dayEvents: IEvent[]): IEvent[][] {
   const sortedEvents = dayEvents.sort(
-    (a, b) => parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+    (a, b) => a.startDate.getTime() - b.startDate.getTime()
   );
   const groups: IEvent[][] = [];
 
   for (const event of sortedEvents) {
-    const eventStart = parseISO(event.startDate);
+    const eventStart = event.startDate;
     let placed = false;
 
     for (const group of groups) {
       const lastEventInGroup = group[group.length - 1];
-      const lastEventEnd = parseISO(lastEventInGroup?.endDate ?? '');
+      const lastEventEnd = lastEventInGroup?.endDate ?? '';
 
       if (eventStart >= lastEventEnd) {
         group.push(event);
@@ -129,7 +128,7 @@ export function getEventBlockStyle(
   groupIndex: number,
   groupSize: number
 ) {
-  const startDate = parseISO(event.startDate);
+  const startDate = event.startDate;
   const dayStart = startOfDay(day); // Use startOfDay instead of manual reset
   const eventStart = startDate < dayStart ? dayStart : startDate;
   const startMinutes = differenceInMinutes(eventStart, dayStart);
@@ -191,28 +190,20 @@ export function calculateMonthEventPositions(
 
   const sortedEvents = [
     ...multiDayEvents.sort((a, b) => {
-      const aDuration = differenceInDays(
-        parseISO(a.endDate),
-        parseISO(a.startDate)
-      );
-      const bDuration = differenceInDays(
-        parseISO(b.endDate),
-        parseISO(b.startDate)
-      );
+      const aDuration = differenceInDays(a.endDate, a.startDate);
+      const bDuration = differenceInDays(b.endDate, b.startDate);
       return (
-        bDuration - aDuration ||
-        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+        bDuration - aDuration || a.startDate.getTime() - b.startDate.getTime()
       );
     }),
     ...singleDayEvents.sort(
-      (a, b) =>
-        parseISO(a.startDate).getTime() - parseISO(b.startDate).getTime()
+      (a, b) => a.startDate.getTime() - b.startDate.getTime()
     ),
   ];
 
   sortedEvents.forEach((event) => {
-    const eventStart = parseISO(event.startDate);
-    const eventEnd = parseISO(event.endDate);
+    const eventStart = event.startDate;
+    const eventEnd = event.endDate;
     const eventDays = eachDayOfInterval({
       start: eventStart < monthStart ? monthStart : eventStart,
       end: eventEnd > monthEnd ? monthEnd : eventEnd,
@@ -252,8 +243,8 @@ export function getMonthCellEvents(
 ) {
   const dayStart = startOfDay(date);
   const eventsForDate = events.filter((event) => {
-    const eventStart = parseISO(event.startDate);
-    const eventEnd = parseISO(event.endDate);
+    const eventStart = event.startDate;
+    const eventEnd = event.endDate;
     return (
       (dayStart >= eventStart && dayStart <= eventEnd) ||
       isSameDay(dayStart, eventStart) ||
@@ -298,8 +289,8 @@ export const getEventsForDay = (
   const targetDate = startOfDay(date);
   return events
     .filter((event) => {
-      const startOfDayForEventStart = startOfDay(parseISO(event.startDate));
-      const startOfDayForEventEnd = startOfDay(parseISO(event.endDate));
+      const startOfDayForEventStart = startOfDay(event.startDate);
+      const startOfDayForEventEnd = startOfDay(event.endDate);
       if (isWeek) {
         return (
           event.startDate !== event.endDate &&
@@ -313,8 +304,8 @@ export const getEventsForDay = (
       );
     })
     .map((event) => {
-      const eventStart = startOfDay(parseISO(event.startDate));
-      const eventEnd = startOfDay(parseISO(event.endDate));
+      const eventStart = startOfDay(event.startDate);
+      const eventEnd = startOfDay(event.endDate);
       let point: 'start' | 'end' | 'none' | undefined;
 
       if (isSameDay(eventStart, eventEnd)) {
@@ -340,8 +331,8 @@ export const getEventsForWeek = (events: IEvent[], date: Date): IEvent[] => {
   const endOfWeekDate = weekDates[6];
 
   return events.filter((event) => {
-    const eventStart = parseISO(event.startDate);
-    const eventEnd = parseISO(event.endDate);
+    const eventStart = event.startDate;
+    const eventEnd = event.endDate;
     return (
       isValid(eventStart) &&
       isValid(eventEnd) &&
@@ -356,8 +347,8 @@ export const getEventsForMonth = (events: IEvent[], date: Date): IEvent[] => {
   const endOfMonthDate = endOfMonth(date);
 
   return events.filter((event) => {
-    const eventStart = parseISO(event.startDate);
-    const eventEnd = parseISO(event.endDate);
+    const eventStart = event.startDate;
+    const eventEnd = event.endDate;
     return (
       isValid(eventStart) &&
       isValid(eventEnd) &&
@@ -374,8 +365,8 @@ export const getEventsForYear = (events: IEvent[], date: Date): IEvent[] => {
   const endOfYearDate = endOfYear(date);
 
   return events.filter((event) => {
-    const eventStart = parseISO(event.startDate);
-    const eventEnd = parseISO(event.endDate);
+    const eventStart = event.startDate;
+    const eventEnd = event.endDate;
     return (
       isValid(eventStart) &&
       isValid(eventEnd) &&

@@ -5,6 +5,7 @@ import {
   AttendanceStatus,
   NotificationStatus,
 } from '../enums';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 // AttendanceRecord schemas
@@ -31,14 +32,8 @@ export const attendanceRecordFindAllSchema = z
     studentId: z.string().optional(),
     classroomIntegrationSessionId: z.string().optional(),
     status: z.array(z.nativeEnum(AttendanceStatus)).optional(),
-    sessionDateFrom: z
-      .string()
-      .transform((stringDate) => new Date(stringDate))
-      .optional(),
-    sessionDateTo: z
-      .string()
-      .transform((stringDate) => new Date(stringDate))
-      .optional(),
+    sessionDateFrom: z.date().optional(),
+    sessionDateTo: z.date().optional(),
   })
   .merge(DefaultFilterSchema);
 
@@ -73,12 +68,9 @@ export const attendanceNotificationCreateSchema = z.object({
   studentId: z.string(),
   classroomIntegrationId: z.string(),
   notificationType: z.nativeEnum(AttendanceNotificationType),
-  notificationDate: z.string().transform((stringDate) => new Date(stringDate)),
+  notificationDate: z.date(),
   status: z.nativeEnum(NotificationStatus),
-  acknowledgedAt: z
-    .string()
-    .transform((stringDate) => new Date(stringDate))
-    .optional(),
+  acknowledgedAt: z.date().optional(),
 });
 
 export const attendanceNotificationUpdateSchema = z
@@ -95,14 +87,8 @@ export const attendanceNotificationFindAllSchema = z
       .array(z.nativeEnum(AttendanceNotificationType))
       .optional(),
     status: z.array(z.nativeEnum(NotificationStatus)).optional(),
-    notificationDateFrom: z
-      .string()
-      .transform((stringDate) => new Date(stringDate))
-      .optional(),
-    notificationDateTo: z
-      .string()
-      .transform((stringDate) => new Date(stringDate))
-      .optional(),
+    notificationDateFrom: z.date().optional(),
+    notificationDateTo: z.date().optional(),
   })
   .merge(DefaultFilterSchema);
 

@@ -29,12 +29,12 @@ export function RenderGroupedEvents({
           otherGroup.some((otherEvent) =>
             areIntervalsOverlapping(
               {
-                start: parseISO(event.startDate),
-                end: parseISO(event.endDate),
+                start: event.startDate,
+                end: event.endDate,
               },
               {
-                start: parseISO(otherEvent.startDate),
-                end: parseISO(otherEvent.endDate),
+                start: otherEvent.startDate,
+                end: otherEvent.endDate,
               }
             )
           )

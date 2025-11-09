@@ -24,8 +24,8 @@ interface IProps {
 }
 
 export function EventDetailsDialog({ event, children }: IProps) {
-  const startDate = parseISO(event.startDate);
-  const endDate = parseISO(event.endDate);
+  const startDate = event.startDate;
+  const endDate = event.endDate;
   const { use24HourFormat, removeEvent } = useCalendar();
 
   const deleteEvent = (eventId: string) => {
@@ -64,7 +64,7 @@ export function EventDetailsDialog({ event, children }: IProps) {
                 <p className="text-muted-foreground text-sm">
                   {format(startDate, 'EEEE dd MMMM')}
                   <span className="mx-1">at</span>
-                  {formatTime(parseISO(event.startDate), use24HourFormat)}
+                  {formatTime(event.startDate, use24HourFormat)}
                 </p>
               </div>
             </div>
@@ -76,7 +76,7 @@ export function EventDetailsDialog({ event, children }: IProps) {
                 <p className="text-muted-foreground text-sm">
                   {format(endDate, 'EEEE dd MMMM')}
                   <span className="mx-1">at</span>
-                  {formatTime(parseISO(event.endDate), use24HourFormat)}
+                  {formatTime(event.endDate, use24HourFormat)}
                 </p>
               </div>
             </div>

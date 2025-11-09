@@ -107,8 +107,8 @@ export function AddEditEventDialog({
     try {
       const formattedEvent: IEvent = {
         ...values,
-        startDate: format(values.startDate, "yyyy-MM-dd'T'HH:mm:ss"),
-        endDate: format(values.endDate, "yyyy-MM-dd'T'HH:mm:ss"),
+        startDate: values.startDate,
+        endDate: values.endDate,
         id: isEditing ? event.id : crypto.randomUUID(),
         user: isEditing
           ? event.user

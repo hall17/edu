@@ -84,15 +84,11 @@ export function ClassroomActionStepper() {
       // updateMutation.mutate({
       //   ...data,
       //   id: currentRow.id,
-      //   startDate: data.startDate.toISOString(),
-      //   endDate: data.endDate.toISOString(),
       //   description: data.description || '',
       // });
     } else {
       createMutation.mutate({
         ...data,
-        startDate: data.startDate.toISOString(),
-        endDate: data.endDate.toISOString(),
         integrations: data.integrations.map((integration) => {
           return {
             id: integration.id,
@@ -189,8 +185,8 @@ export function ClassroomActionStepper() {
 
           const session: ClassroomSessionFormData = {
             id: crypto.randomUUID(),
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
+            startDate: startDate,
+            endDate: endDate,
             classroomIntegrationId: integration.id,
             teacherId: integration.teacherId,
             lessonIds: [],

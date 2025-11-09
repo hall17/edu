@@ -17,6 +17,7 @@ const _folderOptions = [
   'classroom-templates',
   'classrooms',
   'modules',
+  'assessments',
 ] as const;
 export type FolderOption = (typeof _folderOptions)[number];
 

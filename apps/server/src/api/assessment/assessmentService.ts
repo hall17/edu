@@ -1,5 +1,6 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
+import { deleteS3Object, generateSignedUrl } from '@api/libs/s3';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { hasPermission } from '@api/utils';
@@ -20,10 +21,18 @@ import { Service } from 'typedi';
 
 import { PAGE_SIZE } from '../../utils/constants';
 
-const assessmentFindOneInclude = {
+const assessmentInclude = {
   subject: true,
-  curriculums: true,
-  lessons: true,
+  curriculums: {
+    include: {
+      curriculum: true,
+    },
+  },
+  lessons: {
+    include: {
+      lesson: true,
+    },
+  },
   questions: {
     include: {
       question: true,
@@ -118,6 +127,7 @@ export class AssessmentService {
             }),
         where,
         orderBy,
+        include: assessmentInclude,
       }),
       prisma.assessment.count({ where }),
     ]);
@@ -149,7 +159,7 @@ export class AssessmentService {
 
     const assessment = await prisma.assessment.findUnique({
       where: { id },
-      include: assessmentFindOneInclude,
+      include: assessmentInclude,
     });
 
     if (!assessment) {
@@ -190,10 +200,17 @@ export class AssessmentService {
       throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
     }
 
-    const result = await prisma.$transaction(async (tx) => {
+    const id = crypto.randomUUID();
+
+    if (createDto.coverImageUrl) {
+      createDto.coverImageUrl = id;
+    }
+
+    const createdAssessment = await prisma.$transaction(async (tx) => {
       // Create the assessment
       const assessment = await tx.assessment.create({
         data: {
+          id,
           title: createDto.title,
           description: createDto.description,
           scheduleType: createDto.scheduleType,
@@ -247,7 +264,24 @@ export class AssessmentService {
       return assessment;
     });
 
-    return this.findOne(requestedBy, result.id);
+    const assessment = await this.findOne(requestedBy, createdAssessment.id);
+
+    if (createdAssessment.coverImageUrl) {
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: 'assessments',
+        key: createdAssessment.coverImageUrl,
+      });
+
+      return {
+        ...assessment,
+        signedAwsS3Url,
+      };
+    }
+
+    return assessment;
   }
 
   async update(requestedBy: TokenUser, updateDto: AssessmentUpdateDto) {
@@ -263,26 +297,34 @@ export class AssessmentService {
       }
     }
 
-    const { id, questions, ...updateData } = updateDto;
-
     // Check if assessment exists
     const existingAssessment = await prisma.assessment.findUnique({
-      where: { id },
+      where: { id: updateDto.id },
     });
+
+    const { id, questions, ...updateData } = updateDto;
 
     if (!existingAssessment) {
       throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
     }
 
-    const result = await prisma.$transaction(async (tx) => {
+    if (updateData.coverImageUrl) {
+      updateData.coverImageUrl = id;
+    } else if (updateData.coverImageUrl === null) {
+      // delete the cover image from s3
+      deleteS3Object(
+        requestedBy.companyId!,
+        requestedBy.activeBranchId,
+        'assessments',
+        existingAssessment.id
+      );
+    }
+
+    const updatedAssessment = await prisma.$transaction(async (tx) => {
       // Update the assessment
       const assessment = await tx.assessment.update({
         where: { id },
-        data: {
-          ...updateData,
-          statusUpdatedAt: new Date(),
-          statusUpdatedBy: requestedBy.id,
-        },
+        data: updateData,
       });
 
       // Update questions if provided
@@ -317,7 +359,24 @@ export class AssessmentService {
       return assessment;
     });
 
-    return this.findOne(requestedBy, result.id);
+    const assessment = await this.findOne(requestedBy, updatedAssessment.id);
+
+    if (updatedAssessment.coverImageUrl) {
+      const signedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        companyId: requestedBy.companyId!,
+        branchId: requestedBy.activeBranchId,
+        folder: 'assessments',
+        key: updatedAssessment.coverImageUrl,
+      });
+
+      return {
+        ...assessment,
+        signedAwsS3Url,
+      };
+    }
+
+    return assessment;
   }
 
   async updateStatus(
@@ -346,6 +405,7 @@ export class AssessmentService {
         statusUpdatedAt: new Date(),
         statusUpdatedBy: requestedBy.id,
       },
+      include: assessmentInclude,
     });
 
     return result;

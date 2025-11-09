@@ -10,7 +10,6 @@ import { ParentsStudentsEnrollmentDialog } from './dialogs/ParentsStudentsEnroll
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
-
 interface ParentsStudentsSectionProps {
   students: Array<{
     id: string;

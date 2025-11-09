@@ -258,18 +258,11 @@ export function UsersActionDialog() {
         }
 
         const updateData = { ...diff.updated } as Record<string, unknown>;
-        if (updateData['dateOfBirth']) {
-          updateData['dateOfBirth'] = (
-            updateData['dateOfBirth'] as Date
-          ).toISOString();
-        }
 
         const response = await updateUserMutation.mutateAsync({
           id: currentRow.id,
           ...updateData,
         } as any);
-
-        console.log('response', response);
 
         if (response && 'signedAwsS3Url' in response) {
           await fetch(response.signedAwsS3Url, {
@@ -282,14 +275,7 @@ export function UsersActionDialog() {
         toast.success(t('dialogs.action.success.updateUser'));
         updateUser(response as unknown as User);
       } else {
-        const createData = {
-          ...values,
-          dateOfBirth: values.dateOfBirth.toISOString(),
-        };
-
-        const response = await createUserMutation.mutateAsync(
-          createData as any
-        );
+        const response = await createUserMutation.mutateAsync(values as any);
 
         toast.success(t('dialogs.action.success.createUser'));
         createUser(response as unknown as User);

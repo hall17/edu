@@ -1,31 +1,32 @@
 import { z } from 'zod';
 
 import { DayOfWeek } from '../enums';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 export const classroomTemplateScheduleSchema = z.object({
   dayOfWeek: z.nativeEnum(DayOfWeek),
-  startTime: z.string().transform((stringDate) => new Date(stringDate)),
-  endTime: z.string().transform((stringDate) => new Date(stringDate)),
-  isActive: z.boolean().default(true),
+  startTime: z.date(),
+  endTime: z.date(),
+  isActive: z.boolean(),
 });
 
 export const classroomTemplateCreateSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   capacity: z.number().int().min(1).max(1000),
-  imageUrl: z.string().url().max(255).optional(),
-  attendancePassPercentage: z.number().int().min(0).max(100).default(80),
-  assessmentScorePass: z.number().int().min(0).max(100).default(80),
-  assignmentScorePass: z.number().int().min(0).max(100).default(80),
-  attendanceThreshold: z.number().int().min(0).max(100).optional(),
-  reminderFrequency: z.number().int().optional(),
+  imageUrl: z.string().max(1000).nullable().optional(),
+  attendancePassPercentage: z.number().int().min(0).max(100),
+  assessmentScorePass: z.number().int().min(0).max(100),
+  assignmentScorePass: z.number().int().min(0).max(100),
+  attendanceThreshold: z.number().int().min(0).max(100).nullable().optional(),
+  reminderFrequency: z.number().int().nullable().optional(),
   sendNotifications: z.boolean().optional(),
   accessLink: z.string().url().max(255).optional().or(z.literal('')),
   moduleIds: z.array(z.number().int()).optional(),
   schedules: z.array(classroomTemplateScheduleSchema).optional(),
-  startDate: z.string().transform((stringDate) => new Date(stringDate)),
-  endDate: z.string().transform((stringDate) => new Date(stringDate)),
+  startDate: z.date(),
+  endDate: z.date(),
 });
 
 export const classroomTemplateUpdateSchema = classroomTemplateCreateSchema

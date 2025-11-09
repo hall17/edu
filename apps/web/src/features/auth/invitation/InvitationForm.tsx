@@ -70,7 +70,7 @@ export function InvitationForm({
       email: z.string().email().max(100),
       nationalId: z.string().min(1).max(50),
       gender: z.nativeEnum(Gender),
-      dateOfBirth: z.date(),
+      dateOfBirth: z.date().nullable().optional(),
       profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50),
       phoneNumber: z.string().min(1).max(15),
@@ -126,9 +126,7 @@ export function InvitationForm({
     email: student?.email || '',
     nationalId: student?.nationalId || '',
     gender: student?.gender || (undefined as any),
-    dateOfBirth: student?.dateOfBirth
-      ? new Date(student?.dateOfBirth)
-      : (undefined as unknown as Date),
+    dateOfBirth: student?.dateOfBirth,
     profilePictureUrl: student?.profilePictureUrl || undefined,
     phoneCountryCode: student?.phoneCountryCode || '',
     phoneNumber: student?.phoneNumber || '',
@@ -165,10 +163,9 @@ export function InvitationForm({
       const response = await completeSignupMutation.mutateAsync({
         ...data,
         token: token as string,
-        dateOfBirth: data.dateOfBirth.toISOString(),
       });
 
-      if (response && 'signedAwsS3Url' in response) {
+      if (response && 'signedAwsS3Url' in response && response.signedAwsS3Url) {
         await fetch(response.signedAwsS3Url, {
           method: 'PUT',
           body: profilePictureFile,

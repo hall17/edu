@@ -36,9 +36,15 @@ import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
 
 interface BasicStepProps {
   form: UseFormReturn<AssessmentFormData>;
+  coverImageFile: File | null | undefined;
+  setCoverImageFile: (file: File | null | undefined) => void;
 }
 
-export function BasicStep({ form }: BasicStepProps) {
+export function BasicStep({
+  form,
+  coverImageFile,
+  setCoverImageFile,
+}: BasicStepProps) {
   const { t } = useTranslation();
 
   const selectedSubjectId = form.watch('subjectId');
@@ -78,8 +84,13 @@ export function BasicStep({ form }: BasicStepProps) {
                   <FormControl>
                     <DroppableImage
                       size="2xl"
-                      value={field.value}
-                      onChange={field.onChange}
+                      value={coverImageFile === null ? undefined : field.value}
+                      onChange={(file) => {
+                        field.onChange(
+                          file ? file.name : file === null ? null : undefined
+                        );
+                        setCoverImageFile(file);
+                      }}
                       uploadText={t('common.uploadImage')}
                       changeText={t('common.changeImage')}
                       helpText={t('common.imageUploadHelp')}

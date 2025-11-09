@@ -256,14 +256,7 @@ export function StudentsActionDialog() {
           });
         }
       } else {
-        const createData = {
-          ...values,
-          dateOfBirth: values.dateOfBirth.toISOString(),
-        };
-
-        const response = await createStudentMutation.mutateAsync(
-          createData as any
-        );
+        const response = await createStudentMutation.mutateAsync(values as any);
 
         toast.success(t('dialogs.action.success.createStudent'));
         createStudent(response as unknown as Student);

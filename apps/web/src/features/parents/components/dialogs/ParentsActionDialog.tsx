@@ -62,7 +62,7 @@ function getFormSchema(t: TFunction) {
       firstName: z.string().min(1).max(50),
       lastName: z.string().min(1).max(50),
       gender: z.nativeEnum(Gender),
-      dateOfBirth: z.date(),
+      dateOfBirth: z.date().nullable().optional(),
       email: z.string().email().max(100),
       profilePictureUrl: z.string().max(1000).nullable().optional(),
       phoneCountryCode: z.string().min(1).max(50),
@@ -155,9 +155,7 @@ export function ParentsActionDialog() {
         firstName: currentRow?.firstName ?? '',
         lastName: currentRow?.lastName ?? '',
         gender: currentRow?.gender ?? (undefined as unknown as Gender),
-        dateOfBirth: currentRow?.dateOfBirth
-          ? new Date(currentRow.dateOfBirth)
-          : (undefined as unknown as Date),
+        dateOfBirth: currentRow.dateOfBirth,
         email: currentRow?.email ?? '',
         profilePictureUrl: currentRow?.profilePictureUrl ?? undefined,
         phoneCountryCode: currentRow?.phoneCountryCode ?? '',
@@ -264,12 +262,6 @@ export function ParentsActionDialog() {
 
         const updateData = { ...diff.updated } as Record<string, unknown>;
 
-        if (updateData['dateOfBirth']) {
-          updateData['dateOfBirth'] = (
-            updateData['dateOfBirth'] as Date
-          ).toISOString();
-        }
-
         const response = await updateParentMutation.mutateAsync({
           id: currentRow.id,
           ...updateData,
@@ -287,14 +279,7 @@ export function ParentsActionDialog() {
           console.log('profilePictureFile', profilePictureFile);
         }
       } else {
-        const createData = {
-          ...values,
-          dateOfBirth: values.dateOfBirth.toISOString(),
-        };
-
-        const response = await createParentMutation.mutateAsync(
-          createData as any
-        );
+        const response = await createParentMutation.mutateAsync(values as any);
 
         toast.success(t('dialogs.action.success.createParent'));
         createParent(response as Parent);

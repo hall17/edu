@@ -133,8 +133,8 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
   // Create an event happening now
   const currentEvent = {
     id: crypto.randomUUID(),
-    startDate: new Date(now.getTime() - 30 * 60000).toISOString(),
-    endDate: new Date(now.getTime() + 30 * 60000).toISOString(),
+    startDate: new Date(now.getTime() - 30 * 60000),
+    endDate: new Date(now.getTime() + 30 * 60000),
     title: events[Math.floor(Math.random() * events.length)],
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
     description:
@@ -191,8 +191,8 @@ const mockGenerator = (numberOfEvents: number): IEvent[] => {
       //   endDate: endDate.toISOString(),
 
       // },
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
+      startDate: startDate,
+      endDate: endDate,
       title: events[Math.floor(Math.random() * events.length)] ?? '',
       color: COLORS[Math.floor(Math.random() * COLORS.length)] as TEventColor,
       description:

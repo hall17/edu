@@ -58,8 +58,8 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
     return (
       events.filter((event) =>
         isWithinInterval(now, {
-          start: parseISO(event.startDate),
-          end: parseISO(event.endDate),
+          start: event.startDate,
+          end: event.endDate,
         })
       ) || []
     );
@@ -68,7 +68,7 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
   const currentEvents = getCurrentEvents(singleDayEvents);
 
   const dayEvents = singleDayEvents.filter((event) => {
-    const eventDate = parseISO(event.startDate);
+    const eventDate = event.startDate;
     return (
       eventDate.getDate() === selectedDate.getDate() &&
       eventDate.getMonth() === selectedDate.getMonth() &&
@@ -227,7 +227,7 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
                       <div className="flex items-center gap-1.5">
                         <Calendar className="text-t-quinary size-4" />
                         <span className="text-t-tertiary text-sm">
-                          {format(new Date(event.startDate), 'MMM d, yyyy')}
+                          {format(new Date(event.startDate), 'dd/MM/yyyy')}
                         </span>
                       </div>
 
@@ -235,12 +235,12 @@ export function CalendarDayView({ singleDayEvents, multiDayEvents }: IProps) {
                         <Clock className="text-t-quinary size-4" />
                         <span className="text-t-tertiary text-sm">
                           {format(
-                            parseISO(event.startDate),
+                            event.startDate,
                             use24HourFormat ? 'HH:mm' : 'hh:mm a'
                           )}{' '}
                           -
                           {format(
-                            parseISO(event.endDate),
+                            event.endDate,
                             use24HourFormat ? 'HH:mm' : 'hh:mm a'
                           )}
                         </span>

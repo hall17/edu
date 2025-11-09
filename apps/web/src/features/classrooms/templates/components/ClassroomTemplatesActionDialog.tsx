@@ -1,4 +1,9 @@
-import { MODULE_CODES, ModuleCode } from '@edusama/common';
+import {
+  ClassroomTemplateCreateDto,
+  classroomTemplateCreateSchema,
+  MODULE_CODES,
+  ModuleCode,
+} from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { detailedDiff } from 'deep-object-diff';
@@ -38,6 +43,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
+import i18n from '@/lib/i18n';
 
 const selectableModules: ModuleCode[] = [
   MODULE_CODES.certificates,
@@ -47,6 +53,14 @@ const selectableModules: ModuleCode[] = [
   MODULE_CODES.attendance,
   MODULE_CODES.materials,
 ];
+
+const formSchema = classroomTemplateCreateSchema.refine(
+  (data) => data.endDate > data.startDate,
+  {
+    message: i18n.t('common.endDateMustBeAfterStartDate'),
+    path: ['endDate'],
+  }
+);
 
 export function ClassroomTemplatesActionDialog() {
   const { t } = useTranslation();
@@ -71,30 +85,7 @@ export function ClassroomTemplatesActionDialog() {
     trpc.classroomTemplate.update.mutationOptions()
   );
 
-  const formSchema = z
-    .object({
-      name: z.string().min(1).max(100),
-      description: z.string().max(500).optional(),
-      capacity: z.number().int().min(1).max(1000),
-      attendancePassPercentage: z.number().int().min(0).max(100),
-      assessmentScorePass: z.number().int().min(0).max(100),
-      assignmentScorePass: z.number().int().min(0).max(100),
-      sendNotifications: z.boolean().optional(),
-      attendanceThreshold: z.number().int().min(0).max(100).optional(),
-      reminderFrequency: z.number().int().optional(),
-      startDate: z.date(),
-      endDate: z.date(),
-      imageUrl: z.string().optional(),
-      moduleIds: z.array(z.number().int()).optional(),
-    })
-    .refine((data) => data.endDate > data.startDate, {
-      message: t('common.endDateMustBeAfterStartDate'),
-      path: ['endDate'],
-    });
-
-  type FormData = z.infer<typeof formSchema>;
-
-  const form = useForm<FormData>({
+  const form = useForm<ClassroomTemplateCreateDto>({
     resolver: zodResolver(formSchema),
     mode: 'onSubmit',
   });
@@ -102,63 +93,55 @@ export function ClassroomTemplatesActionDialog() {
   useEffect(() => {
     if (isEdit && currentRow) {
       form.reset({
-        name: currentRow?.name || '',
-        description: currentRow?.description || '',
-        capacity: currentRow?.capacity || undefined,
-        attendancePassPercentage:
-          currentRow?.attendancePassPercentage ?? undefined,
-        assessmentScorePass: currentRow?.assessmentScorePass ?? undefined,
-        assignmentScorePass: currentRow?.assignmentScorePass ?? undefined,
-        startDate: currentRow?.startDate
-          ? new Date(currentRow.startDate)
-          : new Date(),
-        endDate: currentRow?.endDate
-          ? new Date(currentRow.endDate)
-          : (() => {
-              const date = new Date();
-              date.setMonth(date.getMonth() + 6);
-              return date;
-            })(),
-        imageUrl: currentRow?.imageUrl || undefined,
-        moduleIds:
-          (currentRow as any)?.modules?.map(
-            (module: any) => module.module.id
-          ) || [],
-        sendNotifications: currentRow?.sendNotifications ?? undefined,
-        attendanceThreshold: currentRow?.attendanceThreshold ?? undefined,
-        reminderFrequency: currentRow?.reminderFrequency ?? undefined,
+        name: currentRow.name || '',
+        description: currentRow.description || '',
+        capacity: currentRow.capacity,
+        attendancePassPercentage: currentRow.attendancePassPercentage,
+        assessmentScorePass: currentRow.assessmentScorePass,
+        assignmentScorePass: currentRow.assignmentScorePass,
+        startDate: currentRow.startDate || new Date(),
+        endDate: currentRow.endDate,
+        imageUrl: currentRow.imageUrl,
+        moduleIds: currentRow.modules.map((module) => module.module.id) || [],
+        sendNotifications: currentRow.sendNotifications,
+        attendanceThreshold: currentRow.attendanceThreshold,
+        reminderFrequency: currentRow.reminderFrequency,
       });
     } else {
-      form.reset();
+      form.reset({
+        name: '',
+        description: '',
+        capacity: 30,
+        attendancePassPercentage: 80,
+        assessmentScorePass: 80,
+        assignmentScorePass: 80,
+        startDate: new Date(),
+        endDate: (() => {
+          const date = new Date();
+          date.setMonth(date.getMonth() + 6);
+          return date;
+        })(),
+      });
     }
   }, [isEdit, currentRow]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: ClassroomTemplateCreateDto) => {
     if (!isEdit) {
-      createMutation.mutate(
-        {
-          ...data,
-          startDate: data.startDate.toISOString(),
-          endDate: data.endDate.toISOString(),
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          toast.success(t('classrooms.templateDialog.createSuccess'));
+          handleFormSuccess();
         },
-        {
-          onSuccess: () => {
-            toast.success(t('classrooms.templateDialog.createSuccess'));
-            handleFormSuccess();
-          },
-          onError: (error) => {
-            toast.error(t('classrooms.templateDialog.createError'));
-            console.error('Create template error:', error);
-          },
-        }
-      );
+        onError: (error) => {
+          toast.error(t('classrooms.templateDialog.createError'));
+          console.error('Create template error:', error);
+        },
+      });
     } else if (isEdit && currentRow) {
       updateMutation.mutate(
         {
           id: currentRow.id,
           ...data,
-          startDate: data.startDate.toISOString(),
-          endDate: data.endDate.toISOString(),
         },
         {
           onSuccess: () => {
@@ -274,7 +257,7 @@ export function ClassroomTemplatesActionDialog() {
                       render={({ field }) => (
                         <DroppableImage
                           size="sm"
-                          value={field.value}
+                          value={field.value ?? undefined}
                           onChange={field.onChange}
                           uploadText={t(
                             'classrooms.templateDialog.fields.uploadImage'
@@ -527,8 +510,9 @@ export function ClassroomTemplatesActionDialog() {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                type="number"
                                 {...field}
+                                type="number"
+                                value={field.value ?? undefined}
                                 onChange={(e) =>
                                   field.onChange(parseInt(e.target.value))
                                 }
@@ -555,8 +539,9 @@ export function ClassroomTemplatesActionDialog() {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                type="number"
                                 {...field}
+                                type="number"
+                                value={field.value ?? undefined}
                                 onChange={(e) =>
                                   field.onChange(parseInt(e.target.value))
                                 }

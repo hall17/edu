@@ -23,8 +23,8 @@ export function DayViewMultiDayEventsRow({
 
   const multiDayEventsInDay = multiDayEvents
     .filter((event) => {
-      const eventStart = parseISO(event.startDate);
-      const eventEnd = parseISO(event.endDate);
+      const eventStart = event.startDate;
+      const eventEnd = event.endDate;
 
       return (
         isWithinInterval(dayStart, { start: eventStart, end: eventEnd }) ||
@@ -33,14 +33,8 @@ export function DayViewMultiDayEventsRow({
       );
     })
     .sort((a, b) => {
-      const durationA = differenceInDays(
-        parseISO(a.endDate),
-        parseISO(a.startDate)
-      );
-      const durationB = differenceInDays(
-        parseISO(b.endDate),
-        parseISO(b.startDate)
-      );
+      const durationA = differenceInDays(a.endDate, a.startDate);
+      const durationB = differenceInDays(b.endDate, b.startDate);
       return durationB - durationA;
     });
 
@@ -51,8 +45,8 @@ export function DayViewMultiDayEventsRow({
       <div className="w-18"></div>
       <div className="flex flex-1 flex-col gap-1 border-l py-1">
         {multiDayEventsInDay.map((event) => {
-          const eventStart = startOfDay(parseISO(event.startDate));
-          const eventEnd = startOfDay(parseISO(event.endDate));
+          const eventStart = startOfDay(event.startDate);
+          const eventEnd = startOfDay(event.endDate);
           const currentDate = startOfDay(selectedDate);
 
           const eventTotalDays = differenceInDays(eventEnd, eventStart) + 1;

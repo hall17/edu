@@ -38,9 +38,7 @@ export function ClassroomCalendarInformationForm() {
 
     return integration;
   }, [watchedClassroomIntegrationId, classroom?.integrations]);
-
-  console.log('selectedClassroomIntegration', selectedClassroomIntegration);
-
+  console.log('form values', form.getValues());
   return (
     <div className="rounded-lg border p-4">
       <h4 className="mb-2 font-medium">
@@ -138,7 +136,7 @@ export function ClassroomCalendarInformationForm() {
               </FormLabel>
               <FormControl>
                 <DateTimePicker24h
-                  value={field.value ? new Date(field.value) : undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   placeholder={t(
                     'classrooms.calendar.actionDialog.startDatePlaceholder'
@@ -159,7 +157,7 @@ export function ClassroomCalendarInformationForm() {
               </FormLabel>
               <FormControl>
                 <DateTimePicker24h
-                  value={field.value ? new Date(field.value) : undefined}
+                  value={field.value ?? undefined}
                   onChange={field.onChange}
                   placeholder={t(
                     'classrooms.calendar.actionDialog.endDatePlaceholder'

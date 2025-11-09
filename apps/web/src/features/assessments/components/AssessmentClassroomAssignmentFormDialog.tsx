@@ -29,12 +29,10 @@ import {
 } from '@/components/ui/form';
 import { trpc } from '@/lib/trpc';
 
-const assignmentFormSchema = z.object({
-  startDate: z.string().min(1, 'Start date is required'),
-  endDate: z.string().min(1, 'End date is required'),
-});
-
-type AssignmentFormData = z.infer<typeof assignmentFormSchema>;
+import {
+  classroomIntegrationAssessmentCreateSchema,
+  ClassroomIntegrationAssessmentCreateDto,
+} from '@edusama/common';
 
 interface Props {
   open: boolean;
@@ -52,11 +50,11 @@ export function AssessmentClassroomAssignmentFormDialog({
   const { t } = useTranslation();
   const { currentRow, assessmentsQuery } = useAssessmentsContext();
 
-  const form = useForm<AssignmentFormData>({
-    resolver: zodResolver(assignmentFormSchema),
+  const form = useForm<ClassroomIntegrationAssessmentCreateDto>({
+    resolver: zodResolver(classroomIntegrationAssessmentCreateSchema),
     defaultValues: {
-      startDate: '',
-      endDate: '',
+      classroomIntegrationId,
+      assessmentId: currentRow?.id,
     },
   });
 
@@ -76,15 +74,10 @@ export function AssessmentClassroomAssignmentFormDialog({
     })
   );
 
-  function onSubmit(data: AssignmentFormData) {
+  function onSubmit(data: ClassroomIntegrationAssessmentCreateDto) {
     if (!currentRow?.id) return;
 
-    createMutation.mutate({
-      assessmentId: currentRow.id,
-      classroomIntegrationId,
-      startDate: data.startDate,
-      endDate: data.endDate,
-    });
+    createMutation.mutate(data);
   }
 
   function handleOpenChange(open: boolean) {
@@ -107,7 +100,12 @@ export function AssessmentClassroomAssignmentFormDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, (err) => {
+              console.log(err);
+            })}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -119,8 +117,8 @@ export function AssessmentClassroomAssignmentFormDialog({
                     </FormLabel>
                     <FormControl>
                       <DateTimePicker24h
-                        value={field.value ? new Date(field.value) : undefined}
-                        onChange={(date) => field.onChange(date?.toISOString())}
+                        value={field.value}
+                        onChange={field.onChange}
                         placeholder={t(
                           'assessments.assignmentForm.startDatePlaceholder'
                         )}
@@ -141,8 +139,8 @@ export function AssessmentClassroomAssignmentFormDialog({
                     </FormLabel>
                     <FormControl>
                       <DateTimePicker24h
-                        value={field.value ? new Date(field.value) : undefined}
-                        onChange={(date) => field.onChange(date?.toISOString())}
+                        value={field.value}
+                        onChange={field.onChange}
                         placeholder={t(
                           'assessments.assignmentForm.endDatePlaceholder'
                         )}

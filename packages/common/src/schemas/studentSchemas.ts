@@ -19,10 +19,7 @@ export const studentCreateSchema = z.object({
   lastName: z.string().min(1).max(50),
   email: z.string().email().max(100),
   gender: z.nativeEnum(Gender).optional(),
-  dateOfBirth: z
-    .string()
-    .transform((stringDate) => new Date(stringDate))
-    .optional(),
+  dateOfBirth: z.date().optional(),
   nationalId: z.string().optional(),
   phoneCountryCode: z.string().max(5).optional(),
   phoneNumber: z.string().max(15).optional(),

@@ -87,28 +87,11 @@ export function AssessmentActionDialog() {
 
   const form = useForm<AssessmentFormData>({
     resolver: zodResolver(assessmentFormSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      scheduleType: ScheduleType.FLEXIBLE,
-      duration: undefined,
-      maxPoints: 100,
-      isPublic: false,
-      scoringType: ScoringType.MANUAL,
-      coverImageUrl: '',
-      sendNotifications: false,
-      notificationFrequency: undefined,
-      subjectId: '',
-      curriculumIds: [],
-      lessonIds: [],
-      questions: [],
-    },
   });
 
-  // Populate form when editing
-  useEffect(() => {
+  function getDefaultValues(): AssessmentFormData {
     if (isEdit && currentRow) {
-      form.reset({
+      return {
         title: currentRow.title || '',
         description: currentRow.description || '',
         scheduleType: currentRow.scheduleType,
@@ -126,8 +109,29 @@ export function AssessmentActionDialog() {
           ) || [],
         lessonIds: currentRow.lessons?.map((lesson) => lesson.lessonId) || [],
         questions: [],
-      });
+      };
     }
+
+    return {
+      title: '',
+      description: '',
+      scheduleType: ScheduleType.FLEXIBLE,
+      duration: undefined,
+      maxPoints: 100,
+      isPublic: false,
+      scoringType: ScoringType.MANUAL,
+      coverImageUrl: '',
+      sendNotifications: false,
+      notificationFrequency: undefined,
+      subjectId: '',
+      curriculumIds: [],
+      lessonIds: [],
+      questions: [],
+    };
+  }
+
+  useEffect(() => {
+    form.reset(getDefaultValues());
   }, [isEdit, currentRow, form]);
 
   function handleDialogClose(state: boolean) {

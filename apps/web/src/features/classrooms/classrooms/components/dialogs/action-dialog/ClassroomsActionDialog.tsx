@@ -85,12 +85,10 @@ function ClassroomsActionDialogContent() {
                 teacherId: integration.teacherId || '',
                 accessLink: integration.accessLink || undefined,
                 schedules: integration.schedules?.map((schedule) => {
-                  const startTime = parseHourAndMinutesUTC(schedule.startTime);
-                  const endTime = parseHourAndMinutesUTC(schedule.endTime);
+                  // const startTime = parseHourAndMinutesUTC(schedule.startTime);
+                  // const endTime = parseHourAndMinutesUTC(schedule.endTime);
                   return {
                     ...schedule,
-                    startTime: startTime?.hours + ':' + startTime?.minutes,
-                    endTime: endTime?.hours + ':' + endTime?.minutes,
                     accessLink: integration.accessLink || undefined,
                   };
                 }),

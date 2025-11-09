@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, formatDate } from 'date-fns';
 import dayjs from 'dayjs';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -92,6 +92,8 @@ export function DateTimePicker24h({
     return () => observer.disconnect();
   }, [isOpen]);
 
+  console.log('value', value);
+
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
@@ -104,7 +106,7 @@ export function DateTimePicker24h({
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? (
-            dayjs(value).format('DD/MM/YYYY HH:mm')
+            format(value, 'dd/MM/yyyy HH:mm')
           ) : (
             <span>{placeholder}</span>
           )}

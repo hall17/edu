@@ -58,8 +58,8 @@ export function EventBlock({ event, className }: IProps) {
   const { badgeVariant, use24HourFormat, onClickEventCard } = useCalendar();
   const { t } = useTranslation();
 
-  const start = parseISO(event.startDate);
-  const end = parseISO(event.endDate);
+  const start = event.startDate;
+  const end = event.endDate;
   const durationInMinutes = differenceInMinutes(end, start);
   const heightInPixels = (durationInMinutes / 60) * 96 - 8;
 

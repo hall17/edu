@@ -19,7 +19,7 @@ export interface AuthState {
     user: AuthUser | null;
     setUser: (user: AuthUser | null) => void;
     student: InvitedStudentWithData | null;
-    setUserPreferences: (preferences: AuthUser['preferences']) => void;
+    setUserPreferences: (preferences: Partial<AuthUser['preferences']>) => void;
     setStudent: (student: InvitedStudentWithData) => void;
     reset: () => void;
   };
@@ -56,7 +56,7 @@ export const useAuthStore = create<AuthState>()((set) => {
               preferences: {
                 ...(state.auth.user?.preferences || {}),
                 ...preferences,
-              },
+              } as AuthUser['preferences'],
             },
           },
         })),

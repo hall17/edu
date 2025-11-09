@@ -125,6 +125,11 @@ export const assessments = {
     lesson: 'Ders',
     noDescription: 'Açıklama yok',
   },
+  assignmentStatuses: {
+    upcoming: 'Yaklaşan',
+    active: 'Aktif',
+    completed: 'Tamamlandı',
+  },
   delete: 'Sil',
   success: 'Başarılı',
   error: 'Hata',

@@ -164,10 +164,8 @@ export function QuestionsStep({ form }: QuestionsStepProps) {
 
   return (
     <div className="space-y-6">
-      {/* Question Selection Controls */}
       <div className="flex items-end justify-between gap-8">
         <div className="flex w-full flex-1 gap-4">
-          {/* ...existing code for questionCount, questionType, questionDifficulty ... */}
           <div>
             <label className="text-sm font-medium">
               {t('assessments.actionDialog.questionCount')}
@@ -258,7 +256,6 @@ export function QuestionsStep({ form }: QuestionsStepProps) {
         setSeeQuestionsDialogOpen={setSeeQuestionsDialogOpen}
       />
 
-      {/* Added Questions Display */}
       {questions.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">

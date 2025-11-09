@@ -44,7 +44,8 @@ function useProviderValue() {
       return {
         ...data,
         assessments:
-          data?.assessments.map((s) =>
+          // @ts-ignore
+          data.assessments.map((s) =>
             s.id === assessment.id ? assessment : s
           ) ?? [],
       };

@@ -11,10 +11,7 @@ export const parentCreateSchema = z.object({
   firstName: z.string().min(1).max(50),
   lastName: z.string().min(1).max(50),
   gender: z.nativeEnum(Gender).optional(),
-  dateOfBirth: z
-    .string()
-    .transform((stringDate) => new Date(stringDate))
-    .optional(),
+  dateOfBirth: z.date().optional(),
   email: z.string().email().max(100),
   profilePictureUrl: z.string().max(1000).nullable().optional(),
   phoneCountryCode: z.string().max(5).optional(),

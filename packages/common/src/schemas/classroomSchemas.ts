@@ -7,20 +7,8 @@ import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 export const classroomIntegrationScheduleSchema = z.object({
   dayOfWeek: z.nativeEnum(DayOfWeek),
-  startTime: z.string().transform((stringDate) => {
-    const [hours, minutes] = stringDate.split(':');
-    const date = new Date(
-      Date.UTC(1970, 0, 1, Number(hours), Number(minutes), 0, 0)
-    );
-    return date;
-  }),
-  endTime: z.string().transform((stringDate) => {
-    const [hours, minutes] = stringDate.split(':');
-    const date = new Date(
-      Date.UTC(1970, 0, 1, Number(hours), Number(minutes), 0, 0)
-    );
-    return date;
-  }),
+  startTime: z.date(),
+  endTime: z.date(),
 });
 
 export const createIntegrationSessionSchema = z.object({
@@ -28,8 +16,8 @@ export const createIntegrationSessionSchema = z.object({
   description: z.string().optional(),
   lessonIds: z.array(z.string().uuid()).optional(),
   teacherId: z.uuid().optional().nullable(),
-  startDate: z.string().transform((stringDate) => new Date(stringDate)),
-  endDate: z.string().transform((stringDate) => new Date(stringDate)),
+  startDate: z.date(),
+  endDate: z.date(),
 });
 
 export const createClassroomIntegrationSchema = z.object({
@@ -62,8 +50,8 @@ export const classroomCreateSchema = z
     reminderFrequency: z.number().int().optional(),
     attendanceThreshold: z.number().int().min(0).max(100).optional(),
     sendNotifications: z.boolean().optional(),
-    startDate: z.string().transform((stringDate) => new Date(stringDate)),
-    endDate: z.string().transform((stringDate) => new Date(stringDate)),
+    startDate: z.date(),
+    endDate: z.date(),
     classroomTemplateId: z.string().uuid().optional(),
     moduleIds: z.array(z.number().int()).optional(),
     integrations: z.array(createClassroomIntegrationSchema).optional(),

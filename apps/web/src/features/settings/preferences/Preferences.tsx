@@ -83,7 +83,7 @@ export function SettingsPreferences() {
       setUserPreferences({
         ...user?.preferences,
         ...diff.updated,
-      });
+      } as any);
 
       await updateUserPreferencesMutation.mutateAsync(diff.updated);
 

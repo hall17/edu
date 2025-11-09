@@ -17,8 +17,8 @@ export interface IEvent {
   id: string;
   type?: 'session' | 'assessment' | 'other';
   data?: ClassroomIntegrationSession;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   title: string;
   color: TEventColor;
   description: string;
