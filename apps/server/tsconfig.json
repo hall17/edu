@@ -6,8 +6,7 @@
     "emitDeclarationOnly": true,
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
     "paths": {
-      "@api/*": ["src/*"],
-      "@/*": ["src/*"]
+      "@api/*": ["src/*"]
     }
   },
   "include": ["src/**/*"]

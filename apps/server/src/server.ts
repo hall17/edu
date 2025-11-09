@@ -31,12 +31,26 @@ function initializeMiddlewares() {
       stream,
     })
   );
+  console.log('origins', env.ALLOWED_ORIGINS);
 
-  app.use(cors({ origin: env.ALLOWED_ORIGINS, credentials: true }));
+  app.use(
+    cors({
+      origin: env.ALLOWED_ORIGINS,
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      exposedHeaders: ['Set-Cookie'],
+    })
+  );
   // app.use(cors({ origin: '*', credentials: true }));
 
   // secure the app by setting various HTTP headers
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    })
+  );
 
   // compress response body to reduce the size of the response
   app.use(compression());

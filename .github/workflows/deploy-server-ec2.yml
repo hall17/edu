@@ -36,15 +36,15 @@ jobs:
 
       - name: Build server
         run: |
-          # make sure turbo is installed
-          yarn global add turbo
           rm -rf ./apps/web
           PRISMA_CLI_BINARY_TARGETS=debian-openssl-3.0.x,rhel-openssl-3.0.x yarn install --frozen-lockfile
-          touch apps/server/.env.production
-          echo "${{ vars.ENV_FILE }}" > apps/server/.env.production
-          export $(grep -v '^#' apps/server/.env.production | xargs)
-          yarn workspace @edusama/server prisma:generate
-          turbo run build
+          cd apps/server
+          touch .env.production
+          echo "${{ vars.ENV_FILE }}" > .env.production
+          export $(grep -v '^#' .env.production | xargs)
+          yarn prisma:generate
+          yarn workspace @edusama/common build
+          yarn build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
