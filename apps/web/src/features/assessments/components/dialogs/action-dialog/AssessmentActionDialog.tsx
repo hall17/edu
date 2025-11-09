@@ -43,7 +43,7 @@ export const basicAssessmentFormSchema = z.object({
   description: z.string().optional(),
   scheduleType: z.nativeEnum(ScheduleType),
   duration: z.number().int().positive().optional(),
-  maxPoints: z.number().int().min(1).max(1000),
+  maxPoints: z.number().int().min(1).max(100),
   isPublic: z.boolean(),
   scoringType: z.nativeEnum(ScoringType),
   coverImageUrl: z.string().optional(),

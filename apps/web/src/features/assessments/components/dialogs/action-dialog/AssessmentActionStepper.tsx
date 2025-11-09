@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { useAssessmentsContext } from '@/features/assessments/AssessmentsContext';
 import { trpc } from '@/lib/trpc';
+import { detailedDiff } from 'deep-object-diff';
 
 interface AssessmentActionStepperProps {
   form: UseFormReturn<AssessmentFormData>;
@@ -28,57 +29,55 @@ export function AssessmentActionStepper({
   form,
 }: AssessmentActionStepperProps) {
   const { t } = useTranslation();
-  const { currentRow, createAssessment, updateAssessment, setOpenedDialog } =
-    useAssessmentsContext();
+  const {
+    assessmentsQuery,
+    currentRow,
+    createAssessment,
+    updateAssessment,
+    setOpenedDialog,
+  } = useAssessmentsContext();
   const methods = useStepper();
   const isEdit = !!currentRow;
 
-  const createMutation = useMutation(
-    // @ts-ignore
-    trpc.assessment.create.mutationOptions({
-      onSuccess: (assessment) => {
-        toast.success(t('assessments.actionDialog.success.create'));
-        // createAssessment({
-        //   ...assessment,
-        //   _count: { questions: 0, classroomIntegrationAssessments: 0 },
-        // });
-        setOpenedDialog(null);
-        form.reset();
-      },
-      onError: (error) => {
-        console.error('Failed to create assessment:', error);
-        toast.error(t('assessments.actionDialog.errors.create'));
-      },
-    })
-  );
-
-  const updateMutation = useMutation(
-    trpc.assessment.update.mutationOptions({
-      onSuccess: (assessment) => {
-        toast.success(t('assessments.actionDialog.success.update'));
-        // updateAssessment({
-        //   ...assessment,
-        //   _count: { questions: 0, classroomIntegrationAssessments: 0 },
-        // });
-        setOpenedDialog(null);
-      },
-      onError: (error) => {
-        console.error('Failed to update assessment:', error);
-        toast.error(t('assessments.actionDialog.errors.update'));
-      },
-    })
-  );
+  const createMutation = useMutation(trpc.assessment.create.mutationOptions());
+  const updateMutation = useMutation(trpc.assessment.update.mutationOptions());
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
-  function onSubmit(data: AssessmentFormData) {
-    if (isEdit && currentRow) {
-      updateMutation.mutate({
-        id: currentRow.id,
-        ...data,
-      });
-    } else {
-      createMutation.mutate(data);
+  async function onSubmit(data: AssessmentFormData) {
+    try {
+      if (isEdit && currentRow) {
+        const diff = detailedDiff(currentRow, data);
+
+        if (!Object.keys(diff.updated).length) {
+          return;
+        }
+
+        console.log('diff', diff);
+        return;
+
+        const updateData = { ...diff.updated } as AssessmentFormData;
+
+        await updateMutation.mutateAsync({
+          id: currentRow.id,
+          ...updateData,
+        });
+        toast.success(t('assessments.actionDialog.updateSuccessMessage'));
+        assessmentsQuery.refetch();
+      } else {
+        await createMutation.mutateAsync(data);
+        toast.success(t('assessments.actionDialog.createSuccessMessage'));
+        assessmentsQuery.refetch();
+      }
+      form.reset();
+      setOpenedDialog(null);
+    } catch (error) {
+      console.error('Failed to submit assessment:', error);
+      if (isEdit) {
+        toast.error(t('assessments.actionDialog.updateErrorMessage'));
+      } else {
+        toast.error(t('assessments.actionDialog.createErrorMessage'));
+      }
     }
   }
 
@@ -117,7 +116,6 @@ export function AssessmentActionStepper({
         id="assessments-action-form"
         noValidate
         onSubmit={form.handleSubmit(onSubmit, (err) => {
-          console.error('Form validation errors:', err);
           toast.error(t('common.pleaseEnsureAllFieldsAreValid'));
         })}
         className="flex-1 space-y-6"

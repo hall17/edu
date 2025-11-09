@@ -1,9 +1,9 @@
 export const assessments = {
-  title: 'Assessment Templates',
-  description: 'Manage your assessment templates and their information here.',
+  title: 'Assessments',
+  description: 'Manage your assessments and their information here.',
   addAssessment: 'Add Assessment',
   tabs: {
-    templates: 'Assessment Templates',
+    templates: 'Assessments',
     assigned: 'Assigned Assessments',
   },
   assigned: {
@@ -59,6 +59,10 @@ export const assessments = {
     questionDifficulty: 'Question Difficulty',
     fetchRandomQuestions: 'Fetch Random Questions',
     selectedQuestions: 'Selected Questions',
+    createSuccessMessage: 'Assessment created successfully.',
+    updateSuccessMessage: 'Assessment updated successfully.',
+    createErrorMessage: 'Failed to create assessment',
+    updateErrorMessage: 'Failed to update assessment',
     errors: {
       selectSubject: 'Please select a subject first.',
       invalidQuestionCount: 'Please enter a valid question count (1-100).',

@@ -20,48 +20,24 @@ import { Service } from 'typedi';
 
 import { PAGE_SIZE } from '../../utils/constants';
 
+const assessmentFindOneInclude = {
+  subject: true,
+  curriculums: true,
+  lessons: true,
+  questions: {
+    include: {
+      question: true,
+    },
+  },
+  classroomIntegrationAssessments: {
+    include: {
+      classroomIntegration: true,
+    },
+  },
+} satisfies Prisma.AssessmentInclude;
+
 @Service()
 export class AssessmentService {
-  // Assessment CRUD operations
-  async findOne(requestedBy: TokenUser, id: string) {
-    if (!requestedBy.isSuperAdmin) {
-      const userHasReadPermission = hasPermission(
-        requestedBy,
-        MODULE_CODES.assessment,
-        PERMISSIONS.read
-      );
-
-      if (!userHasReadPermission) {
-        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
-      }
-    }
-
-    const assessment = await prisma.assessment.findUnique({
-      where: { id },
-      include: {
-        subject: true,
-        curriculums: true,
-        lessons: true,
-        questions: {
-          include: {
-            question: true,
-          },
-        },
-        classroomIntegrationAssessments: {
-          include: {
-            classroomIntegration: true,
-          },
-        },
-      },
-    });
-
-    if (!assessment) {
-      throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
-    }
-
-    return assessment;
-  }
-
   async findAll(requestedBy: TokenUser, filterDto: AssessmentFindAllDto) {
     if (!requestedBy.isSuperAdmin) {
       const userHasReadPermission = hasPermission(
@@ -142,25 +118,6 @@ export class AssessmentService {
             }),
         where,
         orderBy,
-        include: {
-          subject: true,
-          curriculums: {
-            include: {
-              curriculum: true,
-            },
-          },
-          lessons: {
-            include: {
-              lesson: true,
-            },
-          },
-          _count: {
-            select: {
-              questions: true,
-              classroomIntegrationAssessments: true,
-            },
-          },
-        },
       }),
       prisma.assessment.count({ where }),
     ]);
@@ -174,6 +131,32 @@ export class AssessmentService {
         totalPages: Math.ceil(count / size),
       },
     };
+  }
+
+  // Assessment CRUD operations
+  async findOne(requestedBy: TokenUser, id: string) {
+    if (!requestedBy.isSuperAdmin) {
+      const userHasReadPermission = hasPermission(
+        requestedBy,
+        MODULE_CODES.assessment,
+        PERMISSIONS.read
+      );
+
+      if (!userHasReadPermission) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+      }
+    }
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: assessmentFindOneInclude,
+    });
+
+    if (!assessment) {
+      throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
+    }
+
+    return assessment;
   }
 
   async create(requestedBy: TokenUser, createDto: AssessmentCreateDto) {

@@ -9,6 +9,7 @@ export const DefaultFilterSchema = z.object({
   all: z.boolean().optional(),
   global: z.boolean().optional(),
   branchIds: z.array(z.number().int()).optional(),
+  detailed: z.boolean().optional(),
 });
 
 export const idSchema = z.object({

@@ -1,9 +1,9 @@
 export const assessments = {
-  title: 'Değerlendirme Şablonları',
-  description: 'Değerlendirme şablonlarınızı ve bilgilerini burada yönetin.',
+  title: 'Değerlendirmeler',
+  description: 'Değerlendirmelerinizi ve bilgilerini burada yönetin.',
   addAssessment: 'Değerlendirme Ekle',
   tabs: {
-    templates: 'Değerlendirme Şablonları',
+    templates: 'Değerlendirmeler',
     assigned: 'Atanmış Değerlendirmeler',
   },
   assigned: {
@@ -59,6 +59,10 @@ export const assessments = {
     questionDifficulty: 'Soru Zorluğu',
     fetchRandomQuestions: 'Rastgele Soru Getir',
     selectedQuestions: 'Seçilen Sorular',
+    createSuccessMessage: 'Değerlendirme başarıyla oluşturuldu.',
+    updateSuccessMessage: 'Değerlendirme başarıyla güncellendi.',
+    createErrorMessage: 'Değerlendirme oluşturulamadı',
+    updateErrorMessage: 'Değerlendirme güncellenemedi',
     errors: {
       selectSubject: 'Lütfen önce bir konu seçin.',
       invalidQuestionCount: 'Lütfen geçerli bir soru sayısı girin (1-100).',
