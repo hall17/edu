@@ -15,7 +15,7 @@ export default defineConfig({
   // Automatically update package.json exports
   // not needed
   async onSuccess() {
-    if (process.env['NODE_ENV'] === 'development') {
+    if (!process.env['NODE_ENV'] || process.env['NODE_ENV'] === 'development') {
       return;
     }
 

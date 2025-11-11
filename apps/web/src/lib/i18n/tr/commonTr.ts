@@ -11,6 +11,7 @@ import {
   AttendanceNotificationType,
   AttendanceStatus,
   BranchStatus,
+  ClassroomIntegrationAssessmentStatus,
   ClassroomIntegrationStatus,
   ClassroomStatus,
   ClassroomTemplateStatus,
@@ -273,6 +274,12 @@ export const common = {
     [AssessmentStatus.SUSPENDED]: 'Askıya Alındı',
     [AssessmentStatus.TERMINATED]: 'Sonlandırıldı',
   } satisfies Record<AssessmentStatus, string>,
+  classroomIntegrationAssessmentStatuses: {
+    [ClassroomIntegrationAssessmentStatus.ACTIVE]: 'Aktif',
+    [ClassroomIntegrationAssessmentStatus.COMPLETED]: 'Tamamlandı',
+    [ClassroomIntegrationAssessmentStatus.SUSPENDED]: 'Askıya Alındı',
+    [ClassroomIntegrationAssessmentStatus.TERMINATED]: 'Sonlandırıldı',
+  } satisfies Record<ClassroomIntegrationAssessmentStatus, string>,
   assessmentScheduleTypes: {
     [ScheduleType.FLEXIBLE]: 'Esnek',
     [ScheduleType.STRICT]: 'Kesin',

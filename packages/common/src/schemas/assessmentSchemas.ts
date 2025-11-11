@@ -4,6 +4,7 @@ import {
   AssessmentLogAction,
   AssessmentNotificationType,
   AssessmentStatus,
+  ClassroomIntegrationAssessmentStatus,
   NotificationStatus,
   ScheduleType,
   ScoringType,
@@ -32,6 +33,16 @@ export const assessmentCreateSchema = z.object({
         questionId: z.string().uuid(),
         order: z.number().int().min(1),
         points: z.number().int().min(1),
+      })
+    )
+    .optional(),
+  rubrics: z
+    .array(
+      z.object({
+        id: z.string().uuid().optional(),
+        criterion: z.string().min(1).max(500),
+        minPoints: z.number().int().min(0),
+        maxPoints: z.number().int().min(1),
       })
     )
     .optional(),
@@ -94,6 +105,11 @@ export const classroomIntegrationAssessmentUpdateSchema = z
   .object({})
   .merge(classroomIntegrationAssessmentCreateSchema)
   .partial()
+  .merge(
+    z.object({
+      status: z.nativeEnum(ClassroomIntegrationAssessmentStatus).optional(),
+    })
+  )
   .merge(idSchema);
 
 export const classroomIntegrationAssessmentFindAllSchema = z

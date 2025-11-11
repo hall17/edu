@@ -9,6 +9,42 @@ export const assessments = {
   assigned: {
     title: 'Assigned Assessments',
     description: 'View and manage assessments assigned to classrooms.',
+    table: {
+      headers: {
+        assessment: 'Assessment',
+        classroom: 'Classroom',
+        subject: 'Subject',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+        status: 'Status',
+      },
+    },
+    viewDialog: {
+      title: 'View Assessment Assignment',
+      description: 'View assessment assignment details.',
+    },
+    editDialog: {
+      title: 'Edit Assessment Assignment',
+      description:
+        'Update the schedule for "{{assessment}}" in "{{classroom}}".',
+      success: 'Assessment assignment updated successfully.',
+      error: 'Failed to update assessment assignment.',
+    },
+    deleteDialog: {
+      title: 'Delete Assessment Assignment',
+      description:
+        'Are you sure you want to delete the assignment of "{{assessment}}" from "{{classroom}}"? This action cannot be undone.',
+      success: 'Assessment assignment deleted successfully.',
+      error: 'Failed to delete assessment assignment.',
+    },
+    statusDialog: {
+      title: 'Change Assignment Status',
+      description: 'Update the status of this assessment assignment.',
+      currentStatus: 'Current Status',
+      newStatus: 'New Status',
+    },
+    statusUpdateSuccess: 'Assessment assignment status updated successfully.',
+    statusUpdateError: 'Failed to update assessment assignment status.',
   },
   table: {
     filterPlaceholder: 'Filter assessments...',

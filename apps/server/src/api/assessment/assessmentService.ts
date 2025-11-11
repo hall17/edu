@@ -234,6 +234,16 @@ export class AssessmentService {
               data: createDto.lessonIds?.map((id) => ({ lessonId: id })) ?? [],
             },
           },
+          rubrics: {
+            createMany: {
+              data:
+                createDto.rubrics?.map((r) => ({
+                  criterion: r.criterion,
+                  minPoints: r.minPoints,
+                  maxPoints: r.maxPoints,
+                })) ?? [],
+            },
+          },
           createdBy: requestedBy.id,
         },
       });
@@ -300,9 +310,13 @@ export class AssessmentService {
     // Check if assessment exists
     const existingAssessment = await prisma.assessment.findUnique({
       where: { id: updateDto.id },
+      include: {
+        rubrics: true,
+        questions: true,
+      },
     });
 
-    const { id, questions, ...updateData } = updateDto;
+    const { id, questions, rubrics, ...updateData } = updateDto;
 
     if (!existingAssessment) {
       throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
@@ -329,22 +343,83 @@ export class AssessmentService {
 
       // Update questions if provided
       if (questions && questions.length > 0) {
-        // Remove existing questions
+        const existingQuestionIds = existingAssessment.questions.map(
+          (q) => q.id
+        );
+        const newQuestionIds = questions.map((q) => q.questionId);
+        const questionsToDelete = existingQuestionIds.filter(
+          (id) => !newQuestionIds.includes(id)
+        );
+        const questionsToCreate = questions.filter((q) => !q.questionId);
+        const questionsToUpdate = questions.filter(
+          (q) => q.questionId && existingQuestionIds.includes(q.questionId)
+        );
+
+        // Delete existing questions
         await tx.assessmentQuestion.deleteMany({
-          where: { assessmentId: id },
+          where: { id: { in: questionsToDelete } },
         });
 
-        // Add new questions
-        const questionsData = questions.map((q) => ({
-          assessmentId: id,
-          questionId: q.questionId,
-          order: q.order,
-          points: q.points,
-        }));
-
+        // Create new questions
         await tx.assessmentQuestion.createMany({
-          data: questionsData,
+          data: questionsToCreate.map((q) => ({
+            assessmentId: existingAssessment.id,
+            questionId: q.questionId,
+            order: q.order,
+            points: q.points,
+          })),
         });
+
+        // Update existing questions
+        for (const q of questionsToUpdate) {
+          await tx.assessmentQuestion.update({
+            where: { id: q.questionId },
+            data: {
+              order: q.order,
+              points: q.points,
+            },
+          });
+        }
+      }
+
+      // Update rubrics if provided
+      if (rubrics && rubrics.length > 0) {
+        const existingRubricIds = existingAssessment.rubrics.map((r) => r.id);
+        const newRubricIds = rubrics.map((r) => r.id);
+        const rubricsToDelete = existingRubricIds.filter(
+          (id) => !newRubricIds.includes(id)
+        );
+        const rubricsToCreate = rubrics.filter((r) => !r.id);
+        const rubricsToUpdate = rubrics.filter(
+          (r) => r.id && existingRubricIds.includes(r.id)
+        );
+
+        // Remove existing rubrics
+        await tx.assessmentGradingRubric.deleteMany({
+          where: { id: { in: rubricsToDelete } },
+        });
+
+        // Create new rubrics
+        await tx.assessmentGradingRubric.createMany({
+          data: rubricsToCreate.map((r) => ({
+            assessmentId: existingAssessment.id,
+            criterion: r.criterion,
+            minPoints: r.minPoints,
+            maxPoints: r.maxPoints,
+          })),
+        });
+
+        // Update existing rubrics
+        for (const r of rubricsToUpdate) {
+          await tx.assessmentGradingRubric.update({
+            where: { id: r.id },
+            data: {
+              criterion: r.criterion,
+              minPoints: r.minPoints,
+              maxPoints: r.maxPoints,
+            },
+          });
+        }
       }
 
       // Log the update
@@ -700,6 +775,43 @@ export class AssessmentService {
     };
   }
 
+  async findOneClassroomIntegrationAssessment(
+    requestedBy: TokenUser,
+    id: string
+  ) {
+    if (!requestedBy.isSuperAdmin) {
+      const userHasReadPermission = hasPermission(
+        requestedBy,
+        MODULE_CODES.assessment,
+        PERMISSIONS.read
+      );
+
+      if (!userHasReadPermission) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+      }
+    }
+
+    const classroomIntegrationAssessment =
+      await prisma.classroomIntegrationAssessment.findUnique({
+        where: { id },
+        include: {
+          classroomIntegration: {
+            include: {
+              classroom: true,
+              subject: true,
+            },
+          },
+          assessment: true,
+        },
+      });
+
+    if (!classroomIntegrationAssessment) {
+      throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
+    }
+
+    return classroomIntegrationAssessment;
+  }
+
   async createClassroomIntegrationAssessment(
     requestedBy: TokenUser,
     createDto: ClassroomIntegrationAssessmentCreateDto
@@ -718,20 +830,15 @@ export class AssessmentService {
 
     // Verify classroom integration exists and user has access
     const classroomIntegration = await prisma.classroomIntegration.findUnique({
-      where: { id: createDto.classroomIntegrationId },
-      include: { classroom: { include: { branch: true } } },
+      where: {
+        id: createDto.classroomIntegrationId,
+        classroom: { branchId: requestedBy.activeBranchId },
+      },
+      include: { classroom: { include: { students: true } } },
     });
 
     if (!classroomIntegration) {
       throw new CustomError(HTTP_EXCEPTIONS.CLASSROOM_INTEGRATION_NOT_FOUND);
-    }
-
-    // Check if user has access to the branch
-    if (
-      !requestedBy.isSuperAdmin &&
-      !requestedBy.branchIds.includes(classroomIntegration.classroom.branchId)
-    ) {
-      throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
     }
 
     // Verify assessment exists
@@ -743,11 +850,22 @@ export class AssessmentService {
       throw new CustomError(HTTP_EXCEPTIONS.ASSESSMENT_NOT_FOUND);
     }
 
-    const result = await prisma.classroomIntegrationAssessment.create({
-      data: createDto,
-    });
+    const classroomIntegrationAssessment =
+      await prisma.classroomIntegrationAssessment.create({
+        data: {
+          ...createDto,
+          studentAssessments: {
+            createMany: {
+              data: classroomIntegration.classroom.students.map((student) => ({
+                studentId: student.studentId,
+                status: 'PENDING',
+              })),
+            },
+          },
+        },
+      });
 
-    return result;
+    return classroomIntegrationAssessment;
   }
 
   async updateClassroomIntegrationAssessment(
@@ -792,9 +910,24 @@ export class AssessmentService {
       }
     }
 
-    await prisma.classroomIntegrationAssessment.delete({
-      where: { id },
-    });
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.classroomIntegrationAssessment.update({
+          where: { id },
+          data: {
+            deletedAt: new Date(),
+            deletedBy: requestedBy.id,
+          },
+        });
+        await tx.studentClassroomIntegrationAssessment.updateMany({
+          where: { classroomIntegrationAssessmentId: id },
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+      },
+      { timeout: 30000 }
+    );
 
     return { success: true };
   }
@@ -831,42 +964,5 @@ export class AssessmentService {
     }
 
     return assessmentQuestion;
-  }
-
-  async findOneClassroomIntegrationAssessment(
-    requestedBy: TokenUser,
-    id: string
-  ) {
-    if (!requestedBy.isSuperAdmin) {
-      const userHasReadPermission = hasPermission(
-        requestedBy,
-        MODULE_CODES.assessment,
-        PERMISSIONS.read
-      );
-
-      if (!userHasReadPermission) {
-        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
-      }
-    }
-
-    const classroomIntegrationAssessment =
-      await prisma.classroomIntegrationAssessment.findUnique({
-        where: { id },
-        include: {
-          classroomIntegration: {
-            include: {
-              classroom: true,
-              subject: true,
-            },
-          },
-          assessment: true,
-        },
-      });
-
-    if (!classroomIntegrationAssessment) {
-      throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
-    }
-
-    return classroomIntegrationAssessment;
   }
 }

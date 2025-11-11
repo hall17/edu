@@ -339,6 +339,7 @@ model User {
   evaluatedAssessments                                    StudentClassroomIntegrationAssessment[] @relation("EvaluatedBy")
   attendanceRecordCompletedByClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("AttendanceRecordCompletedBy")
   meetingIntegrations                                     UserMeetingIntegration[]
+  deletedClassroomIntegrationAssessments                  ClassroomIntegrationAssessment[]        @relation("ClassroomIntegrationAssessmentsDeletedBy")
 }
 
 model UserMeetingIntegration {
@@ -396,22 +397,22 @@ model Student {
   signUpApprovedAt   DateTime?
   signUpApprovedBy   String?
 
-  branch                                       Branch                                         @relation(fields: [branchId], references: [id])
-  parent                                       Parent?                                        @relation(fields: [parentId], references: [id])
-  deletedByUser                                User?                                          @relation("DeletedBy", fields: [deletedBy], references: [id])
-  statusUpdatedByUser                          User?                                          @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
-  tokens                                       Token[]
-  preferences                                  StudentPreference?
-  loginAttempts                                LoginAttempt[]
-  activityLogs                                 StudentActivityLog[]
-  classrooms                                   ClassroomStudent[]
-  attendanceRecords                            AttendanceRecord[]
-  attendanceSummaries                          AttendanceSummary[]
-  attendanceNotifications                      AttendanceNotification[]
-  questionResponses                            QuestionResponse[]
-  notifications                                AssessmentNotification[]
-  StudentClassroomIntegrationAssessment        StudentClassroomIntegrationAssessment[]
-  StudentClassroomIntegrationAssessmentSession StudentClassroomIntegrationAssessmentSession[]
+  branch                  Branch                                         @relation(fields: [branchId], references: [id])
+  parent                  Parent?                                        @relation(fields: [parentId], references: [id])
+  deletedByUser           User?                                          @relation("DeletedBy", fields: [deletedBy], references: [id])
+  statusUpdatedByUser     User?                                          @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  tokens                  Token[]
+  preferences             StudentPreference?
+  loginAttempts           LoginAttempt[]
+  activityLogs            StudentActivityLog[]
+  classrooms              ClassroomStudent[]
+  attendanceRecords       AttendanceRecord[]
+  attendanceSummaries     AttendanceSummary[]
+  attendanceNotifications AttendanceNotification[]
+  questionResponses       QuestionResponse[]
+  notifications           AssessmentNotification[]
+  assessments             StudentClassroomIntegrationAssessment[]
+  assessmentSessions      StudentClassroomIntegrationAssessmentSession[]
 }
 
 model Parent {
@@ -1234,6 +1235,20 @@ enum AssessmentStatus {
   TERMINATED
 }
 
+enum ClassroomIntegrationAssessmentStatus {
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+  TERMINATED
+}
+
+enum StudentClassroomIntegrationStatus {
+  ELIGIBLE
+  COMPLETED
+  PENDING
+  FAILED
+}
+
 enum StudentClassroomIntegrationAssessmentSessionStatus {
   IN_PROGRESS
   COMPLETED
@@ -1244,13 +1259,6 @@ enum SubmissionStatus {
   SUBMITTED
   AUTO_SUBMITTED
   LATE_SUBMISSION
-}
-
-enum StudentClassroomIntegrationAssessmentStatus {
-  ELIGIBLE
-  COMPLETED
-  PENDING
-  FAILED
 }
 
 enum AssessmentLogAction {
@@ -1378,15 +1386,20 @@ model ClassroomIntegrationAssessment {
   classroomIntegrationId String
   assessmentId           String
 
+  status    ClassroomIntegrationAssessmentStatus @default(ACTIVE)
   startDate DateTime
   endDate   DateTime
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
 
-  classroomIntegration                   ClassroomIntegration                    @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
-  assessment                             Assessment                              @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
-  studentClassroomIntegrationAssessments StudentClassroomIntegrationAssessment[]
+  deletedByUser        User?                @relation("ClassroomIntegrationAssessmentsDeletedBy", fields: [deletedBy], references: [id])
+  classroomIntegration ClassroomIntegration @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  assessment           Assessment           @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+
+  studentAssessments StudentClassroomIntegrationAssessment[]
 
   @@unique([classroomIntegrationId, assessmentId])
   @@index([classroomIntegrationId])
@@ -1394,16 +1407,19 @@ model ClassroomIntegrationAssessment {
 }
 
 model StudentClassroomIntegrationAssessment {
-  id                               String                                      @id @default(uuid())
+  id                               String                            @id @default(uuid())
   studentId                        String
   classroomIntegrationAssessmentId String
-  status                           StudentClassroomIntegrationAssessmentStatus @default(ELIGIBLE)
+  status                           StudentClassroomIntegrationStatus @default(ELIGIBLE)
   pointsEarned                     Int?
-  evaluatedAt                      DateTime?
+  feedbackText                     String?
+  feedbackRating                   Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
+  evaluatedAt DateTime?
   evaluatedBy String?
 
   student                        Student                                        @relation(fields: [studentId], references: [id], onDelete: Cascade)
@@ -1423,12 +1439,10 @@ model StudentClassroomIntegrationAssessmentSession {
 
   startTime        DateTime                                           @default(now())
   endTime          DateTime?
+  pointsEarned     Int?
   status           StudentClassroomIntegrationAssessmentSessionStatus @default(IN_PROGRESS)
   submissionStatus SubmissionStatus?
   isStandalone     Boolean                                            @default(false)
-
-  feedbackText   String?
-  feedbackRating Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

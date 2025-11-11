@@ -11,6 +11,7 @@ import {
   AttendanceNotificationType,
   AttendanceStatus,
   BranchStatus,
+  ClassroomIntegrationAssessmentStatus,
   ClassroomIntegrationStatus,
   ClassroomStatus,
   ClassroomTemplateStatus,
@@ -211,6 +212,12 @@ export const common = {
     [AssessmentStatus.SUSPENDED]: 'Suspended',
     [AssessmentStatus.TERMINATED]: 'Terminated',
   } satisfies Record<AssessmentStatus, string>,
+  classroomIntegrationAssessmentStatuses: {
+    [ClassroomIntegrationAssessmentStatus.ACTIVE]: 'Active',
+    [ClassroomIntegrationAssessmentStatus.COMPLETED]: 'Completed',
+    [ClassroomIntegrationAssessmentStatus.SUSPENDED]: 'Suspended',
+    [ClassroomIntegrationAssessmentStatus.TERMINATED]: 'Terminated',
+  } satisfies Record<ClassroomIntegrationAssessmentStatus, string>,
   assessmentScheduleTypes: {
     [ScheduleType.FLEXIBLE]: 'Flexible',
     [ScheduleType.STRICT]: 'Strict',

@@ -89,13 +89,16 @@ CREATE TYPE "QuestionDifficulty" AS ENUM ('EASY', 'MEDIUM', 'HARD');
 CREATE TYPE "AssessmentStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'TERMINATED');
 
 -- CreateEnum
+CREATE TYPE "ClassroomIntegrationAssessmentStatus" AS ENUM ('ACTIVE', 'COMPLETED', 'SUSPENDED', 'TERMINATED');
+
+-- CreateEnum
+CREATE TYPE "StudentClassroomIntegrationStatus" AS ENUM ('ELIGIBLE', 'COMPLETED', 'PENDING', 'FAILED');
+
+-- CreateEnum
 CREATE TYPE "StudentClassroomIntegrationAssessmentSessionStatus" AS ENUM ('IN_PROGRESS', 'COMPLETED', 'CANCELLED');
 
 -- CreateEnum
 CREATE TYPE "SubmissionStatus" AS ENUM ('SUBMITTED', 'AUTO_SUBMITTED', 'LATE_SUBMISSION');
-
--- CreateEnum
-CREATE TYPE "StudentClassroomIntegrationAssessmentStatus" AS ENUM ('ELIGIBLE', 'COMPLETED', 'PENDING', 'FAILED');
 
 -- CreateEnum
 CREATE TYPE "AssessmentLogAction" AS ENUM ('CREATED', 'UPDATED', 'DELETED', 'RESTORED');
@@ -893,10 +896,13 @@ CREATE TABLE "ClassroomIntegrationAssessment" (
     "id" TEXT NOT NULL,
     "classroomIntegrationId" TEXT NOT NULL,
     "assessmentId" TEXT NOT NULL,
+    "status" "ClassroomIntegrationAssessmentStatus" NOT NULL DEFAULT 'ACTIVE',
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "ClassroomIntegrationAssessment_pkey" PRIMARY KEY ("id")
 );
@@ -906,11 +912,14 @@ CREATE TABLE "StudentClassroomIntegrationAssessment" (
     "id" TEXT NOT NULL,
     "studentId" TEXT NOT NULL,
     "classroomIntegrationAssessmentId" TEXT NOT NULL,
-    "status" "StudentClassroomIntegrationAssessmentStatus" NOT NULL DEFAULT 'ELIGIBLE',
+    "status" "StudentClassroomIntegrationStatus" NOT NULL DEFAULT 'ELIGIBLE',
     "pointsEarned" INTEGER,
-    "evaluatedAt" TIMESTAMP(3),
+    "feedbackText" TEXT,
+    "feedbackRating" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "evaluatedAt" TIMESTAMP(3),
     "evaluatedBy" TEXT,
 
     CONSTRAINT "StudentClassroomIntegrationAssessment_pkey" PRIMARY KEY ("id")
@@ -923,11 +932,10 @@ CREATE TABLE "StudentClassroomIntegrationAssessmentSession" (
     "studentId" TEXT NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "endTime" TIMESTAMP(3),
+    "pointsEarned" INTEGER,
     "status" "StudentClassroomIntegrationAssessmentSessionStatus" NOT NULL DEFAULT 'IN_PROGRESS',
     "submissionStatus" "SubmissionStatus",
     "isStandalone" BOOLEAN NOT NULL DEFAULT false,
-    "feedbackText" TEXT,
-    "feedbackRating" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -1557,6 +1565,9 @@ ALTER TABLE "AssessmentLesson" ADD CONSTRAINT "AssessmentLesson_assessmentId_fke
 
 -- AddForeignKey
 ALTER TABLE "AssessmentLesson" ADD CONSTRAINT "AssessmentLesson_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationAssessment" ADD CONSTRAINT "ClassroomIntegrationAssessment_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ClassroomIntegrationAssessment" ADD CONSTRAINT "ClassroomIntegrationAssessment_classroomIntegrationId_fkey" FOREIGN KEY ("classroomIntegrationId") REFERENCES "ClassroomIntegration"("id") ON DELETE CASCADE ON UPDATE CASCADE;

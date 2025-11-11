@@ -317,6 +317,26 @@ export const AssessmentStatus = {
 export type AssessmentStatus = (typeof AssessmentStatus)[keyof typeof AssessmentStatus]
 
 
+export const ClassroomIntegrationAssessmentStatus = {
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  SUSPENDED: 'SUSPENDED',
+  TERMINATED: 'TERMINATED'
+} as const
+
+export type ClassroomIntegrationAssessmentStatus = (typeof ClassroomIntegrationAssessmentStatus)[keyof typeof ClassroomIntegrationAssessmentStatus]
+
+
+export const StudentClassroomIntegrationStatus = {
+  ELIGIBLE: 'ELIGIBLE',
+  COMPLETED: 'COMPLETED',
+  PENDING: 'PENDING',
+  FAILED: 'FAILED'
+} as const
+
+export type StudentClassroomIntegrationStatus = (typeof StudentClassroomIntegrationStatus)[keyof typeof StudentClassroomIntegrationStatus]
+
+
 export const StudentClassroomIntegrationAssessmentSessionStatus = {
   IN_PROGRESS: 'IN_PROGRESS',
   COMPLETED: 'COMPLETED',
@@ -333,16 +353,6 @@ export const SubmissionStatus = {
 } as const
 
 export type SubmissionStatus = (typeof SubmissionStatus)[keyof typeof SubmissionStatus]
-
-
-export const StudentClassroomIntegrationAssessmentStatus = {
-  ELIGIBLE: 'ELIGIBLE',
-  COMPLETED: 'COMPLETED',
-  PENDING: 'PENDING',
-  FAILED: 'FAILED'
-} as const
-
-export type StudentClassroomIntegrationAssessmentStatus = (typeof StudentClassroomIntegrationAssessmentStatus)[keyof typeof StudentClassroomIntegrationAssessmentStatus]
 
 
 export const AssessmentLogAction = {

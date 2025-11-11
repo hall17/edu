@@ -154,6 +154,8 @@ export type QuestionRandom =
   RouterOutput['question']['findQuestionsRandom'][number];
 export type Assessment =
   RouterOutput['assessment']['findAll']['assessments'][number];
+export type ClassroomIntegrationAssessment =
+  RouterOutput['assessment']['findAllClassroomIntegrationAssessments']['data'][number];
 // export type AssessmentQuestion =
 //   RouterOutput['assessment']['findAllQuestions']['assessmentQuestions'][number];
 // export type ClassroomIntegrationAssessment =

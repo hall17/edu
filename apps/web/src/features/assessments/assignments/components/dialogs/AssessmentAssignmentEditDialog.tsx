@@ -1,12 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
-import { useAssessmentsContext } from '../AssessmentsContext';
+import { useAssessmentAssignmentsContext } from '../../AssessmentAssignmentsContext';
 
 import { DateTimePicker24h } from '@/components/DateTimePicker24h';
 import { LoadingButton } from '@/components/LoadingButton';
@@ -27,85 +26,79 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { trpc } from '@/lib/trpc';
+import { ClassroomIntegrationAssessment, trpc } from '@/lib/trpc';
 
 import {
-  classroomIntegrationAssessmentCreateSchema,
-  ClassroomIntegrationAssessmentCreateDto,
+  classroomIntegrationAssessmentUpdateSchema,
+  ClassroomIntegrationAssessmentUpdateDto,
 } from '@edusama/common';
 
-interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  classroomIntegrationId: string;
-  classroomName: string;
-}
-
-export function AssessmentClassroomAssignmentFormDialog({
-  open,
-  onOpenChange,
-  classroomIntegrationId,
-  classroomName,
-}: Props) {
+export function AssessmentAssignmentEditDialog() {
   const { t } = useTranslation();
-  const { currentRow, assessmentsQuery, setOpenedDialog } =
-    useAssessmentsContext();
+  const { currentRow, setOpenedDialog, updateAssignment, assignmentsQuery } =
+    useAssessmentAssignmentsContext();
 
-  const form = useForm<ClassroomIntegrationAssessmentCreateDto>({
-    resolver: zodResolver(classroomIntegrationAssessmentCreateSchema),
-    defaultValues: {
-      classroomIntegrationId,
-      assessmentId: currentRow?.id,
-    },
+  const defaultValues = useMemo(() => {
+    if (currentRow) {
+      return {
+        id: currentRow.id,
+        startDate: currentRow.startDate
+          ? new Date(currentRow.startDate)
+          : undefined,
+        endDate: currentRow.endDate ? new Date(currentRow.endDate) : undefined,
+      };
+    }
+    return {
+      id: '',
+      startDate: undefined,
+      endDate: undefined,
+    };
+  }, [currentRow]);
+
+  const form = useForm<ClassroomIntegrationAssessmentUpdateDto>({
+    resolver: zodResolver(classroomIntegrationAssessmentUpdateSchema),
+    defaultValues,
   });
 
-  const createMutation = useMutation(
-    trpc.assessment.createClassroomIntegrationAssessment.mutationOptions({
-      onSuccess: () => {
-        toast.success(t('assessments.classroomAssignment.success'));
-        assessmentsQuery.refetch();
-        onOpenChange(false);
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues, form]);
+
+  const updateMutation = useMutation(
+    trpc.assessment.updateClassroomIntegrationAssessment.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(t('assessments.assigned.editDialog.success'));
+        updateAssignment(data as ClassroomIntegrationAssessment);
+        assignmentsQuery.refetch();
         setOpenedDialog(null);
-        form.reset();
       },
       onError: () => {
-        toast.error(t('assessments.classroomAssignment.error'));
+        toast.error(t('assessments.assigned.editDialog.error'));
       },
     })
   );
 
-  function onSubmit(data: ClassroomIntegrationAssessmentCreateDto) {
-    if (!currentRow?.id) return;
-
-    createMutation.mutate(data);
-  }
-
-  function handleOpenChange(open: boolean) {
-    if (!open && !createMutation.isPending) {
-      form.reset();
-    }
-    onOpenChange(open);
+  function onSubmit(data: ClassroomIntegrationAssessmentUpdateDto) {
+    updateMutation.mutate(data);
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open onOpenChange={() => setOpenedDialog(null)}>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle>{t('assessments.assignmentForm.title')}</DialogTitle>
+          <DialogTitle>
+            {t('assessments.assigned.editDialog.title')}
+          </DialogTitle>
           <DialogDescription>
-            {t('assessments.assignmentForm.description', {
-              classroom: classroomName,
+            {t('assessments.assigned.editDialog.description', {
+              assessment: currentRow?.assessment?.title,
+              classroom: currentRow?.classroomIntegration?.classroom?.name,
             })}
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit, (err) => {
-              console.log(err);
-            })}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
@@ -156,17 +149,12 @@ export function AssessmentClassroomAssignmentFormDialog({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => handleOpenChange(false)}
-                disabled={createMutation.isPending}
+                onClick={() => setOpenedDialog(null)}
               >
                 {t('common.cancel')}
               </Button>
-              <LoadingButton
-                type="submit"
-                isLoading={createMutation.isPending}
-                disabled={createMutation.isPending}
-              >
-                {t('assessments.assignmentForm.assign')}
+              <LoadingButton type="submit" isLoading={updateMutation.isPending}>
+                {t('common.save')}
               </LoadingButton>
             </DialogFooter>
           </form>

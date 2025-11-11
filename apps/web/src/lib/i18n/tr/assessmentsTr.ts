@@ -9,6 +9,42 @@ export const assessments = {
   assigned: {
     title: 'Atanmış Değerlendirmeler',
     description: 'Sınıflara atanmış değerlendirmeleri görüntüleyin ve yönetin.',
+    table: {
+      headers: {
+        assessment: 'Değerlendirme',
+        classroom: 'Sınıf',
+        subject: 'Konu',
+        startDate: 'Başlangıç Tarihi',
+        endDate: 'Bitiş Tarihi',
+        status: 'Durum',
+      },
+    },
+    viewDialog: {
+      title: 'Değerlendirme Atamasını Görüntüle',
+      description: 'Değerlendirme atama detaylarını görüntüleyin.',
+    },
+    editDialog: {
+      title: 'Değerlendirme Atamasını Düzenle',
+      description:
+        '"{{assessment}}" değerlendirmesinin "{{classroom}}" sınıfındaki programını güncelleyin.',
+      success: 'Değerlendirme ataması başarıyla güncellendi.',
+      error: 'Değerlendirme ataması güncellenemedi.',
+    },
+    deleteDialog: {
+      title: 'Değerlendirme Atamasını Sil',
+      description:
+        '"{{assessment}}" değerlendirmesinin "{{classroom}}" sınıfından atamasını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+      success: 'Değerlendirme ataması başarıyla silindi.',
+      error: 'Değerlendirme ataması silinemedi.',
+    },
+    statusDialog: {
+      title: 'Atama Durumunu Değiştir',
+      description: 'Bu değerlendirme atamasının durumunu güncelleyin.',
+      currentStatus: 'Mevcut Durum',
+      newStatus: 'Yeni Durum',
+    },
+    statusUpdateSuccess: 'Değerlendirme ataması durumu başarıyla güncellendi.',
+    statusUpdateError: 'Değerlendirme ataması durumu güncellenemedi.',
   },
   table: {
     filterPlaceholder: 'Değerlendirmeleri filtrele...',
