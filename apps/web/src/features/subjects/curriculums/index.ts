@@ -1,1 +1,0 @@
-export { Curriculums } from './Curriculums';

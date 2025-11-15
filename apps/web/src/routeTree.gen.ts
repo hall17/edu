@@ -45,7 +45,6 @@ import { Route as AuthenticatedBranchSettingsIndexRouteImport } from './routes/_
 import { Route as AuthenticatedAttendanceIndexRouteImport } from './routes/_authenticated/attendance/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
 import { Route as AuthenticatedUsersRolesRouteImport } from './routes/_authenticated/users/roles'
-import { Route as AuthenticatedSubjectsCurriculumsRouteImport } from './routes/_authenticated/subjects/curriculums'
 import { Route as AuthenticatedSettingsSecurityRouteImport } from './routes/_authenticated/settings/security'
 import { Route as AuthenticatedSettingsPreferencesRouteImport } from './routes/_authenticated/settings/preferences'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
@@ -267,12 +266,6 @@ const AuthenticatedUsersRolesRoute = AuthenticatedUsersRolesRouteImport.update({
   path: '/roles',
   getParentRoute: () => AuthenticatedUsersRouteRoute,
 } as any)
-const AuthenticatedSubjectsCurriculumsRoute =
-  AuthenticatedSubjectsCurriculumsRouteImport.update({
-    id: '/subjects/curriculums',
-    path: '/subjects/curriculums',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedSettingsSecurityRoute =
   AuthenticatedSettingsSecurityRouteImport.update({
     id: '/security',
@@ -486,7 +479,6 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/settings/preferences': typeof AuthenticatedSettingsPreferencesRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/subjects/curriculums': typeof AuthenticatedSubjectsCurriculumsRoute
   '/users/roles': typeof AuthenticatedUsersRolesRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/attendance': typeof AuthenticatedAttendanceIndexRoute
@@ -544,7 +536,6 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/settings/preferences': typeof AuthenticatedSettingsPreferencesRoute
   '/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/subjects/curriculums': typeof AuthenticatedSubjectsCurriculumsRoute
   '/users/roles': typeof AuthenticatedUsersRolesRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/attendance': typeof AuthenticatedAttendanceIndexRoute
@@ -611,7 +602,6 @@ export interface FileRoutesById {
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/settings/preferences': typeof AuthenticatedSettingsPreferencesRoute
   '/_authenticated/settings/security': typeof AuthenticatedSettingsSecurityRoute
-  '/_authenticated/subjects/curriculums': typeof AuthenticatedSubjectsCurriculumsRoute
   '/_authenticated/users/roles': typeof AuthenticatedUsersRolesRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/attendance/': typeof AuthenticatedAttendanceIndexRoute
@@ -677,7 +667,6 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/preferences'
     | '/settings/security'
-    | '/subjects/curriculums'
     | '/users/roles'
     | '/apps'
     | '/attendance'
@@ -735,7 +724,6 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/settings/preferences'
     | '/settings/security'
-    | '/subjects/curriculums'
     | '/users/roles'
     | '/apps'
     | '/attendance'
@@ -801,7 +789,6 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/notifications'
     | '/_authenticated/settings/preferences'
     | '/_authenticated/settings/security'
-    | '/_authenticated/subjects/curriculums'
     | '/_authenticated/users/roles'
     | '/_authenticated/apps/'
     | '/_authenticated/attendance/'
@@ -1104,13 +1091,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/users/roles'
       preLoaderRoute: typeof AuthenticatedUsersRolesRouteImport
       parentRoute: typeof AuthenticatedUsersRouteRoute
-    }
-    '/_authenticated/subjects/curriculums': {
-      id: '/_authenticated/subjects/curriculums'
-      path: '/subjects/curriculums'
-      fullPath: '/subjects/curriculums'
-      preLoaderRoute: typeof AuthenticatedSubjectsCurriculumsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/security': {
       id: '/_authenticated/settings/security'
@@ -1555,7 +1535,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSuperManagementCompaniesRouteRoute: typeof AuthenticatedSuperManagementCompaniesRouteRouteWithChildren
   AuthenticatedClassroomsClassroomIdRouteRoute: typeof AuthenticatedClassroomsClassroomIdRouteRouteWithChildren
   AuthenticatedSubjectsSubjectIdRouteRoute: typeof AuthenticatedSubjectsSubjectIdRouteRouteWithChildren
-  AuthenticatedSubjectsCurriculumsRoute: typeof AuthenticatedSubjectsCurriculumsRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedAttendanceIndexRoute: typeof AuthenticatedAttendanceIndexRoute
   AuthenticatedBranchSettingsIndexRoute: typeof AuthenticatedBranchSettingsIndexRoute
@@ -1586,7 +1565,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedClassroomsClassroomIdRouteRouteWithChildren,
   AuthenticatedSubjectsSubjectIdRouteRoute:
     AuthenticatedSubjectsSubjectIdRouteRouteWithChildren,
-  AuthenticatedSubjectsCurriculumsRoute: AuthenticatedSubjectsCurriculumsRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedAttendanceIndexRoute: AuthenticatedAttendanceIndexRoute,
   AuthenticatedBranchSettingsIndexRoute: AuthenticatedBranchSettingsIndexRoute,
