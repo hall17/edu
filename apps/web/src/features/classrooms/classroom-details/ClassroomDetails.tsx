@@ -3,13 +3,17 @@ import { Calendar, Users, BarChart3 } from 'lucide-react';
 import { House } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { ClassroomDetailsProvider } from './ClassroomDetailsContext';
+import {
+  ClassroomDetailsProvider,
+  useClassroomDetailsContext,
+} from './ClassroomDetailsContext';
 
 import { Main } from '@/components/layout/Main';
 
-export function ClassroomDetails() {
+function ClassroomDetailsContent() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { classroom } = useClassroomDetailsContext();
 
   const sidebarNavItems = [
     {
@@ -34,26 +38,43 @@ export function ClassroomDetails() {
     },
   ];
 
+  const breadcrumbItems = [
+    {
+      label: t('classrooms.title'),
+      href: '/classrooms',
+    },
+    {
+      label: classroom?.name || t('common.loading'),
+    },
+  ];
+
+  return (
+    <Main
+      title={t('classrooms.details.title')}
+      description={t('classrooms.details.description')}
+      breadcrumbItems={breadcrumbItems}
+      backButton
+      backButtonTo="/classrooms"
+      onClickBackButton={() => {
+        const previousUrl = sessionStorage.getItem('previousUrl');
+
+        if (previousUrl) {
+          navigate({ to: previousUrl });
+        } else {
+          navigate({ to: '/classrooms' });
+        }
+      }}
+      tabItems={sidebarNavItems}
+    >
+      <Outlet />
+    </Main>
+  );
+}
+
+export function ClassroomDetails() {
   return (
     <ClassroomDetailsProvider>
-      <Main
-        title={t('classrooms.details.title')}
-        description={t('classrooms.details.description')}
-        backButton
-        backButtonTo="/classrooms"
-        onClickBackButton={() => {
-          const previousUrl = sessionStorage.getItem('previousUrl');
-
-          if (previousUrl) {
-            navigate({ to: previousUrl });
-          } else {
-            navigate({ to: '/classrooms' });
-          }
-        }}
-        tabItems={sidebarNavItems}
-      >
-        <Outlet />
-      </Main>
+      <ClassroomDetailsContent />
     </ClassroomDetailsProvider>
   );
 }

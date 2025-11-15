@@ -686,7 +686,7 @@ async function createRoot() {
 
     // create curriculums and lessons
     for (const curriculum of curriculums) {
-      const { lessons, ...curriculumData } = curriculum;
+      const { units, ...curriculumData } = curriculum;
       await prisma.curriculum.create({
         data: {
           ...curriculumData,
@@ -694,28 +694,38 @@ async function createRoot() {
         },
       });
 
-      // create lessons
-      await prisma.lesson.createMany({
-        data: lessons.map((lesson) => {
-          const { questions: _, ...lessonData } = lesson;
-          return {
-            ...lessonData,
+      for (const unit of units) {
+        const { lessons, ...unitData } = unit;
+        await prisma.unit.create({
+          data: {
+            ...unitData,
             curriculumId: curriculum.id,
-          };
-        }),
-      });
+          },
+        });
 
-      // create questions
-      for (const lesson of lessons) {
-        if (lesson.questions) {
-          await prisma.question.createMany({
-            data: lesson.questions?.map((question) => ({
-              ...question,
-              subjectId: subject.id,
-              curriculumId: curriculum.id,
-              lessonId: lesson.id,
-            })),
-          });
+        // create lessons
+        await prisma.lesson.createMany({
+          data: lessons.map((lesson) => {
+            const { questions: _, ...lessonData } = lesson;
+            return {
+              ...lessonData,
+              unitId: unit.id,
+            };
+          }),
+        });
+
+        // create questions
+        for (const lesson of lessons) {
+          if (lesson.questions) {
+            await prisma.question.createMany({
+              data: lesson.questions?.map((question) => ({
+                ...question,
+                subjectId: subject.id,
+                curriculumId: curriculum.id,
+                lessonId: lesson.id,
+              })),
+            });
+          }
         }
       }
     }
@@ -735,8 +745,10 @@ async function createRoot() {
 
   for (const subject of Object.values(subjects)) {
     for (const curriculum of subject.curriculums) {
-      const { lessons, ..._rest } = curriculum;
-      console.log('curriculum', curriculum.name);
+      const { units, ..._rest } = curriculum;
+      const firstUnit = units[0]!;
+      const { lessons } = firstUnit;
+
       // create classroom
       const classroom = await prisma.classroom.create({
         data: {

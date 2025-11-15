@@ -1,38 +1,17 @@
 import { z } from 'zod';
 
 import { SubjectStatus } from '../enums';
-import { curriculumCreateSchema } from './curriculumSchemas';
-import { lessonCreateSchema } from './lessonSchemas';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 export const subjectCreateSchema = z.object({
   name: z.string().min(1).max(50),
-  description: z.string().optional(),
-  curriculums: z
-    .array(
-      curriculumCreateSchema.pick({ name: true, description: true }).merge(
-        z.object({
-          lessons: z.array(
-            lessonCreateSchema.pick({ name: true, description: true })
-          ),
-        })
-      )
-    )
-    .optional()
-    .default([]),
+  description: z.string().max(500).optional(),
+  status: z.nativeEnum(SubjectStatus),
 });
 
 export const subjectUpdateSchema = subjectCreateSchema
-  .pick({
-    name: true,
-    description: true,
-  })
   .partial()
-  .merge(
-    z.object({
-      status: z.nativeEnum(SubjectStatus).optional(),
-    })
-  )
   .merge(idSchema);
 
 export const subjectFindAllSchema = z

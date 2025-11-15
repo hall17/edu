@@ -317,6 +317,13 @@ export const HTTP_EXCEPTIONS = {
       tr: 'Şube bulunamadı',
     },
   },
+  SLUG_ALREADY_EXISTS: {
+    status: HttpStatus.CONFLICT,
+    message: {
+      en: 'Branch with this slug already exists',
+      tr: 'Bu slug ile bir şube zaten mevcut',
+    },
+  },
   BRANCH_ALREADY_EXISTS: {
     status: HttpStatus.CONFLICT,
     message: {
@@ -399,6 +406,34 @@ export const HTTP_EXCEPTIONS = {
     message: {
       en: 'Cannot delete curriculum that has lessons',
       tr: 'Dersi olan müfredat silinemez',
+    },
+  },
+  UNIT_NOT_FOUND: {
+    status: HttpStatus.NOT_FOUND,
+    message: {
+      en: 'Unit not found',
+      tr: 'Birim bulunamadı',
+    },
+  },
+  UNIT_ALREADY_EXISTS: {
+    status: HttpStatus.CONFLICT,
+    message: {
+      en: 'Unit with this name already exists in this curriculum',
+      tr: 'Bu müfredatta bu isimle bir birim zaten mevcut',
+    },
+  },
+  UNIT_HAS_ASSOCIATED_DATA: {
+    status: HttpStatus.CONFLICT,
+    message: {
+      en: 'Cannot delete unit that has associated data',
+      tr: 'İlişkili verisi olan birim silinemez',
+    },
+  },
+  UNIT_HAS_LESSONS: {
+    status: HttpStatus.CONFLICT,
+    message: {
+      en: 'Cannot delete unit that has lessons',
+      tr: 'Dersi olan birim silinemez',
     },
   },
   LESSON_NOT_FOUND: {

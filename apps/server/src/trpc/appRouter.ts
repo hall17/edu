@@ -15,6 +15,7 @@ import { questionRouter } from '../api/question/questionRouter';
 import { roleRouter } from '../api/role/roleRouter';
 import { studentRouter } from '../api/student/studentRouter';
 import { subjectRouter } from '../api/subject/subjectRouter';
+import { unitRouter } from '../api/unit/unitRouter';
 import { userRouter } from '../api/user/userRouter';
 
 import { t } from '.';
@@ -38,6 +39,7 @@ export const appRouter = t.router({
   curriculum: curriculumRouter,
   module: moduleRouter,
   question: questionRouter,
+  unit: unitRouter,
 });
 
 export type AppRouter = typeof appRouter;

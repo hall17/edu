@@ -21,6 +21,9 @@ export const modules = {
     loadError: 'Modüller yüklenemedi.',
     noModules: 'Modül bulunamadı.',
   },
+  table: {
+    noResults: 'Modül bulunamadı',
+  },
   actions: {
     enableTitle: 'Modülü Etkinleştir',
     enableDesc:

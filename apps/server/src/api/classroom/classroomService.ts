@@ -972,9 +972,13 @@ export class ClassroomService {
               OR: [
                 {
                   curriculum: {
-                    lessons: {
+                    units: {
                       some: {
-                        name: { contains: q, mode: 'insensitive' },
+                        lessons: {
+                          some: {
+                            name: { contains: q, mode: 'insensitive' },
+                          },
+                        },
                       },
                     },
                   },

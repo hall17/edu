@@ -6,10 +6,11 @@ import {
   Row,
   VisibilityState,
 } from '@tanstack/react-table';
-import { Edit, Eye, Trash2 } from 'lucide-react';
+import { Edit, Eye, Trash2, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { useNavigate } from '@tanstack/react-router';
 
 import { useSubjectsContext } from '../SubjectsContext';
 
@@ -77,6 +78,7 @@ export function SubjectsTable() {
 export function useColumns(): ColumnDef<Subject>[] {
   const { t } = useTranslation();
   const { setOpenedDialog, setCurrentRow } = useSubjectsContext();
+  const navigate = useNavigate();
 
   return [
     SelectItemColumnDef as ColumnDef<Subject>,
@@ -138,10 +140,22 @@ export function useColumns(): ColumnDef<Subject>[] {
           <CustomDataTableRowActions
             items={[
               {
+                icon: <BookOpen className="size-4" />,
+                onClick: () => {
+                  navigate({
+                    to: '/subjects/$subjectId/curriculums',
+                    params: { subjectId: row.original.id },
+                  });
+                },
+                tooltip: t('subjects.table.actions.viewCurriculums'),
+              },
+              {
                 icon: <Eye className="size-4" />,
                 onClick: () => {
-                  setCurrentRow(row.original);
-                  setOpenedDialog('view');
+                  navigate({
+                    to: '/subjects/$subjectId',
+                    params: { subjectId: row.original.id },
+                  });
                 },
                 tooltip: t('students.table.actions.view'),
               },

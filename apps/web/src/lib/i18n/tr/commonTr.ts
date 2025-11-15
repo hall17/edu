@@ -393,6 +393,7 @@ export const common = {
     createdAt: 'Oluşturulma Tarihi',
     updatedAt: 'Güncellenme Tarihi',
     lastUpdatedAt: 'Son Güncellenme Tarihi',
+    timestamps: 'Zaman Damgaları',
     statusUpdatedAt: 'Statü Güncellenme Tarihi',
     deletedAt: 'Silinme Tarihi',
     or: 'veya',
@@ -448,6 +449,7 @@ export const common = {
     name: 'Ad',
     curriculum: 'Müfredat',
     lessons: 'Dersler',
+    order: 'Sıra',
     // Social media
     facebook: 'Facebook',
     twitter: 'X (Twitter)',
@@ -492,6 +494,7 @@ export const common = {
     endDate: 'Bitiş Tarihi',
     accessLink: 'Erişim Linki',
     view: 'Görüntüle',
+    showLessons: 'Dersleri Göster',
     edit: 'Düzenle',
     suspend: 'Askıya Al',
     activate: 'Aktifleştir',

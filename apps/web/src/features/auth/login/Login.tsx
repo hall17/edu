@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Link, redirect, useNavigate, useSearch } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { Trans, useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -10,7 +10,6 @@ import edusama from '@/assets/edusama.png';
 import edusamaLogin from '@/assets/edusama_login.png';
 import { LoadingButton } from '@/components';
 import { PasswordInput } from '@/components/PasswordInput';
-import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,

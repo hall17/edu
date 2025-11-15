@@ -125,6 +125,9 @@ export type Subject = RouterOutput['subject']['findAll']['subjects'][number];
 export type FindAllSubjectsInput = RouterInput['subject']['findAll'];
 export type Curriculum =
   RouterOutput['curriculum']['findAll']['curriculums'][number];
+export type CurriculumFindOne = RouterOutput['curriculum']['findOne'];
+export type Unit = RouterOutput['unit']['findAll']['units'][number];
+export type UnitFindOne = RouterOutput['unit']['findOne'];
 export type Lesson = RouterOutput['lesson']['findAll']['lessons'][number];
 export type Classroom =
   RouterOutput['classroom']['findAll']['classrooms'][number];

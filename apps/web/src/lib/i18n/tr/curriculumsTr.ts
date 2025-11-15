@@ -23,6 +23,8 @@ export const curriculums = {
     curriculums: 'Müfredatlar',
     lessons: 'Dersler',
     lesson: 'ders',
+    units: 'Üniteler',
+    unit: 'ünite',
     branch: 'Şube',
     description: 'Açıklama',
     createdAt: 'Oluşturulma Tarihi',
@@ -34,6 +36,7 @@ export const curriculums = {
       view: 'Görüntüle',
       edit: 'Düzenle',
       delete: 'Sil',
+      viewUnits: 'Üniteleri Görüntüle',
     },
   },
   updateStatusSuccess: 'Müfredat durumu başarıyla güncellendi',
@@ -97,5 +100,65 @@ export const curriculums = {
     newStatus: 'Yeni Durum',
     updateButton: 'Durumu Güncelle',
     success: 'Müfredat durumu başarıyla güncellendi',
+  },
+  details: {
+    title: 'Müfredat Detayları',
+    description: 'Müfredat bilgilerini görüntüleyin ve yönetin.',
+    tabs: {
+      general: 'Genel',
+      units: 'Üniteler',
+    },
+  },
+  units: {
+    title: 'Üniteler',
+    description: 'Bu müfredat için üniteleri yönetin.',
+    table: {
+      name: 'Ad',
+      description: 'Açıklama',
+      noResults: 'Ünite bulunamadı',
+      actions: {
+        viewLessons: 'Dersleri Görüntüle',
+      },
+    },
+    details: {
+      title: 'Ünite Detayları',
+      description: 'Ünite bilgilerini görüntüleyin ve yönetin.',
+      tabs: {
+        general: 'Genel',
+        lessons: 'Dersler',
+      },
+    },
+    statistics: {
+      title: 'İstatistikler',
+      description: 'Ünite istatistikleri ve ölçümleri.',
+      totalLessons: 'Toplam Ders',
+    },
+    viewDialog: {
+      basicInfo: 'Temel Bilgiler',
+      description: 'Bu ünite hakkında detaylı bilgileri görüntüleyin.',
+    },
+  },
+  lessons: {
+    title: 'Dersler',
+    description: 'Bu ünite için dersleri yönetin.',
+    addLesson: 'Ders Ekle',
+    editLesson: 'Dersi Düzenle',
+    deleteLesson: 'Dersi Sil',
+    addLessonDescription: 'Bu ünite için yeni bir ders oluşturun.',
+    editLessonDescription: 'Ders bilgilerini güncelleyin.',
+    namePlaceholder: 'Ders adını girin...',
+    descriptionPlaceholder: 'Ders açıklamasını girin...',
+    createSuccess: 'Ders başarıyla oluşturuldu',
+    updateSuccess: 'Ders başarıyla güncellendi',
+    deleteSuccess: 'Ders başarıyla silindi',
+    deleteConfirmMessage: 'Silmek istediğinizden emin misiniz',
+    deletePermanentWarning:
+      'Bu işlem geri alınamaz. İlişkili tüm veriler kalıcı olarak kaldırılacaktır.',
+    table: {
+      name: 'Ad',
+      description: 'Açıklama',
+      noResults: 'Ders bulunamadı',
+      filterPlaceholder: 'Dersleri filtrele...',
+    },
   },
 };

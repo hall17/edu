@@ -13,7 +13,7 @@ export const branchCreateSchema = z.object({
   location: z.string().max(255).optional(),
   contact: z.string().max(255).optional(),
   canBeDeleted: z.boolean(),
-  maximumStudents: z.number().int(),
+  maximumStudents: z.number().int().min(1).max(250),
   statusUpdateReason: z.string().optional().nullable(),
 });
 

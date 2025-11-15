@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { QuestionDifficulty, QuestionType } from '../enums';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
 
 // Base option schema used across multiple question types
@@ -146,9 +147,10 @@ export type Question = z.infer<typeof questionSchema>;
 export const questionFormSchema = z.object({
   type: z.nativeEnum(QuestionType),
   difficulty: z.nativeEnum(QuestionDifficulty),
-  questionText: z.string().min(1, 'Question text is required'),
-  subjectId: z.string().min(1, 'Subject is required'),
+  questionText: z.string().min(1),
+  subjectId: z.string().min(1),
   curriculumId: z.string().uuid().optional(),
+  unitId: z.string().uuid().optional(),
   lessonId: z.string().uuid().optional(),
   questionData: questionDataSchema,
 });
@@ -163,6 +165,7 @@ export const questionCreateSchema = z.object({
   questionData: questionDataSchema,
   subjectId: z.string().uuid(),
   curriculumId: z.string().uuid().optional(),
+  unitId: z.string().uuid().optional(),
   lessonId: z.string().uuid().optional(),
 });
 
@@ -176,6 +179,7 @@ export const questionFindAllSchema = z
     difficulty: z.array(z.nativeEnum(QuestionDifficulty)).optional(),
     subjectIds: z.array(z.uuid()).optional(),
     curriculumIds: z.array(z.uuid()).optional(),
+    unitIds: z.array(z.uuid()).optional(),
     lessonIds: z.array(z.uuid()).optional(),
   })
   .merge(DefaultFilterSchema);
@@ -185,6 +189,7 @@ export const questionFindQuestionsRandomSchema = z.object({
   difficulty: z.enum(QuestionDifficulty).optional(),
   subjectId: z.uuid(),
   curriculumIds: z.array(z.uuid()).optional(),
+  unitIds: z.array(z.uuid()).optional(),
   lessonIds: z.array(z.uuid()).optional(),
   count: z.number().int().min(1).max(100),
   excludeQuestionIds: z.array(z.uuid()).optional(),

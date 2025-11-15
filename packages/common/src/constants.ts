@@ -62,3 +62,6 @@ export const PERMISSIONS = {
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+export const MAX_BRANCHES_PER_COMPANY = 10;
+export const MAX_STUDENTS_PER_BRANCH = 250;

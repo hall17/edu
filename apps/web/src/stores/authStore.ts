@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import countries from '@/assets/countries.json';
 import { Country } from '@/components/CountrySelector';
-import { RouterOutput } from '@/lib/trpc';
+import { RouterOutput, trpcClient } from '@/lib/trpc';
 
 export type AuthUser = RouterOutput['auth']['login'] & {
   country: Country | null;
@@ -17,6 +17,7 @@ export type AuthUserDevice = NonNullable<AuthUser['devices']>[number];
 export interface AuthState {
   auth: {
     user: AuthUser | null;
+    refetchUser: () => void;
     setUser: (user: AuthUser | null) => void;
     student: InvitedStudentWithData | null;
     setUserPreferences: (preferences: Partial<AuthUser['preferences']>) => void;
@@ -30,6 +31,24 @@ export const useAuthStore = create<AuthState>()((set) => {
     auth: {
       user: null,
       student: null,
+      refetchUser: async () => {
+        const response = await trpcClient.auth.me.mutate();
+
+        const country = countries.find(
+          (country) => country.iso2 === response?.countryCode
+        );
+
+        if (response) {
+          set((state) => ({
+            ...state,
+            auth: {
+              ...state.auth,
+              user: { ...response, country: country || null },
+            },
+          }));
+          return;
+        }
+      },
       setUser: (user) =>
         set((state) => ({
           ...state,

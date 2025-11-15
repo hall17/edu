@@ -430,6 +430,7 @@ export const common = {
     createdAt: 'Created At',
     updatedAt: 'Updated At',
     lastUpdatedAt: 'Last Updated At',
+    timestamps: 'Timestamps',
     statusUpdatedAt: 'Suspended At',
     statusUpdateReason: 'Suspended Reason',
     deletedAt: 'Deleted At',
@@ -484,6 +485,7 @@ export const common = {
     name: 'Name',
     curriculum: 'Curriculum',
     lessons: 'Lessons',
+    order: 'Order',
     // Social media
     facebook: 'Facebook',
     twitter: 'X (Twitter)',
@@ -526,6 +528,7 @@ export const common = {
     endDate: 'End Date',
     accessLink: 'Access Link',
     view: 'View',
+    showLessons: 'Show Lessons',
     edit: 'Edit',
     suspend: 'Suspend',
     activate: 'Activate',

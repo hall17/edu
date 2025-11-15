@@ -203,6 +203,12 @@ enum WidgetStatus {
   SUSPENDED
 }
 
+enum LessonMaterialType {
+  DOCUMENT
+  AUDIO
+  VIDEO
+}
+
 // ============================================================================
 // CORE ENTITY MODELS (Hierarchical Order)
 // ============================================================================
@@ -340,6 +346,8 @@ model User {
   attendanceRecordCompletedByClassroomIntegrationSessions ClassroomIntegrationSession[]           @relation("AttendanceRecordCompletedBy")
   meetingIntegrations                                     UserMeetingIntegration[]
   deletedClassroomIntegrationAssessments                  ClassroomIntegrationAssessment[]        @relation("ClassroomIntegrationAssessmentsDeletedBy")
+  deletedLessonMaterials                                  LessonMaterial[]                        @relation("LessonMaterialDeletedBy")
+  classroomIntegrationSharedMaterials                     ClassroomIntegrationSharedMaterial[]    @relation("LessonMaterialSharedBy")
 }
 
 model UserMeetingIntegration {
@@ -397,22 +405,23 @@ model Student {
   signUpApprovedAt   DateTime?
   signUpApprovedBy   String?
 
-  branch                  Branch                                         @relation(fields: [branchId], references: [id])
-  parent                  Parent?                                        @relation(fields: [parentId], references: [id])
-  deletedByUser           User?                                          @relation("DeletedBy", fields: [deletedBy], references: [id])
-  statusUpdatedByUser     User?                                          @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
-  tokens                  Token[]
-  preferences             StudentPreference?
-  loginAttempts           LoginAttempt[]
-  activityLogs            StudentActivityLog[]
-  classrooms              ClassroomStudent[]
-  attendanceRecords       AttendanceRecord[]
-  attendanceSummaries     AttendanceSummary[]
-  attendanceNotifications AttendanceNotification[]
-  questionResponses       QuestionResponse[]
-  notifications           AssessmentNotification[]
-  assessments             StudentClassroomIntegrationAssessment[]
-  assessmentSessions      StudentClassroomIntegrationAssessmentSession[]
+  branch                                     Branch                                         @relation(fields: [branchId], references: [id])
+  parent                                     Parent?                                        @relation(fields: [parentId], references: [id])
+  deletedByUser                              User?                                          @relation("DeletedBy", fields: [deletedBy], references: [id])
+  statusUpdatedByUser                        User?                                          @relation("StatusUpdatedBy", fields: [statusUpdatedBy], references: [id])
+  tokens                                     Token[]
+  preferences                                StudentPreference?
+  loginAttempts                              LoginAttempt[]
+  activityLogs                               StudentActivityLog[]
+  classrooms                                 ClassroomStudent[]
+  attendanceRecords                          AttendanceRecord[]
+  attendanceSummaries                        AttendanceSummary[]
+  attendanceNotifications                    AttendanceNotification[]
+  questionResponses                          QuestionResponse[]
+  notifications                              AssessmentNotification[]
+  assessments                                StudentClassroomIntegrationAssessment[]
+  assessmentSessions                         StudentClassroomIntegrationAssessmentSession[]
+  classroomIntegrationSharedMaterialViewLogs ClassroomIntegrationSharedMaterialViewLog[]    @relation("LessonMaterialViewedBy")
 }
 
 model Parent {
@@ -733,6 +742,7 @@ model ClassroomModule {
 
 model Subject {
   id          String        @id @default(uuid())
+  branchId    Int
   name        String        @db.VarChar(50)
   description String?       @db.VarChar(500)
   status      SubjectStatus @default(ACTIVE)
@@ -742,11 +752,9 @@ model Subject {
   deletedAt DateTime?
   deletedBy String?
 
-  statusUpdateReason String?   @db.VarChar(500)
   statusUpdatedAt    DateTime?
+  statusUpdateReason String?   @db.VarChar(500)
   statusUpdatedBy    String?
-
-  branchId Int
 
   branch               Branch                 @relation(fields: [branchId], references: [id], onDelete: Cascade)
   curriculums          Curriculum[]
@@ -771,6 +779,8 @@ model SubjectTeacher {
 
 model Curriculum {
   id          String           @id @default(uuid())
+  subjectId   String
+  order       Int              @default(0)
   name        String           @db.VarChar(100)
   description String?          @db.VarChar(500)
   status      CurriculumStatus @default(ACTIVE)
@@ -784,15 +794,77 @@ model Curriculum {
   statusUpdatedAt    DateTime?
   statusUpdatedBy    String?
 
-  subjectId String
-
   subject              Subject                @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  lessons              Lesson[]
+  units                Unit[]
   integratedClassrooms ClassroomIntegration[]
   assessments          AssessmentCurriculum[]
   questions            Question[]
 
   @@unique([subjectId, name])
+}
+
+model Unit {
+  id           String  @id @default(uuid())
+  curriculumId String
+  order        Int     @default(0)
+  name         String  @db.VarChar(100)
+  description  String? @db.VarChar(500)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  curriculum Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  lessons    Lesson[]
+  questions  Question[]
+
+  @@unique([curriculumId, name])
+}
+
+model Lesson {
+  id          String  @id @default(uuid())
+  unitId      String
+  order       Int     @default(0)
+  name        String  @db.VarChar(100)
+  description String? @db.VarChar(500)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  unit                         Unit                                @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  classroomIntegrationSessions ClassroomIntegrationSessionLesson[]
+  assessments                  AssessmentLesson[]
+  questions                    Question[]
+  lessonMaterials              LessonMaterial[]
+
+  @@unique([unitId, name])
+}
+
+model LessonMaterial {
+  id           String             @id @default(uuid())
+  lessonId     String
+  name         String             @db.VarChar(100)
+  description  String?            @db.VarChar(500)
+  type         LessonMaterialType
+  url          String
+  thumbnailUrl String?
+  duration     Int?
+  pageCount    Int?
+  isShareable  Boolean            @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  deletedBy String?
+
+  lesson                              Lesson                               @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  deletedByUser                       User?                                @relation("LessonMaterialDeletedBy", fields: [deletedBy], references: [id])
+  classroomIntegrationSharedMaterials ClassroomIntegrationSharedMaterial[]
+
+  @@unique([lessonId, name])
 }
 
 model ClassroomIntegration {
@@ -810,36 +882,46 @@ model ClassroomIntegration {
   teacher    User?                          @relation(fields: [teacherId], references: [id], onDelete: SetNull)
   schedules  ClassroomIntegrationSchedule[]
 
-  createdAt                       DateTime                         @default(now())
-  updatedAt                       DateTime                         @updatedAt
-  deletedAt                       DateTime?
-  deletedBy                       String?
-  classroomIntegrationSessions    ClassroomIntegrationSession[]
-  attendanceSummaries             AttendanceSummary[]
-  attendanceNotifications         AttendanceNotification[]
-  classroomIntegrationAssessments ClassroomIntegrationAssessment[]
+  createdAt                    DateTime                             @default(now())
+  updatedAt                    DateTime                             @updatedAt
+  deletedAt                    DateTime?
+  deletedBy                    String?
+  classroomIntegrationSessions ClassroomIntegrationSession[]
+  attendanceSummaries          AttendanceSummary[]
+  attendanceNotifications      AttendanceNotification[]
+  assessments                  ClassroomIntegrationAssessment[]
+  sharedMaterials              ClassroomIntegrationSharedMaterial[]
 
   @@unique([classroomId, subjectId])
 }
 
-model Lesson {
-  id          String  @id @default(uuid())
-  name        String  @db.VarChar(100)
-  description String? @db.VarChar(500)
-  order       Int     @default(0)
+model ClassroomIntegrationSharedMaterial {
+  id                     String @id @default(uuid())
+  classroomIntegrationId String
+  lessonMaterialId       String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sharedAt  DateTime @default(now())
+  sharedBy  String?
+
+  classroomIntegration ClassroomIntegration                        @relation(fields: [classroomIntegrationId], references: [id], onDelete: Cascade)
+  lessonMaterial       LessonMaterial                              @relation(fields: [lessonMaterialId], references: [id], onDelete: Cascade)
+  sharedByUser         User?                                       @relation("LessonMaterialSharedBy", fields: [sharedBy], references: [id], onDelete: SetNull)
+  viewLogs             ClassroomIntegrationSharedMaterialViewLog[]
+}
+
+model ClassroomIntegrationSharedMaterialViewLog {
+  id                                   String   @id @default(uuid())
+  classroomIntegrationSharedMaterialId String
+  viewedAt                             DateTime @default(now())
+  viewedBy                             String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  curriculumId String
-
-  curriculum                   Curriculum                          @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
-  classroomIntegrationSessions ClassroomIntegrationSessionLesson[]
-  assessments                  AssessmentLesson[]
-  questions                    Question[]
-
-  @@unique([curriculumId, name])
-  @@unique([curriculumId, name, order])
+  classroomIntegrationSharedMaterial ClassroomIntegrationSharedMaterial @relation(fields: [classroomIntegrationSharedMaterialId], references: [id], onDelete: Cascade)
+  viewedByStudent                    Student                            @relation("LessonMaterialViewedBy", fields: [viewedBy], references: [id], onDelete: Cascade)
 }
 
 model Permission {
@@ -1301,11 +1383,13 @@ model Question {
 
   subjectId    String
   curriculumId String?
+  unitId       String?
   lessonId     String?
 
   subject    Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  lesson     Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   curriculum Curriculum? @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
+  unit       Unit?       @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  lesson     Lesson?     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   responses           QuestionResponse[]
   assessmentQuestions AssessmentQuestion[]

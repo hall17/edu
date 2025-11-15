@@ -482,6 +482,7 @@ CREATE TABLE "ClassroomModule" (
 -- CreateTable
 CREATE TABLE "Subject" (
     "id" TEXT NOT NULL,
+    "branchId" INTEGER NOT NULL,
     "name" VARCHAR(50) NOT NULL,
     "description" VARCHAR(500),
     "status" "SubjectStatus" NOT NULL DEFAULT 'ACTIVE',
@@ -489,10 +490,9 @@ CREATE TABLE "Subject" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
     "deletedBy" TEXT,
-    "statusUpdateReason" VARCHAR(500),
     "statusUpdatedAt" TIMESTAMP(3),
+    "statusUpdateReason" VARCHAR(500),
     "statusUpdatedBy" TEXT,
-    "branchId" INTEGER NOT NULL,
 
     CONSTRAINT "Subject_pkey" PRIMARY KEY ("id")
 );
@@ -508,6 +508,8 @@ CREATE TABLE "SubjectTeacher" (
 -- CreateTable
 CREATE TABLE "Curriculum" (
     "id" TEXT NOT NULL,
+    "subjectId" TEXT NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,
     "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(500),
     "status" "CurriculumStatus" NOT NULL DEFAULT 'ACTIVE',
@@ -518,9 +520,38 @@ CREATE TABLE "Curriculum" (
     "statusUpdateReason" VARCHAR(500),
     "statusUpdatedAt" TIMESTAMP(3),
     "statusUpdatedBy" TEXT,
-    "subjectId" TEXT NOT NULL,
 
     CONSTRAINT "Curriculum_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Unit" (
+    "id" TEXT NOT NULL,
+    "curriculumId" TEXT NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "name" VARCHAR(100) NOT NULL,
+    "description" VARCHAR(500),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
+
+    CONSTRAINT "Unit_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Lesson" (
+    "id" TEXT NOT NULL,
+    "unitId" TEXT NOT NULL,
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "name" VARCHAR(100) NOT NULL,
+    "description" VARCHAR(500),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
+
+    CONSTRAINT "Lesson_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -538,19 +569,6 @@ CREATE TABLE "ClassroomIntegration" (
     "deletedBy" TEXT,
 
     CONSTRAINT "ClassroomIntegration_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Lesson" (
-    "id" TEXT NOT NULL,
-    "name" VARCHAR(100) NOT NULL,
-    "description" VARCHAR(500),
-    "order" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "curriculumId" TEXT NOT NULL,
-
-    CONSTRAINT "Lesson_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -843,6 +861,7 @@ CREATE TABLE "Question" (
     "deletedBy" TEXT,
     "subjectId" TEXT NOT NULL,
     "curriculumId" TEXT,
+    "unitId" TEXT,
     "lessonId" TEXT,
 
     CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
@@ -1093,13 +1112,13 @@ CREATE UNIQUE INDEX "SubjectTeacher_subjectId_teacherId_key" ON "SubjectTeacher"
 CREATE UNIQUE INDEX "Curriculum_subjectId_name_key" ON "Curriculum"("subjectId", "name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Unit_curriculumId_name_key" ON "Unit"("curriculumId", "name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Lesson_unitId_name_key" ON "Lesson"("unitId", "name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ClassroomIntegration_classroomId_subjectId_key" ON "ClassroomIntegration"("classroomId", "subjectId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Lesson_curriculumId_name_key" ON "Lesson"("curriculumId", "name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Lesson_curriculumId_name_order_key" ON "Lesson"("curriculumId", "name", "order");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Permission_moduleId_name_key" ON "Permission"("moduleId", "name");
@@ -1408,6 +1427,12 @@ ALTER TABLE "SubjectTeacher" ADD CONSTRAINT "SubjectTeacher_teacherId_fkey" FORE
 ALTER TABLE "Curriculum" ADD CONSTRAINT "Curriculum_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Unit" ADD CONSTRAINT "Unit_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_classroomId_fkey" FOREIGN KEY ("classroomId") REFERENCES "Classroom"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1418,9 +1443,6 @@ ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_curricul
 
 -- AddForeignKey
 ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Permission" ADD CONSTRAINT "Permission_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1537,10 +1559,13 @@ ALTER TABLE "AttendanceNotification" ADD CONSTRAINT "AttendanceNotification_clas
 ALTER TABLE "Question" ADD CONSTRAINT "Question_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Question" ADD CONSTRAINT "Question_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Question" ADD CONSTRAINT "Question_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Question" ADD CONSTRAINT "Question_curriculumId_fkey" FOREIGN KEY ("curriculumId") REFERENCES "Curriculum"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Question" ADD CONSTRAINT "Question_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Question" ADD CONSTRAINT "Question_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Assessment" ADD CONSTRAINT "Assessment_subjectId_fkey" FOREIGN KEY ("subjectId") REFERENCES "Subject"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -292,24 +292,26 @@ export const subjectInclude = {
     },
   },
   curriculums: {
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      createdAt: true,
-      lessons: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          order: true,
-        },
+    orderBy: {
+      order: 'asc',
+    },
+    include: {
+      units: {
         orderBy: {
           order: 'asc',
+        },
+        include: {
+          lessons: {
+            orderBy: {
+              order: 'asc',
+            },
+          },
         },
       },
       _count: {
         select: {
+          units: true,
+          integratedClassrooms: true,
           questions: true,
         },
       },
@@ -323,6 +325,7 @@ export const subjectInclude = {
           firstName: true,
           lastName: true,
           email: true,
+          status: true,
         },
       },
     },
@@ -347,7 +350,7 @@ export const curriculumInclude = {
       },
     },
   },
-  lessons: {
+  units: {
     orderBy: {
       order: 'asc',
     },
@@ -356,26 +359,26 @@ export const curriculumInclude = {
       name: true,
       description: true,
       order: true,
+      _count: {
+        select: {
+          lessons: true,
+        },
+      },
     },
   },
   _count: {
     select: {
-      lessons: true,
+      units: true,
     },
   },
 } satisfies Prisma.CurriculumInclude;
 
 export const lessonInclude = {
-  curriculum: {
+  unit: {
     include: {
-      subject: {
+      curriculum: {
         include: {
-          branch: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
+          subject: true,
         },
       },
     },
@@ -430,14 +433,22 @@ export const classroomInclude = {
         select: {
           id: true,
           name: true,
-          lessons: {
+          units: {
             orderBy: {
               order: 'asc',
             },
-            select: {
-              id: true,
-              name: true,
-              order: true,
+            include: {
+              lessons: {
+                orderBy: {
+                  order: 'asc',
+                },
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                  order: true,
+                },
+              },
             },
           },
         },
@@ -612,13 +623,24 @@ export const classroomIntegrationIncludeFindOne = {
     select: {
       id: true,
       name: true,
-      lessons: {
+      units: {
         orderBy: {
           order: 'asc',
         },
         select: {
           id: true,
           name: true,
+          description: true,
+          order: true,
+          lessons: {
+            orderBy: {
+              order: 'asc',
+            },
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       },
     },

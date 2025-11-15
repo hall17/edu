@@ -16,6 +16,10 @@ export const idSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const idSchemaOptional = z.object({
+  id: z.string().uuid().optional(),
+});
+
 export const intIdSchema = z.object({
   id: z.number().int(),
 });

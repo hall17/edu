@@ -23,6 +23,8 @@ export const curriculums = {
     curriculums: 'Curriculums',
     lessons: 'Lessons',
     lesson: 'lesson',
+    units: 'Units',
+    unit: 'unit',
     branch: 'Branch',
     description: 'Description',
     createdAt: 'Created At',
@@ -34,6 +36,7 @@ export const curriculums = {
       view: 'View',
       edit: 'Edit',
       delete: 'Delete',
+      viewUnits: 'View Units',
     },
   },
   updateStatusSuccess: 'Curriculum status updated successfully',
@@ -96,5 +99,65 @@ export const curriculums = {
     newStatus: 'New Status',
     updateButton: 'Update Status',
     success: 'Curriculum status updated successfully',
+  },
+  details: {
+    title: 'Curriculum Details',
+    description: 'View and manage curriculum information.',
+    tabs: {
+      general: 'General',
+      units: 'Units',
+    },
+  },
+  units: {
+    title: 'Curriculum Units',
+    description: 'Manage units for this curriculum.',
+    table: {
+      name: 'Name',
+      description: 'Description',
+      noResults: 'No units found',
+      actions: {
+        viewLessons: 'View Lessons',
+      },
+    },
+    details: {
+      title: 'Unit Details',
+      description: 'View and manage unit information.',
+      tabs: {
+        general: 'General',
+        lessons: 'Lessons',
+      },
+    },
+    statistics: {
+      title: 'Statistics',
+      description: 'Unit statistics and metrics.',
+      totalLessons: 'Total Lessons',
+    },
+    viewDialog: {
+      basicInfo: 'Basic Information',
+      description: 'View detailed information about this unit.',
+    },
+  },
+  lessons: {
+    title: 'Unit Lessons',
+    description: 'Manage lessons for this unit.',
+    addLesson: 'Add Lesson',
+    editLesson: 'Edit Lesson',
+    deleteLesson: 'Delete Lesson',
+    addLessonDescription: 'Create a new lesson for this unit.',
+    editLessonDescription: 'Update the lesson information.',
+    namePlaceholder: 'Enter lesson name...',
+    descriptionPlaceholder: 'Enter lesson description...',
+    createSuccess: 'Lesson created successfully',
+    updateSuccess: 'Lesson updated successfully',
+    deleteSuccess: 'Lesson deleted successfully',
+    deleteConfirmMessage: 'Are you sure you want to delete',
+    deletePermanentWarning:
+      'This action cannot be undone. All associated data will be permanently removed.',
+    table: {
+      name: 'Name',
+      description: 'Description',
+      noResults: 'No lessons found',
+      filterPlaceholder: 'Filter lessons...',
+    },
   },
 } as const;

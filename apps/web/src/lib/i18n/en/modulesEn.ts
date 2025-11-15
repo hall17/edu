@@ -21,6 +21,9 @@ export const modules = {
     loadError: 'Failed to load modules.',
     noModules: 'No modules found.',
   },
+  table: {
+    noResults: 'No modules found',
+  },
   actions: {
     enableTitle: 'Enable Module',
     enableDesc:

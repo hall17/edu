@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Main } from '@/components/layout/Main';
 
-export function Subjects() {
+export function SubjectsLayout() {
+  console.log('SubjectsLayout');
   const { t } = useTranslation();
 
   const sidebarNavItems = [
@@ -20,11 +21,19 @@ export function Subjects() {
     },
   ];
 
+  const breadcrumbItems = [
+    {
+      label: t('materials.subjectsCurriculums.title'),
+      href: '/subjects',
+    },
+  ];
+
   return (
     <Main
       title={t('materials.subjectsCurriculums.title')}
       description={t('materials.subjectsCurriculums.description')}
-      tabItems={sidebarNavItems}
+      breadcrumbItems={breadcrumbItems}
+      // tabItems={sidebarNavItems}
     >
       <Outlet />
     </Main>

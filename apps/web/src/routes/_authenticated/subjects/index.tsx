@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Subjects } from '@/features/subjects/subjects';
+import { SubjectsRoot } from '@/features/subjects/root/SubjectsRoot';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute('/_authenticated/subjects/')({
-  component: Subjects,
+  component: SubjectsRoot,
   validateSearch: () => ({}) as RouterInput['subject']['findAll'],
 });

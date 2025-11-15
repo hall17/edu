@@ -4,3 +4,4 @@ export * from './DataTableViewOptions';
 export * from './DataTableFacetedFilter';
 export * from './DataTableResetFilters';
 export * from './CustomTable';
+export * from './CustomClientTable';

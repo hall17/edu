@@ -1,0 +1,9 @@
+import { createFileRoute } from '@tanstack/react-router';
+
+import { CurriculumUnits } from '@/features/subjects/subject-curriculum-units/CurriculumUnits';
+
+export const Route = createFileRoute(
+  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/'
+)({
+  component: CurriculumUnits,
+});

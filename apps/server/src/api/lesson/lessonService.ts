@@ -3,7 +3,11 @@ import { prisma } from '@api/libs/prisma';
 import { lessonInclude } from '@api/libs/prisma/selections';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
-import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
+import {
+  LessonUpdateOrderDto,
+  MODULE_CODES,
+  PERMISSIONS,
+} from '@edusama/common';
 import { Service } from 'typedi';
 
 import { PAGE_SIZE } from '../../utils/constants';
@@ -47,26 +51,28 @@ export class LessonService {
     }
 
     let where: Prisma.LessonWhereInput = {
-      curriculumId: filterDto.curriculumIds?.length
+      unitId: filterDto.unitIds?.length
         ? {
-            in: filterDto.curriculumIds,
+            in: filterDto.unitIds,
           }
         : undefined,
-      curriculum: {
-        subjectId: filterDto.subjectIds?.length
-          ? {
-              in: filterDto.subjectIds,
-            }
-          : undefined,
-        subject: {
-          branchId:
-            filterDto.global && requestedBy.isSuperAdmin
-              ? filterDto.branchIds?.length
-                ? {
-                    in: filterDto.branchIds,
-                  }
-                : undefined
-              : requestedBy.activeBranchId,
+      unit: {
+        curriculum: {
+          subjectId: filterDto.subjectIds?.length
+            ? {
+                in: filterDto.subjectIds,
+              }
+            : undefined,
+          subject: {
+            branchId:
+              filterDto.global && requestedBy.isSuperAdmin
+                ? filterDto.branchIds?.length
+                  ? {
+                      in: filterDto.branchIds,
+                    }
+                  : undefined
+                : requestedBy.activeBranchId,
+          },
         },
       },
     };
@@ -77,10 +83,17 @@ export class LessonService {
         OR: [
           { name: { contains: q, mode: 'insensitive' } },
           { description: { contains: q, mode: 'insensitive' } },
-          { curriculum: { name: { contains: q, mode: 'insensitive' } } },
+          { unit: { name: { contains: q, mode: 'insensitive' } } },
           {
-            curriculum: {
-              subject: { name: { contains: q, mode: 'insensitive' } },
+            unit: {
+              curriculum: { name: { contains: q, mode: 'insensitive' } },
+            },
+          },
+          {
+            unit: {
+              curriculum: {
+                subject: { name: { contains: q, mode: 'insensitive' } },
+              },
             },
           },
         ],
@@ -127,11 +140,13 @@ export class LessonService {
     const lesson = await prisma.lesson.findUnique({
       where: {
         id,
-        curriculum: {
-          subject: {
-            branchId: requestedBy.isSuperAdmin
-              ? undefined
-              : requestedBy.activeBranchId,
+        unit: {
+          curriculum: {
+            subject: {
+              branchId: requestedBy.isSuperAdmin
+                ? undefined
+                : requestedBy.activeBranchId,
+            },
           },
         },
       },
@@ -159,28 +174,35 @@ export class LessonService {
       }
     }
 
-    const curriculum = await prisma.curriculum.findUnique({
-      where: { id: dto.curriculumId },
+    const unit = await prisma.unit.findUnique({
+      where: { id: dto.unitId },
+      include: {
+        lessons: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
-    if (!curriculum) {
-      throw new CustomError(HTTP_EXCEPTIONS.CURRICULUM_NOT_FOUND);
+    if (!unit) {
+      throw new CustomError(HTTP_EXCEPTIONS.UNIT_NOT_FOUND);
     }
 
     // Check if lesson with same name already exists in this curriculum
-    const existingLesson = await prisma.lesson.findFirst({
-      where: {
-        curriculumId: dto.curriculumId,
-        name: dto.name,
-      },
-    });
+    const existingLesson = unit.lessons.find(
+      (lesson) => lesson.name === dto.name
+    );
 
     if (existingLesson) {
       throw new CustomError(HTTP_EXCEPTIONS.LESSON_ALREADY_EXISTS);
     }
 
     const lesson = await prisma.lesson.create({
-      data: dto,
+      data: {
+        ...dto,
+        order: unit.lessons.length,
+      },
       include: lessonInclude,
     });
 
@@ -206,19 +228,12 @@ export class LessonService {
     const existingLesson = await prisma.lesson.findUnique({
       where: {
         id,
-        curriculum: {
-          subject: {
-            branchId: requestedBy.isSuperAdmin
-              ? undefined
-              : requestedBy.activeBranchId,
-          },
-        },
-      },
-      include: {
-        curriculum: {
-          include: {
+        unit: {
+          curriculum: {
             subject: {
-              include: { branch: true },
+              branchId: requestedBy.isSuperAdmin
+                ? undefined
+                : requestedBy.activeBranchId,
             },
           },
         },
@@ -230,25 +245,24 @@ export class LessonService {
     }
 
     // If updating curriculumId, check if curriculum exists
-    if (updateData.curriculumId) {
-      const newCurriculum = await prisma.curriculum.findUnique({
-        where: { id: updateData.curriculumId },
+    if (updateData.unitId) {
+      const newUnit = await prisma.unit.findUnique({
+        where: { id: updateData.unitId },
       });
 
-      if (!newCurriculum) {
-        throw new CustomError(HTTP_EXCEPTIONS.CURRICULUM_NOT_FOUND);
+      if (!newUnit) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNIT_NOT_FOUND);
       }
     }
 
     // Check if lesson with same name already exists in this curriculum (excluding current lesson)
-    if (updateData.name || updateData.curriculumId) {
-      const curriculumId =
-        updateData.curriculumId || existingLesson.curriculumId;
+    if (updateData.name || updateData.unitId) {
+      const unitId = updateData.unitId || existingLesson.unitId;
       const name = updateData.name || existingLesson.name;
 
       const existingLessonWithName = await prisma.lesson.findFirst({
         where: {
-          curriculumId,
+          unitId,
           name,
           id: { not: id },
         },
@@ -268,6 +282,36 @@ export class LessonService {
     return lesson;
   }
 
+  async updateOrder(requestedBy: TokenUser, dto: LessonUpdateOrderDto) {
+    if (!requestedBy.isSuperAdmin) {
+      throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+    }
+
+    const lessons = await prisma.lesson.findMany({
+      where: { id: { in: dto.lessonIds } },
+    });
+
+    if (lessons.length !== dto.lessonIds.length) {
+      throw new CustomError(HTTP_EXCEPTIONS.LESSON_NOT_FOUND);
+    }
+
+    await prisma.$transaction(
+      async (tx) => {
+        for (let index = 0; index < dto.lessonIds.length; index++) {
+          const lessonId = dto.lessonIds[index];
+
+          await tx.lesson.update({
+            where: { id: lessonId },
+            data: { order: index },
+          });
+        }
+      },
+      { timeout: 30000 }
+    );
+
+    return { success: true };
+  }
+
   async delete(requestedBy: TokenUser, id: string) {
     // Apply permission-based access control
     if (!requestedBy.isSuperAdmin) {
@@ -285,11 +329,13 @@ export class LessonService {
     const existingLesson = await prisma.lesson.findUnique({
       where: {
         id,
-        curriculum: {
-          subject: {
-            branchId: requestedBy.isSuperAdmin
-              ? undefined
-              : requestedBy.activeBranchId,
+        unit: {
+          curriculum: {
+            subject: {
+              branchId: requestedBy.isSuperAdmin
+                ? undefined
+                : requestedBy.activeBranchId,
+            },
           },
         },
       },

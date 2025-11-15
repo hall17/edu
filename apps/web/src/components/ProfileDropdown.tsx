@@ -30,8 +30,6 @@ export function ProfileDropdown() {
     navigate({ to: '/login' });
   }
 
-  console.log(user);
-
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>

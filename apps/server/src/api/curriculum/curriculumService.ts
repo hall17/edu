@@ -169,7 +169,7 @@ export class CurriculumService {
       throw new CustomError(HTTP_EXCEPTIONS.CURRICULUM_ALREADY_EXISTS);
     }
 
-    const { lessons, subjectId, ...curriculumData } = dto;
+    const { units, subjectId, ...curriculumData } = dto;
 
     const uuidSchema = z.uuid();
 
@@ -179,7 +179,7 @@ export class CurriculumService {
       const curriculum = await prisma.curriculum.create({
         data: {
           ...curriculumData,
-          lessons: { createMany: { data: lessons } },
+          units: { createMany: { data: units } },
           subjectId,
         },
         include: curriculumInclude,
@@ -194,9 +194,9 @@ export class CurriculumService {
           curriculums: {
             create: {
               ...curriculumData,
-              lessons: {
+              units: {
                 createMany: {
-                  data: lessons,
+                  data: units,
                 },
               },
             },
@@ -234,7 +234,7 @@ export class CurriculumService {
       }
     }
 
-    const { id, lessons, subjectId, ...curriculumData } = dto;
+    const { id, units, subjectId, ...curriculumData } = dto;
 
     const existingCurriculum = await prisma.curriculum.findUnique({
       where: {
@@ -279,12 +279,12 @@ export class CurriculumService {
 
     const curriculum = await prisma.$transaction(
       async (tx) => {
-        if (lessons) {
+        if (units) {
           await Promise.all(
-            lessons.map((lesson) => {
-              return tx.lesson.update({
-                where: { id: lesson.id },
-                data: lesson,
+            units.map((unit) => {
+              return tx.unit.update({
+                where: { id: unit.id },
+                data: unit,
               });
             })
           );

@@ -298,11 +298,13 @@ export class QuestionService {
       where: {
         id,
         lesson: {
-          curriculum: {
-            subject: {
-              branchId: requestedBy.isSuperAdmin
-                ? undefined
-                : requestedBy.activeBranchId,
+          unit: {
+            curriculum: {
+              subject: {
+                branchId: requestedBy.isSuperAdmin
+                  ? undefined
+                  : requestedBy.activeBranchId,
+              },
             },
           },
         },
@@ -339,18 +341,6 @@ export class QuestionService {
         throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
       }
     }
-    // Check if user has permission to write questions
-    // if (!requestedBy.isSuperAdmin) {
-    //   const userHasPermission = hasPermission(
-    //     requestedBy,
-    //     MODULE_CODES.assessment,
-    //     PERMISSIONS.write
-    //   );
-
-    //   if (!userHasPermission) {
-    //     throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
-    //   }
-    // }
 
     // Verify the subject belongs to the user's active branch
     const subject = await prisma.subject.findUnique({
@@ -378,17 +368,19 @@ export class QuestionService {
       }
     }
 
-    // If lessonId is provided, verify it belongs to the curriculum/subject
-    if (dto.lessonId) {
-      const lesson = await prisma.lesson.findUnique({
+    // If unitId is provided, verify it belongs to the curriculum/subject
+    if (dto.unitId) {
+      const unit = await prisma.unit.findUnique({
         where: {
-          id: dto.lessonId,
-          curriculumId: dto.curriculumId,
+          id: dto.unitId,
+          curriculum: {
+            subjectId: dto.subjectId,
+          },
         },
       });
 
-      if (!lesson) {
-        throw new CustomError(HTTP_EXCEPTIONS.LESSON_NOT_FOUND);
+      if (!unit) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNIT_NOT_FOUND);
       }
     }
 
@@ -397,6 +389,7 @@ export class QuestionService {
       where: {
         subjectId: dto.subjectId,
         curriculumId: dto.curriculumId,
+        unitId: dto.unitId,
         lessonId: dto.lessonId,
         questionText: dto.questionText,
       },
@@ -446,11 +439,13 @@ export class QuestionService {
       where: {
         id,
         lesson: {
-          curriculum: {
-            subject: {
-              branchId: requestedBy.isSuperAdmin
-                ? undefined
-                : requestedBy.activeBranchId,
+          unit: {
+            curriculum: {
+              subject: {
+                branchId: requestedBy.isSuperAdmin
+                  ? undefined
+                  : requestedBy.activeBranchId,
+              },
             },
           },
         },
@@ -556,11 +551,13 @@ export class QuestionService {
       where: {
         id,
         lesson: {
-          curriculum: {
-            subject: {
-              branchId: requestedBy.isSuperAdmin
-                ? undefined
-                : requestedBy.activeBranchId,
+          unit: {
+            curriculum: {
+              subject: {
+                branchId: requestedBy.isSuperAdmin
+                  ? undefined
+                  : requestedBy.activeBranchId,
+              },
             },
           },
         },
@@ -569,9 +566,13 @@ export class QuestionService {
         responses: true,
         lesson: {
           include: {
-            curriculum: {
+            unit: {
               include: {
-                subject: true,
+                curriculum: {
+                  include: {
+                    subject: true,
+                  },
+                },
               },
             },
           },

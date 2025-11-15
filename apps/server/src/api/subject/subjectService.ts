@@ -161,29 +161,10 @@ export class SubjectService {
       throw new CustomError(HTTP_EXCEPTIONS.SUBJECT_ALREADY_EXISTS);
     }
 
-    const { curriculums, ...subjectData } = dto;
     const subject = await prisma.subject.create({
       data: {
-        ...subjectData,
+        ...dto,
         branchId: requestedBy.activeBranchId,
-        curriculums: {
-          createMany: {
-            data: curriculums.map((curriculum) => {
-              return {
-                name: curriculum.name,
-                description: curriculum.description,
-                lessons: {
-                  createMany: {
-                    data: curriculum.lessons.map((lesson) => ({
-                      name: lesson.name,
-                      description: lesson.description,
-                    })),
-                  },
-                },
-              };
-            }),
-          },
-        },
       },
       include: subjectInclude,
     });
@@ -237,13 +218,13 @@ export class SubjectService {
       }
     }
 
-    const subject = await prisma.subject.update({
+    const updatedSubject = await prisma.subject.update({
       where: { id },
-      data: updateData,
+      data: dto,
       include: subjectInclude,
     });
 
-    return subject;
+    return updatedSubject;
   }
 
   async delete(requestedBy: TokenUser, id: string) {

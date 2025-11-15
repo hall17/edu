@@ -45,6 +45,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { useAuth } from '@/stores/authStore';
 import { DEFAULT_IMAGE_SIZE } from '@/utils/constants';
+import { detailedDiff } from 'deep-object-diff';
 
 type BranchUpdateFormData = BranchUpdateDto;
 
@@ -56,7 +57,7 @@ export function BranchSettingsContent({
   onCancel,
 }: BranchSettingsContentProps) {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, refetchUser } = useAuth();
 
   const {
     data: branch,
@@ -94,9 +95,21 @@ export function BranchSettingsContent({
 
   async function onSubmit(data: BranchUpdateMyBranchDto) {
     try {
+      if (!branch) return;
+
+      const diff = detailedDiff(branch, data);
+      if (!Object.keys(diff.updated).length) {
+        return;
+      }
+
+      const updateData = { ...diff.updated } as BranchUpdateMyBranchDto;
+
       if (!user?.activeBranchId) return;
 
-      const response = await updateBranch.mutateAsync(data);
+      const response = await updateBranch.mutateAsync({
+        ...updateData,
+        id: branch.id,
+      });
 
       if (response && 'signedAwsS3Url' in response && logoFile) {
         await fetch(response.signedAwsS3Url, {
@@ -106,6 +119,7 @@ export function BranchSettingsContent({
       }
 
       await refetch();
+      refetchUser();
       toast.success(t('branchSettings.updateSuccess'));
       onCancel();
     } catch (error) {

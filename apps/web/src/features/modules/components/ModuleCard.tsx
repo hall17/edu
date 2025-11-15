@@ -110,7 +110,7 @@ export function ModuleCard({ module }: ModuleCardProps) {
         return {
           title: t('modules.actions.disableTitle'),
           desc: t('modules.actions.disableDesc'),
-          destructive: false,
+          destructive: true,
         };
       case 'delete':
         return {

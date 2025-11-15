@@ -1,30 +1,27 @@
 import { z } from 'zod';
 
 import { CurriculumStatus } from '../enums';
+
 import { idSchema, DefaultFilterSchema } from './sharedSchemas';
+import { unitCreateSchema, unitUpdateSchema } from './unitSchemas';
 
 export const curriculumCreateSchema = z.object({
+  subjectId: z.uuid().or(z.string()),
+  order: z.number().min(0),
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  subjectId: z.uuid().or(z.string()),
-  lessons: z.array(
-    z.object({
-      id: z.string().uuid().optional(),
-      name: z.string().min(1).max(100),
-      description: z.string().max(500).optional().nullable(),
-      order: z.number().optional(),
-    })
-  ),
+  status: z.nativeEnum(CurriculumStatus),
+  units: z.array(unitCreateSchema),
 });
 
 export const curriculumUpdateSchema = curriculumCreateSchema
   .partial()
+  .merge(idSchema)
   .merge(
     z.object({
-      status: z.nativeEnum(CurriculumStatus).optional(),
+      units: z.array(unitUpdateSchema.omit({ lessons: true })),
     })
-  )
-  .merge(idSchema);
+  );
 
 export const curriculumFindAllSchema = z
   .object({

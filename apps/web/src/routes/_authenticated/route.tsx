@@ -1,13 +1,8 @@
-import {
-  createFileRoute,
-  redirect,
-  useRouteContext,
-} from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 import countries from '@/assets/countries.json';
 import { AuthenticatedLayout } from '@/components/layout/AuthenticatedLayout';
 import { trpcClient } from '@/lib/trpc';
-import { AuthUser } from '@/stores/authStore';
 
 export const Route = createFileRoute('/_authenticated')({
   component: AuthenticatedLayout,

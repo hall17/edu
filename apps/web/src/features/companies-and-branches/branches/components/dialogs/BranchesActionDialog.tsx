@@ -7,9 +7,11 @@ import { BranchFormDialog } from '../../../shared/components/BranchFormDialog';
 import { useBranchesContext } from '../../BranchesContext';
 
 import { trpc } from '@/lib/trpc';
+import { useAuth } from '@/stores/authStore';
 
 export function BranchesActionDialog() {
   const { t } = useTranslation();
+  const { refetchUser } = useAuth();
   const {
     branchesQuery,
     openedDialog,
@@ -23,6 +25,7 @@ export function BranchesActionDialog() {
 
   const createMutation = useMutation(trpc.branch.create.mutationOptions());
   const updateMutation = useMutation(trpc.branch.update.mutationOptions());
+  const isLoading = createMutation.isPending || updateMutation.isPending;
 
   async function handleSubmit(
     data: BranchCreateDto,
@@ -42,6 +45,8 @@ export function BranchesActionDialog() {
         }
 
         await branchesQuery.refetch();
+        // refetch me to get the updated branches
+        refetchUser();
 
         toast.success(
           t('companiesAndBranches.branches.actionDialog.updateSuccess')
@@ -57,6 +62,9 @@ export function BranchesActionDialog() {
         }
 
         await branchesQuery.refetch();
+
+        // refetch me to get the updated branches
+        refetchUser();
 
         toast.success(
           t('companiesAndBranches.branches.actionDialog.createSuccess')
@@ -88,6 +96,7 @@ export function BranchesActionDialog() {
       onSubmit={handleSubmit}
       currentRow={isEdit ? currentRow : undefined}
       showExtraFields={true}
+      isLoading={isLoading}
     />
   );
 }

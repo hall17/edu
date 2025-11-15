@@ -1,4 +1,4 @@
-import { BranchStatus } from '@edusama/common';
+import { BranchStatus, MAX_STUDENTS_PER_BRANCH } from '@edusama/common';
 import { branchCreateSchema, BranchCreateDto } from '@edusama/common';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -48,19 +48,8 @@ interface BranchFormDialogProps {
   currentRow?: Branch;
   selectedCompanyId?: number | null;
   showExtraFields?: boolean;
+  isLoading?: boolean;
 }
-
-const defaultValues: BranchCreateDto = {
-  name: '',
-  slug: '',
-  location: '',
-  contact: '',
-  logoUrl: '',
-  status: BranchStatus.ACTIVE,
-  companyId: 0,
-  canBeDeleted: true,
-  maximumStudents: 100,
-};
 
 export function BranchFormDialog({
   mode,
@@ -70,6 +59,7 @@ export function BranchFormDialog({
   currentRow,
   selectedCompanyId,
   showExtraFields = false,
+  isLoading,
 }: BranchFormDialogProps) {
   const { t } = useTranslation();
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -130,6 +120,8 @@ export function BranchFormDialog({
       const updateData = { ...diff.updated } as BranchCreateDto;
 
       await onSubmit(updateData, logoFile);
+    } else {
+      await onSubmit(data, logoFile);
     }
   }
 
@@ -183,6 +175,7 @@ export function BranchFormDialog({
           </DialogHeader>
           <Form {...form}>
             <form
+              id="branch-form"
               onSubmit={handleSubmit(handleSubmitForm)}
               className="space-y-4"
               tabIndex={0}
@@ -197,7 +190,7 @@ export function BranchFormDialog({
                     </FormLabel>
                     <FormControl>
                       <DroppableImage
-                        size="2xl"
+                        size="md"
                         value={
                           logoFile === null
                             ? undefined
@@ -226,10 +219,42 @@ export function BranchFormDialog({
               />
               <FormField
                 control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>
+                      {t(
+                        'companiesAndBranches.branches.actionDialog.form.status'
+                      )}
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={t(
+                              'companiesAndBranches.branches.actionDialog.form.selectStatus'
+                            )}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.values(BranchStatus).map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {t(`branchStatuses.${status}`)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="companyId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
+                    <FormLabel required>
                       {t(
                         'companiesAndBranches.branches.actionDialog.form.company'
                       )}
@@ -267,7 +292,7 @@ export function BranchFormDialog({
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
+                    <FormLabel required>
                       {t(
                         'companiesAndBranches.branches.actionDialog.form.name'
                       )}
@@ -284,7 +309,7 @@ export function BranchFormDialog({
                 name="slug"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
+                    <FormLabel required>
                       {t(
                         'companiesAndBranches.branches.actionDialog.form.slug'
                       )}
@@ -296,6 +321,39 @@ export function BranchFormDialog({
                   </FormItem>
                 )}
               />
+              {showExtraFields && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="maximumStudents"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required>
+                          {t(
+                            'companiesAndBranches.branches.actionDialog.form.maximumStudents'
+                          )}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            {...field}
+                            min={1}
+                            max={MAX_STUDENTS_PER_BRANCH}
+                            onChange={(e) => {
+                              const value = Math.min(
+                                Math.max(parseInt(e.target.value) || 0, 1),
+                                MAX_STUDENTS_PER_BRANCH
+                              );
+                              field.onChange(value);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
               <FormField
                 control={form.control}
                 name="location"
@@ -330,104 +388,6 @@ export function BranchFormDialog({
                   </FormItem>
                 )}
               />
-              {showExtraFields && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="canBeDeleted"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t(
-                            'companiesAndBranches.branches.actionDialog.form.canBeDeleted'
-                          )}
-                        </FormLabel>
-                        <Select
-                          onValueChange={(value) =>
-                            field.onChange(value === 'true')
-                          }
-                          value={field.value?.toString()}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="w-full">
-                              <SelectValue
-                                placeholder={t(
-                                  'companiesAndBranches.branches.actionDialog.form.selectCanBeDeleted'
-                                )}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="true">
-                              {t('common.yes')}
-                            </SelectItem>
-                            <SelectItem value="false">
-                              {t('common.no')}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="maximumStudents"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>
-                          {t(
-                            'companiesAndBranches.branches.actionDialog.form.maximumStudents'
-                          )}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(parseInt(e.target.value) || 0)
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t(
-                        'companiesAndBranches.branches.actionDialog.form.status'
-                      )}
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue
-                            placeholder={t(
-                              'companiesAndBranches.branches.actionDialog.form.selectStatus'
-                            )}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.values(BranchStatus).map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {t(`branchStatuses.${status}`)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <DialogFooter>
                 <Button
                   type="button"
@@ -436,7 +396,12 @@ export function BranchFormDialog({
                 >
                   {t('common.cancel')}
                 </Button>
-                <LoadingButton type="submit">
+                <LoadingButton
+                  type="submit"
+                  form="branch-form"
+                  isLoading={isLoading}
+                  disabled={isLoading}
+                >
                   {isEdit ? t('common.update') : t('common.create')}
                 </LoadingButton>
               </DialogFooter>

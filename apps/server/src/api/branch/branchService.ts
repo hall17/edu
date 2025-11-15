@@ -17,6 +17,7 @@ import {
   BranchUpdateStatusDto,
   ModuleUpdateStatusDto,
 } from '@edusama/common';
+import { hash } from 'bcrypt';
 import dayjs from 'dayjs';
 import { Service } from 'typedi';
 
@@ -151,12 +152,21 @@ export class BranchService {
     // Check if branch with same name already exists in the company
     const existingBranch = await prisma.branch.findFirst({
       where: {
-        companyId: dto.companyId,
-        name: dto.name,
+        OR: [
+          {
+            companyId: dto.companyId,
+            name: dto.name,
+          },
+          {
+            slug: dto.slug,
+          },
+        ],
       },
     });
 
-    if (existingBranch) {
+    if (existingBranch?.slug === dto.slug) {
+      throw new CustomError(HTTP_EXCEPTIONS.SLUG_ALREADY_EXISTS);
+    } else if (existingBranch) {
       throw new CustomError(HTTP_EXCEPTIONS.BRANCH_ALREADY_EXISTS);
     }
 
@@ -165,8 +175,25 @@ export class BranchService {
       dto.logoUrl = `logo.${extension}`;
     }
 
+    const testEmail = `test@${dto.slug}.com`;
+    const password = '123';
+
     const branch = await prisma.branch.create({
-      data: dto,
+      data: {
+        ...dto,
+        users: {
+          create: {
+            user: {
+              create: {
+                email: testEmail,
+                password: await hash(password, 10),
+                firstName: 'Test',
+                lastName: 'Test',
+              },
+            },
+          },
+        },
+      },
       include: branchInclude,
     });
 

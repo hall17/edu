@@ -16,5 +16,6 @@ export * from './roleSchemas';
 export * from './studentSchemas';
 export * from './subjectSchemas';
 export * from './titleSchemas';
+export * from './unitSchemas';
 export * from './userSchemas';
 export * from './sharedSchemas';
