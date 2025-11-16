@@ -7,6 +7,13 @@ import { Main } from '@/components/layout/Main';
 export function CompaniesAndBranches() {
   const { t } = useTranslation();
 
+  const breadcrumbItems = [
+    {
+      label: t('companiesAndBranches.title'),
+      href: '/companies/branches',
+    },
+  ];
+
   const sidebarNavItems = [
     {
       title: t('companiesAndBranches.tabs.companies'),
@@ -24,6 +31,7 @@ export function CompaniesAndBranches() {
     <Main
       title={t('companiesAndBranches.title')}
       description={t('companiesAndBranches.description')}
+      breadcrumbItems={breadcrumbItems}
       tabItems={sidebarNavItems}
     >
       <Outlet />

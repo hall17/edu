@@ -25,7 +25,6 @@ import { toast } from 'sonner';
 import { useClassroomStudentsContext } from '../ClassroomStudentsContext';
 
 import { ClassroomStudentsDataTableToolbar } from './ClassroomStudentsDataTableToolbar';
-import { ClassroomStudentsPrimaryButtons } from './ClassroomStudentsPrimaryButtons';
 
 import { LongText } from '@/components/LongText';
 import { DataTableColumnHeader } from '@/components/table';

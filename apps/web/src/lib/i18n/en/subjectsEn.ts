@@ -266,6 +266,25 @@ export const subjects = {
         noResults: 'No lessons found',
         filterPlaceholder: 'Filter lessons...',
       },
+      details: {
+        tabs: {
+          general: 'General',
+          materials: 'Materials',
+        },
+      },
+      viewDialog: {
+        basicInfo: 'Basic Information',
+        description: 'Lesson details and information.',
+      },
+      statistics: {
+        title: 'Statistics',
+        description: 'Lesson statistics and metrics.',
+        totalMaterials: 'Total Materials',
+      },
+      materials: {
+        description: 'Materials associated with this lesson.',
+        noMaterials: 'No materials found for this lesson.',
+      },
     },
   },
   details: {
@@ -318,6 +337,54 @@ export const subjects = {
       tabs: {
         general: 'General',
         lessons: 'Lessons',
+      },
+    },
+  },
+  lessons: {
+    title: 'Lessons',
+    details: {
+      tabs: {
+        general: 'General',
+        materials: 'Materials',
+      },
+    },
+    viewDialog: {
+      basicInfo: 'Basic Information',
+      description: 'Lesson details and information.',
+    },
+    statistics: {
+      title: 'Statistics',
+      description: 'Lesson statistics and metrics.',
+      totalMaterials: 'Total Materials',
+    },
+    materials: {
+      description: 'Materials associated with this lesson.',
+      noMaterials: 'No materials found for this lesson.',
+      noLessonSelected: 'No lesson selected',
+      fileRequired: 'File is required',
+      uploadSuccess: 'Material uploaded successfully',
+      uploadError: 'Failed to upload material',
+      uploadInProgress: 'Upload in progress, please wait...',
+      uploadDialog: {
+        title: 'Upload Material',
+        description: 'Upload a new learning material for this lesson.',
+        file: 'File',
+        uploadFile: 'Upload file',
+        changeFile: 'Change file',
+        fileHelpText: 'Click or drag file • Maximum size: {{maxSize}}',
+        namePlaceholder: 'Enter material name...',
+        descriptionPlaceholder: 'Enter material description...',
+        thumbnail: 'Thumbnail',
+        uploadThumbnail: 'Upload thumbnail',
+        changeThumbnail: 'Change thumbnail',
+        thumbnailHelpText: 'Optional thumbnail for the material',
+        isShareable: 'Shareable',
+        isShareableDescription: 'Allow students to view this material',
+        typeAutoFilled:
+          'Material type is automatically detected from the uploaded file',
+        upload: 'Upload',
+        uploadingMaterial: 'Uploading material',
+        uploadingThumbnail: 'Uploading thumbnail',
       },
     },
   },

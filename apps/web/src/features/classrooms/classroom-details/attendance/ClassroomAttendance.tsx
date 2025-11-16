@@ -3,6 +3,7 @@ import {
   ClassroomAttendanceProvider,
   useClassroomAttendanceContext,
 } from './ClassroomAttendanceContext';
+import { ClassroomAttendanceTable } from './ClassroomAttendanceTable';
 
 import { Label } from '@/components/ui/label';
 import {
@@ -109,8 +110,8 @@ function ClassroomAttendanceContent() {
         </div>
       </div>
 
-      {/* Chart */}
-      <ClassroomAttendanceChart />
+      {/* Attendance Table */}
+      <ClassroomAttendanceTable />
     </div>
   );
 }

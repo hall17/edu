@@ -6,6 +6,12 @@ import { Main } from '@/components/layout/Main';
 
 export function Users() {
   const { t } = useTranslation();
+  const breadcrumbItems = [
+    {
+      label: t('users.title'),
+      href: '/users',
+    },
+  ];
 
   const sidebarNavItems = [
     {
@@ -25,6 +31,7 @@ export function Users() {
       title={t('users.title')}
       description={t('users.description')}
       tabItems={sidebarNavItems}
+      breadcrumbItems={breadcrumbItems}
     >
       <Outlet />
     </Main>

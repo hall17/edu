@@ -11,6 +11,7 @@ import {
   DataTableViewOptions,
 } from '@/components/table';
 import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 interface SubjectsDataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -21,8 +22,7 @@ export function SubjectsDataTableToolbar<TData>({
 }: SubjectsDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, setFilters } = useSubjectsContext();
-
+  const { filters, setFilters, setOpenedDialog } = useSubjectsContext();
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
@@ -49,17 +49,25 @@ export function SubjectsDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <div className="flex gap-x-2">
-        {filters.sort && (
-          <Button
-            variant="secondary"
-            className="h-8"
-            onClick={() => setFilters({ sort: undefined })}
-          >
-            {t('table.actions.resetSort')}
+      <div className="flex items-center gap-2">
+        <div className="flex gap-x-2">
+          {filters.sort && (
+            <Button
+              variant="secondary"
+              className="h-8"
+              onClick={() => setFilters({ sort: undefined })}
+            >
+              {t('table.actions.resetSort')}
+            </Button>
+          )}
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="flex gap-2">
+          <Button onClick={() => setOpenedDialog('add')}>
+            <Plus />
+            {t('subjects.buttons.addSubject')}
           </Button>
-        )}
-        <DataTableViewOptions table={table} />
+        </div>
       </div>
     </div>
   );

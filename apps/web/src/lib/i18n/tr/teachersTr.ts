@@ -2,7 +2,7 @@ export const teachers = {
   title: 'Öğretmen Listesi',
   description: 'Öğretmenlerinizi ve bilgilerini burada yönetin.',
   buttons: {
-    inviteTeacher: 'Öğretmen Davet Et',
+    inviteTeacher: 'Davet Et',
     addTeacher: 'Öğretmen Ekle',
   },
   table: {

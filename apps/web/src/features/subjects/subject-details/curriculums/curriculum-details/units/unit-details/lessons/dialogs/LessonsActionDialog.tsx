@@ -87,7 +87,7 @@ export function LessonsActionDialog() {
           ...data,
         });
 
-        updateLesson(updatedLesson);
+        updateLesson(updatedLesson as any);
         toast.success(t('subjects.curriculums.lessons.updateSuccess'));
       } else {
         const newLesson = await createLessonMutation.mutateAsync({
@@ -96,7 +96,7 @@ export function LessonsActionDialog() {
           ...data,
         });
 
-        createLesson(newLesson);
+        createLesson(newLesson as any);
         toast.success(t('subjects.curriculums.lessons.createSuccess'));
       }
 

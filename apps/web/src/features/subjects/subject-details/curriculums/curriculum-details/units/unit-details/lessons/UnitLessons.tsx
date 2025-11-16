@@ -1,5 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Edit, Trash2 } from 'lucide-react';
+import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { LessonsDialogs } from './dialogs/LessonsDialogs';
@@ -40,7 +41,9 @@ export function UnitLessonsContent() {
 
 function useColumns(): ColumnDef<Lesson>[] {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { setOpenedDialog, setCurrentRow } = useUnitLessonsContext();
+  const { subject, curriculum, unit } = useSubjectDetailsContext();
 
   return [
     {
@@ -67,6 +70,24 @@ function useColumns(): ColumnDef<Lesson>[] {
       enableHiding: true,
     },
     {
+      accessorKey: 'materials',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title={t('common.materials')} />
+      ),
+      cell: ({ row }) => {
+        const materialsCount = (row.original as any).materials?.length ?? 0;
+        return (
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground text-sm">
+              {materialsCount}
+            </span>
+          </div>
+        );
+      },
+      enableSorting: true,
+      enableHiding: true,
+    },
+    {
       id: 'actions-item',
       header: t('common.actions'),
       meta: {
@@ -77,6 +98,23 @@ function useColumns(): ColumnDef<Lesson>[] {
         return (
           <CustomDataTableRowActions
             items={[
+              {
+                icon: <Eye className="size-4" />,
+                onClick: () => {
+                  navigate({
+                    to: `/subjects/${subject?.id}/curriculums/${curriculum?.id}/units/${unit?.id}/lessons/${row.original.id}`,
+                  });
+                },
+                tooltip: t('common.view'),
+              },
+              {
+                icon: <Plus className="size-4" />,
+                onClick: () => {
+                  setCurrentRow(row.original);
+                  setOpenedDialog('add-material');
+                },
+                tooltip: t('common.addMaterial'),
+              },
               {
                 icon: <Edit className="size-4" />,
                 onClick: () => {

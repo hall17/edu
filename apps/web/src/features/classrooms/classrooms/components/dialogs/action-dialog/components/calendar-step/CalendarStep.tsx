@@ -25,9 +25,9 @@ export function CalendarStep() {
       );
 
       const eventData: IEvent[] = integration.sessions.map((sessionData) => {
-        const lessons = curriculum?.lessons.filter((lesson) =>
-          sessionData.lessonIds?.includes(lesson.id)
-        );
+        const lessons = (
+          curriculum?.units.flatMap((unit) => unit.lessons) ?? []
+        ).filter((lesson) => sessionData.lessonIds?.includes(lesson.id));
         const teacher = subject?.teachers.find(
           (teacher) => teacher.teacher.id === sessionData.teacherId
         );

@@ -305,6 +305,9 @@ export const subjectInclude = {
             orderBy: {
               order: 'asc',
             },
+            include: {
+              materials: true,
+            },
           },
         },
       },

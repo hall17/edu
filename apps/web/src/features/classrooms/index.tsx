@@ -23,6 +23,23 @@ export function ClassroomsRoot() {
     },
   ];
 
+  const breadcrumbItems = isClassroomsPage
+    ? [
+        {
+          label: t('classrooms.title'),
+          href: '/classrooms',
+        },
+      ]
+    : [
+        {
+          label: t('classrooms.title'),
+          href: '/classrooms',
+        },
+        {
+          label: t('classrooms.templates.title'),
+        },
+      ];
+
   return (
     <Main
       title={
@@ -36,6 +53,7 @@ export function ClassroomsRoot() {
           : t('classrooms.templates.description')
       }
       tabItems={sidebarNavItems}
+      breadcrumbItems={breadcrumbItems}
     >
       <Outlet />
     </Main>

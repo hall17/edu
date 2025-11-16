@@ -1,6 +1,7 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { prisma } from '@api/libs/prisma';
 import { subjectInclude } from '@api/libs/prisma/selections';
+import { generateSignedUrl } from '@api/libs/s3';
 import { Prisma } from '@api/prisma/generated/prisma/client';
 import { CustomError, TokenUser } from '@api/types';
 import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
@@ -131,6 +132,42 @@ export class SubjectService {
       throw new CustomError(HTTP_EXCEPTIONS.SUBJECT_NOT_FOUND);
     }
 
+    // sign all materials urls
+    const promises: Promise<void>[] = [];
+
+    subject.curriculums.forEach((curriculum) => {
+      curriculum.units.forEach((unit) => {
+        unit.lessons.forEach((lesson) => {
+          lesson.materials.forEach((material) => {
+            promises.push(
+              (async () => {
+                const companyId = requestedBy.companyId!;
+                const branchId = requestedBy.activeBranchId;
+                const subjectId = subject.id;
+                const curriculumId = curriculum.id;
+                const unitId = unit.id;
+                const lessonId = lesson.id;
+
+                const path = `${companyId}/${branchId}/materials/${subjectId}/${curriculumId}/${unitId}/${lessonId}/${material.id}`;
+
+                material.url = await generateSignedUrl({
+                  operation: 'getObject',
+                  path,
+                });
+
+                material.thumbnailUrl = await generateSignedUrl({
+                  operation: 'getObject',
+                  path: `${path}-thumbnail`,
+                });
+              })()
+            );
+          });
+        });
+      });
+    });
+
+    await Promise.all(promises);
+
     return subject;
   }
 
@@ -168,6 +205,42 @@ export class SubjectService {
       },
       include: subjectInclude,
     });
+
+    // sign all materials urls
+    const promises: Promise<void>[] = [];
+
+    subject.curriculums.forEach((curriculum) => {
+      curriculum.units.forEach((unit) => {
+        unit.lessons.forEach((lesson) => {
+          lesson.materials.forEach((material) => {
+            promises.push(
+              (async () => {
+                const companyId = requestedBy.companyId!;
+                const branchId = requestedBy.activeBranchId;
+                const subjectId = subject.id;
+                const curriculumId = curriculum.id;
+                const unitId = unit.id;
+                const lessonId = lesson.id;
+
+                const path = `${companyId}/${branchId}/materials/${subjectId}/${curriculumId}/${unitId}/${lessonId}/${material.id}`;
+
+                material.url = await generateSignedUrl({
+                  operation: 'getObject',
+                  path,
+                });
+
+                material.thumbnailUrl = await generateSignedUrl({
+                  operation: 'getObject',
+                  path: `${path}-thumbnail`,
+                });
+              })()
+            );
+          });
+        });
+      });
+    });
+
+    await Promise.all(promises);
 
     return subject;
   }

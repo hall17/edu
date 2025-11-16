@@ -25,6 +25,7 @@ export const materials = {
     lesson: 'lesson',
     branch: 'Branch',
     description: 'Description',
+    shareable: 'Shareable',
     createdAt: 'Created At',
     curriculumName: 'Curriculum Name',
     actions: {
@@ -114,5 +115,9 @@ export const materials = {
     updateError: 'Failed to update subject',
     deleteSuccess: 'Subject deleted successfully',
     deleteError: 'Failed to delete subject',
+  },
+  viewer: {
+    page: 'Page',
+    unsupportedType: 'This file type is not supported for preview.',
   },
 } as const;

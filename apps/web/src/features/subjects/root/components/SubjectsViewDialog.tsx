@@ -102,10 +102,13 @@ export function SubjectsViewDialog() {
                               {t('common.createdAt')}:{' '}
                               {dayjs(curriculum.createdAt).format('DD/MM/YYYY')}
                             </span>
-                            {curriculum.lessons &&
-                              curriculum.lessons.length > 0 && (
+                            {curriculum.units &&
+                              curriculum.units.length > 0 && (
                                 <span className="text-muted-foreground text-xs">
-                                  {curriculum.lessons.length}{' '}
+                                  {curriculum.units.reduce(
+                                    (acc, unit) => acc + unit.lessons.length,
+                                    0
+                                  )}{' '}
                                   {t('subjects.viewDialog.lessons')}
                                 </span>
                               )}

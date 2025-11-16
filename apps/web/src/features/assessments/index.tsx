@@ -25,6 +25,23 @@ export function AssessmentsRoot() {
     },
   ];
 
+  const breadcrumbItems = isAssessmentsPage
+    ? [
+        {
+          label: t('assessments.title'),
+          href: '/assessments',
+        },
+      ]
+    : [
+        {
+          label: t('assessments.title'),
+          href: '/assessments',
+        },
+        {
+          label: t('assessments.assigned.title'),
+        },
+      ];
+
   return (
     <Main
       title={
@@ -38,6 +55,7 @@ export function AssessmentsRoot() {
           : t('assessments.assigned.description')
       }
       tabItems={sidebarNavItems}
+      breadcrumbItems={breadcrumbItems}
     >
       <Outlet />
     </Main>

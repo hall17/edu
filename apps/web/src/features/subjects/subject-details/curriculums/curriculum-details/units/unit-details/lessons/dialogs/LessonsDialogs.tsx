@@ -1,5 +1,6 @@
 import { LessonsActionDialog } from './LessonsActionDialog';
 import { LessonsDeleteDialog } from './LessonsDeleteDialog';
+import { LessonMaterialUploadDialog } from './LessonMaterialUploadDialog';
 
 import { useUnitLessonsContext } from '@/features/subjects/subject-details/curriculums/curriculum-details/units/unit-details/lessons/UnitLessonsContext';
 
@@ -13,6 +14,8 @@ export function LessonsDialogs() {
         return <LessonsActionDialog />;
       case 'delete':
         return <LessonsDeleteDialog />;
+      case 'add-material':
+        return <LessonMaterialUploadDialog />;
       default:
         return null;
     }

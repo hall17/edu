@@ -7,9 +7,10 @@ import { Subject, trpc } from '@/lib/trpc';
 export type Curriculum = Subject['curriculums'][number];
 export type Unit = Curriculum['units'][number];
 export type Lesson = Unit['lessons'][number];
+export type LessonMaterial = Lesson['materials'][number];
 
 function useProviderValue() {
-  const { subjectId, curriculumId, unitId } = useParams({
+  const { subjectId, curriculumId, unitId, lessonId } = useParams({
     strict: false,
   });
 
@@ -35,6 +36,11 @@ function useProviderValue() {
       ? curriculum?.units.find((unit) => unit.id === unitId)
       : undefined;
 
+  const lesson =
+    unit && lessonId
+      ? unit?.lessons.find((lesson) => lesson.id === lessonId)
+      : undefined;
+
   return {
     subjectQuery,
     subjectQueryKey,
@@ -43,6 +49,7 @@ function useProviderValue() {
     subjectId,
     curriculum,
     unit,
+    lesson,
   };
 }
 

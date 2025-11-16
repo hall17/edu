@@ -1,6 +1,6 @@
 import { Overview } from './components/overview';
 import { RecentSales } from './components/RecentSales';
-
+import { useTranslation } from 'react-i18next';
 import { Header } from '@/components/layout/Header';
 import { Main } from '@/components/layout/Main';
 import { TopNav } from '@/components/layout/TopNav';
@@ -18,6 +18,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export function Dashboard() {
+  const { t } = useTranslation();
+
+  const breadcrumbItems = [
+    {
+      label: 'Dashboard',
+      href: '/',
+    },
+  ];
+
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -31,7 +40,7 @@ export function Dashboard() {
       </Header>
 
       {/* ===== Main ===== */}
-      <Main>
+      <Main breadcrumbItems={breadcrumbItems}>
         <div className="mb-2 flex items-center justify-between space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <div className="flex items-center space-x-2">

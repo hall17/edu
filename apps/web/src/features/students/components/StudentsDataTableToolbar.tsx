@@ -1,5 +1,6 @@
 import { StudentStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
+import { MailPlus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useStudentsContext } from '../StudentsContext';
@@ -21,7 +22,7 @@ export function StudentsDataTableToolbar<TData>({
 }: StudentsDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, setFilters } = useStudentsContext();
+  const { filters, setFilters, setOpenedDialog } = useStudentsContext();
 
   return (
     <div className="flex items-center justify-between">
@@ -49,17 +50,29 @@ export function StudentsDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <div className="flex gap-x-2">
-        {filters.sort && (
-          <Button
-            variant="secondary"
-            className="h-8"
-            onClick={() => setFilters({ sort: undefined })}
-          >
-            {t('table.actions.resetSort')}
+      <div className="flex items-center gap-2">
+        <div className="flex gap-x-2">
+          {filters.sort && (
+            <Button
+              variant="secondary"
+              className="h-8"
+              onClick={() => setFilters({ sort: undefined })}
+            >
+              {t('table.actions.resetSort')}
+            </Button>
+          )}
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setOpenedDialog('invite')}>
+            <MailPlus />
+            {t('students.buttons.inviteStudent')}
           </Button>
-        )}
-        <DataTableViewOptions table={table} />
+          <Button onClick={() => setOpenedDialog('add')}>
+            <UserPlus />
+            {t('students.buttons.addStudent')}
+          </Button>
+        </div>
       </div>
     </div>
   );

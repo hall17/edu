@@ -31,9 +31,7 @@ export function AssessmentAssignmentViewDialog() {
             <label className="text-right font-medium">
               {t('assessments.assigned.table.headers.assessment')}:
             </label>
-            <div className="col-span-3">
-              {currentRow?.assessment?.title}
-            </div>
+            <div className="col-span-3">{currentRow?.assessment?.title}</div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <label className="text-right font-medium">
@@ -77,7 +75,9 @@ export function AssessmentAssignmentViewDialog() {
             </label>
             <div className="col-span-3 capitalize">
               {currentRow?.status
-                ? t(`classroomIntegrationAssessmentStatuses.${currentRow.status}`)
+                ? t(
+                    `classroomIntegrationAssessmentStatuses.${currentRow.status}`
+                  )
                 : '-'}
             </div>
           </div>
@@ -86,4 +86,3 @@ export function AssessmentAssignmentViewDialog() {
     </Dialog>
   );
 }
-

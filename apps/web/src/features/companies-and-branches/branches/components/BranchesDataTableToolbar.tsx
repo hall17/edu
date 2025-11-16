@@ -1,5 +1,6 @@
 import { BranchStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useBranchesContext } from '../BranchesContext';
@@ -10,6 +11,7 @@ import {
   DataTableResetFilters,
   DataTableViewOptions,
 } from '@/components/table';
+import { Button } from '@/components/ui/button';
 
 interface BranchesDataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -20,7 +22,7 @@ export function BranchesDataTableToolbar<TData>({
 }: BranchesDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, setFilters } = useBranchesContext();
+  const { filters, setFilters, setOpenedDialog } = useBranchesContext();
 
   return (
     <div className="flex items-center justify-between">
@@ -50,7 +52,15 @@ export function BranchesDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <DataTableViewOptions table={table} />
+        <div className="flex gap-2">
+          <Button onClick={() => setOpenedDialog('add')}>
+            <Plus />
+            {t('companiesAndBranches.buttons.addBranch')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

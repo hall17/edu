@@ -38,17 +38,11 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { trpc } from '@/lib/trpc';
 import { useSubjectDetailsContext } from '@/features/subjects/subject-details/SubjectDetailsContext';
-import { CurriculumStatus } from '@edusama/common';
-
-function getFormSchema(t: TFunction) {
-  return z.object({
-    name: z.string().min(1, t('validation.required')).max(100),
-    description: z.string().max(500).optional(),
-    status: z.nativeEnum(CurriculumStatus),
-  });
-}
-
-type CurriculumForm = z.infer<ReturnType<typeof getFormSchema>>;
+import {
+  CurriculumStatus,
+  curriculumCreateSchema,
+  curriculumUpdateSchema,
+} from '@edusama/common';
 
 export function CurriculumsActionDialog() {
   const { t } = useTranslation();
@@ -68,12 +62,15 @@ export function CurriculumsActionDialog() {
   const updateCurriculumMutation = useMutation(
     trpc.curriculum.update.mutationOptions()
   );
-
+  const isLoading =
+    createCurriculumMutation.isPending || updateCurriculumMutation.isPending;
   const isEditMode = openedDialog === 'edit';
 
   const defaultValues = useMemo(() => {
     if (isEditMode && currentRow) {
       return {
+        id: currentRow.id,
+        subjectId: currentRow.subjectId,
         name: currentRow.name,
         description: currentRow.description ?? '',
         status: currentRow.status,
@@ -83,40 +80,30 @@ export function CurriculumsActionDialog() {
       name: '',
       description: '',
       status: CurriculumStatus.ACTIVE,
+      subjectId: subjectId ?? '',
     };
   }, [isEditMode, currentRow]);
 
+  const schema = isEditMode ? curriculumUpdateSchema : curriculumCreateSchema;
+  type CurriculumForm = z.infer<typeof schema>;
+
   const form = useForm<CurriculumForm>({
-    resolver: zodResolver(getFormSchema(t)),
+    resolver: zodResolver(schema),
     defaultValues,
   });
 
   async function onSubmit(data: CurriculumForm) {
     try {
-      if (isEditMode) {
-        const updatedCurriculum = await updateCurriculumMutation.mutateAsync({
-          id: currentRow.id,
-          subjectId: currentRow.subjectId,
-          units: currentRow.units.map((unit) => ({
-            id: unit.id,
-            name: unit.name,
-            description: unit.description,
-            order: unit.order,
-          })),
-          ...data,
-        });
+      if ('id' in data) {
+        const updatedCurriculum =
+          await updateCurriculumMutation.mutateAsync(data);
 
-        updateCurriculum(updatedCurriculum);
+        updateCurriculum(updatedCurriculum as any);
         toast.success(t('subjects.curriculums.updateSuccess'));
       } else {
-        const newCurriculum = await createCurriculumMutation.mutateAsync({
-          subjectId: subjectId ?? '',
-          order: curriculums.length,
-          units: [],
-          ...data,
-        });
+        const newCurriculum = await createCurriculumMutation.mutateAsync(data);
 
-        createCurriculum(newCurriculum);
+        createCurriculum(newCurriculum as any);
         toast.success(t('subjects.curriculums.createSuccess'));
       }
 
@@ -221,13 +208,7 @@ export function CurriculumsActionDialog() {
               >
                 {t('common.cancel')}
               </Button>
-              <LoadingButton
-                type="submit"
-                loading={
-                  createCurriculumMutation.isPending ||
-                  updateCurriculumMutation.isPending
-                }
-              >
+              <LoadingButton type="submit" isLoading={isLoading}>
                 {isEditMode ? t('common.update') : t('common.create')}
               </LoadingButton>
             </DialogFooter>

@@ -268,6 +268,25 @@ export const subjects = {
         noResults: 'Ders bulunamadı',
         filterPlaceholder: 'Dersleri filtrele...',
       },
+      details: {
+        tabs: {
+          general: 'Genel',
+          materials: 'Materyaller',
+        },
+      },
+      viewDialog: {
+        basicInfo: 'Temel Bilgiler',
+        description: 'Ders detayları ve bilgileri.',
+      },
+      statistics: {
+        title: 'İstatistikler',
+        description: 'Ders istatistikleri ve metrikleri.',
+        totalMaterials: 'Toplam Materyal',
+      },
+      materials: {
+        description: 'Bu derse ait materyaller.',
+        noMaterials: 'Bu ders için materyal bulunamadı.',
+      },
     },
   },
   details: {
@@ -322,6 +341,56 @@ export const subjects = {
       tabs: {
         general: 'Genel',
         lessons: 'Dersler',
+      },
+    },
+  },
+  lessons: {
+    title: 'Dersler',
+    details: {
+      tabs: {
+        general: 'Genel',
+        materials: 'Materyaller',
+      },
+    },
+    viewDialog: {
+      basicInfo: 'Temel Bilgiler',
+      description: 'Ders detayları ve bilgileri.',
+    },
+    statistics: {
+      title: 'İstatistikler',
+      description: 'Ders istatistikleri ve metrikleri.',
+      totalMaterials: 'Toplam Materyal',
+    },
+    materials: {
+      description: 'Bu derse ait materyaller.',
+      noMaterials: 'Bu ders için materyal bulunamadı.',
+      noLessonSelected: 'Ders seçilmedi',
+      fileRequired: 'Dosya gereklidir',
+      uploadSuccess: 'Materyal başarıyla yüklendi',
+      uploadError: 'Materyal yüklenemedi',
+      uploadInProgress: 'Yükleme devam ediyor, lütfen bekleyin...',
+      uploadDialog: {
+        title: 'Materyal Yükle',
+        description: 'Bu ders için yeni bir öğrenme materyali yükleyin.',
+        file: 'Dosya',
+        uploadFile: 'Dosya yükle',
+        changeFile: 'Dosyayı değiştir',
+        fileHelpText:
+          'Dosyaya tıklayın veya sürükleyin • Maksimum boyut: {{maxSize}}',
+        namePlaceholder: 'Materyal adını girin...',
+        descriptionPlaceholder: 'Materyal açıklamasını girin...',
+        thumbnail: 'Küçük Resim',
+        uploadThumbnail: 'Küçük resim yükle',
+        changeThumbnail: 'Küçük resmi değiştir',
+        thumbnailHelpText: 'Materyal için opsiyonel küçük resim',
+        isShareable: 'Paylaşılabilir',
+        isShareableDescription:
+          'Öğrencilerin bu materyali görüntülemesine izin ver',
+        typeAutoFilled:
+          'Materyal türü yüklenen dosyadan otomatik olarak algılanır',
+        upload: 'Yükle',
+        uploadingMaterial: 'Materyal yükleniyor',
+        uploadingThumbnail: 'Küçük resim yükleniyor',
       },
     },
   },

@@ -4,3 +4,4 @@ export {
   ClassroomAttendanceProvider,
   useClassroomAttendanceContext,
 } from './ClassroomAttendanceContext';
+export { ClassroomAttendanceTable } from './ClassroomAttendanceTable';

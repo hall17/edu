@@ -1,5 +1,5 @@
 import { Table } from '@tanstack/react-table';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useClassroomStudentsContext } from '../ClassroomStudentsContext';
@@ -17,7 +17,8 @@ export function ClassroomStudentsDataTableToolbar({
   table,
 }: ClassroomStudentsDataTableToolbarProps) {
   const { t } = useTranslation();
-  const { filters, setFilters, resetFilters } = useClassroomStudentsContext();
+  const { filters, setFilters, resetFilters, setOpenedDialog } =
+    useClassroomStudentsContext();
   const isFiltered = Object.keys(filters).some(
     (key) => key !== 'page' && key !== 'size' && key !== 'classroomId'
   );
@@ -46,17 +47,25 @@ export function ClassroomStudentsDataTableToolbar({
           </Button>
         )}
       </div>
-      <div className="flex gap-x-2">
-        {filters.sort && (
-          <Button
-            variant="secondary"
-            className="h-8"
-            onClick={() => setFilters({ sort: undefined })}
-          >
-            {t('table.actions.resetSort')}
+      <div className="flex items-center gap-2">
+        <div className="flex gap-x-2">
+          {filters.sort && (
+            <Button
+              variant="secondary"
+              className="h-8"
+              onClick={() => setFilters({ sort: undefined })}
+            >
+              {t('table.actions.resetSort')}
+            </Button>
+          )}
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" onClick={() => setOpenedDialog('enrollment')}>
+            <Plus className="size-4" />
+            {t('students.actions.enroll')}
           </Button>
-        )}
-        <DataTableViewOptions table={table} />
+        </div>
       </div>
     </div>
   );

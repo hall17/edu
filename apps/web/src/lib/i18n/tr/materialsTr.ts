@@ -25,6 +25,7 @@ export const materials = {
     lesson: 'ders',
     branch: 'Şube',
     description: 'Açıklama',
+    shareable: 'Paylaşılabilir',
     createdAt: 'Oluşturulma Tarihi',
     curriculumName: 'Müfredat Adı',
     actions: {
@@ -115,5 +116,9 @@ export const materials = {
     updateError: 'Konu güncellenemedi',
     deleteSuccess: 'Konu başarıyla silindi',
     deleteError: 'Konu silinemedi',
+  },
+  viewer: {
+    page: 'Sayfa',
+    unsupportedType: 'Bu dosya türü önizleme için desteklenmiyor.',
   },
 };

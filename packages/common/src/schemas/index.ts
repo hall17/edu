@@ -8,6 +8,7 @@ export * from './companySchemas';
 export * from './curriculumSchemas';
 export * from './deviceSchemas';
 export * from './lessonSchemas';
+export * from './lessonMaterialSchemas';
 export * from './moduleSchemas';
 export * from './parentSchemas';
 export * from './permissionSchemas';

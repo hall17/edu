@@ -21,7 +21,7 @@ export function QuestionBankDataTableToolbar<TData>({
   table,
 }: QuestionBankDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
-  const { filters, setFilters, resetFilters, subjectsQuery } =
+  const { filters, setFilters, resetFilters, subjectsQuery, setOpenedDialog } =
     useQuestionBankContext();
   const columnFilters = table.getState().columnFilters;
   const columnFiltersWithoutType = columnFilters.filter((c) => c.id !== 'type');
@@ -124,17 +124,28 @@ export function QuestionBankDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <div className="flex gap-x-2">
-        {(filters as any).sort && (
+      <div className="flex items-center gap-2">
+        <div className="flex gap-x-2">
+          {(filters as any).sort && (
+            <Button
+              variant="secondary"
+              className="h-8"
+              onClick={() => setFilters({ sort: undefined } as any)}
+            >
+              {t('table.actions.resetSort')}
+            </Button>
+          )}
+          <DataTableViewOptions table={table} />
+        </div>
+        <div className="flex gap-2">
           <Button
-            variant="secondary"
-            className="h-8"
-            onClick={() => setFilters({ sort: undefined } as any)}
+            onClick={() => setOpenedDialog('add')}
+            className="h-8 px-2 lg:px-3"
           >
-            {t('table.actions.resetSort')}
+            <Plus className="mr-2 size-4" />
+            {t('questionBank.primaryButtons.addQuestion')}
           </Button>
-        )}
-        <DataTableViewOptions table={table} />
+        </div>
       </div>
     </div>
   );

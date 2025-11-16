@@ -177,7 +177,8 @@ export function QuestionBankActionDialog() {
     (curriculum) => curriculum.id === selectedCurriculumId
   );
 
-  const availableLessons = selectedCurriculum?.lessons || [];
+  const availableLessons =
+    selectedCurriculum?.units.flatMap((unit) => unit.lessons) || [];
 
   async function onSubmit(values: FormData) {
     try {

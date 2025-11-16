@@ -92,8 +92,6 @@ export function DateTimePicker24h({
     return () => observer.disconnect();
   }, [isOpen]);
 
-  console.log('value', value);
-
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>

@@ -67,24 +67,6 @@ export function CurriculumUnitsContent() {
           <CustomDataTableRowActions
             items={[
               {
-                icon: <Eye className="size-4" />,
-                onClick: () => {
-                  navigate({
-                    to: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId',
-                    params: {
-                      subjectId: curriculum?.subjectId || '',
-                      curriculumId: curriculum?.id || '',
-                      unitId: row.original.id,
-                    },
-                  });
-                  sessionStorage.setItem(
-                    'previousUrl',
-                    window.location.pathname
-                  );
-                },
-                tooltip: t('common.view'),
-              },
-              {
                 icon: <BookOpen className="size-4" />,
                 onClick: () => {
                   navigate({
@@ -101,6 +83,24 @@ export function CurriculumUnitsContent() {
                   );
                 },
                 tooltip: t('common.showLessons'),
+              },
+              {
+                icon: <Eye className="size-4" />,
+                onClick: () => {
+                  navigate({
+                    to: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId',
+                    params: {
+                      subjectId: curriculum?.subjectId || '',
+                      curriculumId: curriculum?.id || '',
+                      unitId: row.original.id,
+                    },
+                  });
+                  sessionStorage.setItem(
+                    'previousUrl',
+                    window.location.pathname
+                  );
+                },
+                tooltip: t('common.view'),
               },
               {
                 icon: <Edit className="size-4" />,

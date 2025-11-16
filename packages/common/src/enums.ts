@@ -270,6 +270,15 @@ export const WidgetStatus = {
 export type WidgetStatus = (typeof WidgetStatus)[keyof typeof WidgetStatus]
 
 
+export const LessonMaterialType = {
+  DOCUMENT: 'DOCUMENT',
+  AUDIO: 'AUDIO',
+  VIDEO: 'VIDEO'
+} as const
+
+export type LessonMaterialType = (typeof LessonMaterialType)[keyof typeof LessonMaterialType]
+
+
 export const ScheduleType = {
   FLEXIBLE: 'FLEXIBLE',
   STRICT: 'STRICT'

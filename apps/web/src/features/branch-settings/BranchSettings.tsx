@@ -9,8 +9,15 @@ export function BranchSettings() {
   const [isEditing, setIsEditing] = useState(false);
   const { t } = useTranslation();
 
+  const breadcrumbItems = [
+    {
+      label: 'Branch Settings',
+      href: '/branch-settings',
+    },
+  ];
+
   return (
-    <Main>
+    <Main breadcrumbItems={breadcrumbItems}>
       <div className="container mx-auto space-y-6 overflow-y-auto">
         {isEditing ? (
           <BranchSettingsContent onCancel={() => setIsEditing(false)} />

@@ -8,6 +8,7 @@ import { companyRouter } from '../api/company/companyRouter';
 import { curriculumRouter } from '../api/curriculum/curriculumRouter';
 import { deviceRouter } from '../api/device/deviceRouter';
 import { lessonRouter } from '../api/lesson/lessonRouter';
+import { lessonMaterialRouter } from '../api/lessonMaterial/lessonMaterialRouter';
 import { moduleRouter } from '../api/module/moduleRouter';
 import { parentRouter } from '../api/parent/parentRouter';
 import { permissionRouter } from '../api/permission/permissionRouter';
@@ -36,6 +37,7 @@ export const appRouter = t.router({
   classroomTemplate: classroomTemplateRouter,
   subject: subjectRouter,
   lesson: lessonRouter,
+  lessonMaterial: lessonMaterialRouter,
   curriculum: curriculumRouter,
   module: moduleRouter,
   question: questionRouter,

@@ -31,13 +31,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Subject, trpc } from '@/lib/trpc';
-
-const addSubjectSchema = z.object({
-  name: z.string().min(1).max(100),
-  description: z.string().optional(),
-});
-
-type AddSubjectFormData = z.infer<typeof addSubjectSchema>;
+import {
+  subjectCreateSchema,
+  SubjectStatus,
+  subjectUpdateSchema,
+} from '@edusama/common';
 
 export function SubjectsActionDialog() {
   const { t } = useTranslation();
@@ -47,40 +45,38 @@ export function SubjectsActionDialog() {
 
   const isEdit = !!currentRow;
 
-  const defaultValues: AddSubjectFormData = isEdit
-    ? {
-        name: currentRow?.name || '',
-        description: currentRow?.description || '',
-      }
-    : {
-        name: '',
-        description: '',
-      };
+  const schema = isEdit ? subjectUpdateSchema : subjectCreateSchema;
+  type FormData = z.infer<typeof schema>;
 
-  const form = useForm<AddSubjectFormData>({
-    resolver: zodResolver(addSubjectSchema),
+  const defaultValues: FormData =
+    isEdit && currentRow
+      ? {
+          id: currentRow.id,
+          name: currentRow.name,
+          description: currentRow.description || '',
+          status: currentRow.status,
+        }
+      : {
+          name: '',
+          description: '',
+          status: SubjectStatus.ACTIVE,
+        };
+
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues,
   });
 
   const createSubjectMutation = useMutation(
-    trpc.subject.create.mutationOptions({
-      onSuccess: (data) => {
-        createSubject(data);
-        toast.success(t('materials.addSubject.createSuccess'));
-        setOpenedDialog(null);
-      },
-    })
+    trpc.subject.create.mutationOptions()
   );
 
   const updateSubjectMutation = useMutation(
-    trpc.subject.update.mutationOptions({
-      onSuccess: (data) => {
-        updateSubject(data);
-        toast.success(t('materials.manageSubjects.updateSuccess'));
-        setOpenedDialog(null);
-      },
-    })
+    trpc.subject.update.mutationOptions()
   );
+
+  const isLoading =
+    createSubjectMutation.isPending || updateSubjectMutation.isPending;
 
   function handleDialogClose(state: boolean) {
     let isDirty = false;
@@ -111,18 +107,26 @@ export function SubjectsActionDialog() {
     setShowConfirmDialog(false);
   }
 
-  function onSubmit(data: AddSubjectFormData) {
-    if (isEdit && currentRow) {
-      updateSubjectMutation.mutate({
-        id: currentRow.id,
-        name: data.name,
-        description: data.description || '',
-      });
-    } else {
-      createSubjectMutation.mutate({
-        name: data.name,
-        description: data.description || '',
-      });
+  async function onSubmit(data: FormData) {
+    try {
+      if ('id' in data) {
+        const updatedSubject = await updateSubjectMutation.mutateAsync(data);
+        updateSubject(updatedSubject as any);
+        toast.success(t('materials.manageSubjects.updateSuccess'));
+        setOpenedDialog(null);
+      } else {
+        const newSubject = await createSubjectMutation.mutateAsync(data);
+        createSubject(newSubject as any);
+        toast.success(t('materials.addSubject.createSuccess'));
+        setOpenedDialog(null);
+      }
+    } catch (error) {
+      console.error('Subject operation error:', error);
+      toast.error(
+        isEdit
+          ? t('materials.manageSubjects.updateError')
+          : t('materials.addSubject.createError')
+      );
     }
   }
 
@@ -187,7 +191,6 @@ export function SubjectsActionDialog() {
                 )}
               />
 
-              {/* Display Curriculums (Edit Mode Only) */}
               {isEdit &&
                 currentRow?.curriculums &&
                 currentRow.curriculums.length > 0 && (
@@ -218,10 +221,16 @@ export function SubjectsActionDialog() {
                                     'DD/MM/YYYY'
                                   )}
                                 </span>
-                                {curriculum.lessons &&
-                                  curriculum.lessons.length > 0 && (
+                                {curriculum.units &&
+                                  curriculum.units.flatMap(
+                                    (unit) => unit.lessons
+                                  ).length > 0 && (
                                     <span className="text-muted-foreground text-xs">
-                                      {curriculum.lessons.length}{' '}
+                                      {
+                                        curriculum.units.flatMap(
+                                          (unit) => unit.lessons
+                                        ).length
+                                      }{' '}
                                       {t('subjects.viewDialog.lessons')}
                                     </span>
                                   )}

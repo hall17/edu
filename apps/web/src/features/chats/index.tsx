@@ -30,9 +30,11 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 // Fake Data
 
 export function Chats() {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
   const [mobileSelectedUser, setMobileSelectedUser] = useState<ChatUser | null>(
@@ -40,6 +42,13 @@ export function Chats() {
   );
   const [createConversationDialogOpened, setCreateConversationDialog] =
     useState(false);
+
+  const breadcrumbItems = [
+    {
+      label: 'Chats',
+      href: '/chats',
+    },
+  ];
 
   // Filtered data based on the search query
   const filteredChatList = conversations.filter(({ fullName }) =>
@@ -76,7 +85,7 @@ export function Chats() {
         </div>
       </Header>
 
-      <Main fixed>
+      <Main fixed breadcrumbItems={breadcrumbItems}>
         <section className="flex h-full gap-6">
           {/* Left Side */}
           <div className="flex w-full flex-col gap-2 sm:w-56 lg:w-72 2xl:w-80">

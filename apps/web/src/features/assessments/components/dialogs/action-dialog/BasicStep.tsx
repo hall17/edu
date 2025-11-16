@@ -63,7 +63,9 @@ export function BasicStep({
   const availableLessons = selectedCurriculumIds
     ? availableCurriculums
         .filter((curriculum) => selectedCurriculumIds.includes(curriculum.id))
-        .flatMap((curriculum) => curriculum.lessons)
+        .flatMap((curriculum) =>
+          curriculum.units.flatMap((unit) => unit.lessons)
+        )
     : [];
 
   return (

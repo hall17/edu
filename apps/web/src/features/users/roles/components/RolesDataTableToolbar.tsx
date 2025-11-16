@@ -1,5 +1,6 @@
 import { RoleStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useRolesContext } from '../RolesContext';
@@ -10,6 +11,7 @@ import {
   DataTableResetFilters,
   DataTableViewOptions,
 } from '@/components/table';
+import { Button } from '@/components/ui/button';
 import { Role } from '@/lib/trpc';
 
 interface RolesDataTableToolbarProps<TData extends Role> {
@@ -21,7 +23,7 @@ export function RolesDataTableToolbar<TData extends Role>({
 }: RolesDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, roles } = useRolesContext();
+  const { filters, roles, setOpenedDialog } = useRolesContext();
 
   return (
     <div className="flex items-center justify-between">
@@ -69,7 +71,15 @@ export function RolesDataTableToolbar<TData extends Role>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <DataTableViewOptions table={table} />
+        <div className="flex gap-2">
+          <Button onClick={() => setOpenedDialog('create')}>
+            <Plus />
+            {t('roles.buttons.addRole')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

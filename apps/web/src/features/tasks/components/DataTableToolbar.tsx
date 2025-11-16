@@ -1,6 +1,7 @@
 import { Table } from '@tanstack/react-table';
-import { X } from 'lucide-react';
+import { Download, Plus, X } from 'lucide-react';
 
+import { useTasks } from '../context/TasksContext';
 import { DataTableViewOptions } from '../components/DataTableViewOptions';
 import { priorities, statuses } from '../data/data';
 
@@ -17,6 +18,7 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const { setOpen } = useTasks();
 
   return (
     <div className="flex items-center justify-between">
@@ -56,7 +58,19 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <DataTableViewOptions table={table} />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setOpen('import')}>
+            <Download />
+            Import
+          </Button>
+          <Button onClick={() => setOpen('create')}>
+            <Plus />
+            Create
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -57,7 +57,7 @@ jobs:
   deploy:
     needs: build
     runs-on: self-hosted
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -91,7 +91,7 @@ jobs:
           export $(grep -v '^#' .env.production | xargs)
 
           # Start server
-          PRISMA_QUERY_ENGINE_LIBRARY=/home/ec2-user/actions-runner/_work/edusama/edusama/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/libquery_engine-rhel-openssl-3.0.x.so.node PRISMA_SCHEMA_ENGINE_BINARY=/home/ec2-user/actions-runner/_work/edusama/edusama/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/schema-engine-rhel-openssl-3.0.x NODE_ENV=production pm2 start dist/src/server.js
+          PRISMA_QUERY_ENGINE_LIBRARY=/home/ec2-user/actions-runner/_work/edu/edu/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/libquery_engine-rhel-openssl-3.0.x.so.node PRISMA_SCHEMA_ENGINE_BINARY=/home/ec2-user/actions-runner/_work/edu/edu/${{ needs.build.outputs.artifact-name }}/node_modules/@prisma/engines/schema-engine-rhel-openssl-3.0.x NODE_ENV=production pm2 start dist/src/server.js
 
           # Save pm2 processes
           pm2 save
@@ -101,11 +101,11 @@ jobs:
           echo "Current deployment folder: ${{ needs.build.outputs.artifact-name }}"
 
           # List all folders in the edusama directory
-          echo "Contents of /actions-runner/_work/edusama/edusama before cleanup:"
-          ls -la ~/actions-runner/_work/edusama/edusama/ || echo "Directory does not exist or is empty"
+          echo "Contents of /actions-runner/_work/edu/edu before cleanup:"
+          ls -la ~/actions-runner/_work/edu/edu/ || echo "Directory does not exist or is empty"
 
           # Remove all folders except the current deployment folder
-          for folder in ~/actions-runner/_work/edusama/edusama/*/; do
+          for folder in ~/actions-runner/_work/edu/edu/*/; do
             if [ -d "$folder" ]; then
               folder_name=$(basename "$folder")
               if [ "$folder_name" != "${{ needs.build.outputs.artifact-name }}" ]; then
@@ -118,12 +118,12 @@ jobs:
           done
 
           # Also remove any non-directory files in the edusama directory
-          for file in ~/actions-runner/_work/edusama/edusama/*; do
+          for file in ~/actions-runner/_work/edu/edu/*; do
             if [ ! -d "$file" ]; then
               echo "Removing old file: $(basename "$file")"
               rm -f "$file"
             fi
           done
 
-          echo "Contents of /actions-runner/_work/edusama/edusama after cleanup:"
-          ls -la ~/actions-runner/_work/edusama/edusama/ || echo "Directory does not exist or is empty"
+          echo "Contents of /actions-runner/_work/edu/edu after cleanup:"
+          ls -la ~/actions-runner/_work/edu/edu/ || echo "Directory does not exist or is empty"

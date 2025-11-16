@@ -1,5 +1,6 @@
 import { UserStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
+import { MailPlus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useTeachersContext } from '../TeachersContext';
@@ -21,7 +22,7 @@ export function TeachersDataTableToolbar<TData>({
 }: TeachersDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, setFilters } = useTeachersContext();
+  const { filters, setFilters, setOpenedDialog } = useTeachersContext();
 
   return (
     <div className="flex items-center justify-between">
@@ -49,7 +50,19 @@ export function TeachersDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <DataTableViewOptions table={table} />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setOpenedDialog('invite')}>
+            <MailPlus />
+            {t('teachers.buttons.inviteTeacher')}
+          </Button>
+          <Button onClick={() => setOpenedDialog('add')}>
+            <UserPlus />
+            {t('teachers.buttons.addTeacher')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

@@ -75,12 +75,12 @@ export function UnitsActionDialog() {
       if ('id' in data) {
         const updatedUnit = await updateUnitMutation.mutateAsync(data);
 
-        updateUnit(updatedUnit);
+        updateUnit(updatedUnit as any);
         toast.success(t('subjects.units.updateSuccess'));
       } else {
         const newUnit = await createUnitMutation.mutateAsync(data);
 
-        createUnit(newUnit);
+        createUnit(newUnit as any);
         toast.success(t('subjects.units.createSuccess'));
       }
 

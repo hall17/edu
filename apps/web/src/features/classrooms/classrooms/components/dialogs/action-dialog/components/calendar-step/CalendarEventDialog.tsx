@@ -194,7 +194,7 @@ export function CalendarEventDialog(props: Props) {
                     </FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl className="w-full">
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue
                             placeholder={t(
                               'classrooms.calendar.actionDialog.teacherPlaceholder'
@@ -228,10 +228,10 @@ export function CalendarEventDialog(props: Props) {
                       <FormControl>
                         <MultiSelect
                           options={
-                            selectedClassroomIntegration?.curriculum?.lessons.map(
-                              (lesson) => ({
-                                label: lesson.name,
-                                value: lesson.id,
+                            selectedClassroomIntegration?.curriculum?.units.map(
+                              (unit) => ({
+                                label: unit.name,
+                                value: unit.id,
                               })
                             ) || []
                           }

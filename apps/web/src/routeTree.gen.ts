@@ -73,7 +73,10 @@ import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdIndexRout
 import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsIndexRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/index'
 import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/route'
 import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/index'
-import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
+import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/index'
+import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/route'
+import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/index'
+import { Route as AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRouteImport } from './routes/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
@@ -444,13 +447,40 @@ const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute
         AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute,
     } as any,
   )
-const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute =
-  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRouteImport.update(
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute =
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRouteImport.update(
     {
-      id: '/lessons',
-      path: '/lessons',
+      id: '/lessons/',
+      path: '/lessons/',
       getParentRoute: () =>
         AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute,
+    } as any,
+  )
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute =
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteImport.update(
+    {
+      id: '/lessons/$lessonId',
+      path: '/lessons/$lessonId',
+      getParentRoute: () =>
+        AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute,
+    } as any,
+  )
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute =
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute,
+    } as any,
+  )
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute =
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRouteImport.update(
+    {
+      id: '/materials',
+      path: '/materials',
+      getParentRoute: () =>
+        AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute,
     } as any,
   )
 
@@ -514,8 +544,11 @@ export interface FileRoutesByFullPath {
   '/subjects/$subjectId/curriculums/$curriculumId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdIndexRoute
   '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteWithChildren
   '/subjects/$subjectId/curriculums/$curriculumId/units': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsIndexRoute
-  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute
   '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteWithChildren
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
@@ -569,8 +602,10 @@ export interface FileRoutesByTo {
   '/subjects/$subjectId/curriculums': typeof AuthenticatedSubjectsSubjectIdCurriculumsIndexRoute
   '/subjects/$subjectId/curriculums/$curriculumId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdIndexRoute
   '/subjects/$subjectId/curriculums/$curriculumId/units': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsIndexRoute
-  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute
   '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute
+  '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -637,8 +672,11 @@ export interface FileRoutesById {
   '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdIndexRoute
   '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteWithChildren
   '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsIndexRoute
-  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute
   '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute
+  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteWithChildren
+  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute
+  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute
+  '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/': typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -702,8 +740,11 @@ export interface FileRouteTypes {
     | '/subjects/$subjectId/curriculums/$curriculumId/'
     | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId'
     | '/subjects/$subjectId/curriculums/$curriculumId/units'
-    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
     | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -757,8 +798,10 @@ export interface FileRouteTypes {
     | '/subjects/$subjectId/curriculums'
     | '/subjects/$subjectId/curriculums/$curriculumId'
     | '/subjects/$subjectId/curriculums/$curriculumId/units'
-    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
     | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
+    | '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId'
   id:
     | '__root__'
     | '/(auth)'
@@ -824,8 +867,11 @@ export interface FileRouteTypes {
     | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/'
     | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId'
     | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/'
-    | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
     | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/'
+    | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId'
+    | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/'
+    | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
+    | '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1288,12 +1334,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRouteImport
       parentRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute
     }
-    '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons': {
-      id: '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
+    '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/': {
+      id: '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/'
       path: '/lessons'
       fullPath: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons'
-      preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRouteImport
+      preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRouteImport
       parentRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute
+    }
+    '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId': {
+      id: '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId'
+      path: '/lessons/$lessonId'
+      fullPath: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId'
+      preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteImport
+      parentRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRoute
+    }
+    '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/': {
+      id: '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/'
+      path: '/'
+      fullPath: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/'
+      preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRouteImport
+      parentRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute
+    }
+    '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials': {
+      id: '/_authenticated/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
+      path: '/materials'
+      fullPath: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons/$lessonId/materials'
+      preLoaderRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRouteImport
+      parentRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute
     }
   }
 }
@@ -1462,17 +1529,38 @@ const AuthenticatedClassroomsClassroomIdRouteRouteWithChildren =
     AuthenticatedClassroomsClassroomIdRouteRouteChildren,
   )
 
+interface AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteChildren {
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute
+}
+
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteChildren: AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteChildren =
+  {
+    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute:
+      AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdMaterialsRoute,
+    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute:
+      AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdIndexRoute,
+  }
+
+const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteWithChildren =
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute._addFileChildren(
+    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteChildren,
+  )
+
 interface AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteChildren {
-  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute
   AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteWithChildren
+  AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute: typeof AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute
 }
 
 const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteChildren: AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteChildren =
   {
-    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute:
-      AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsRoute,
     AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute:
       AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdIndexRoute,
+    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRoute:
+      AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsLessonIdRouteRouteWithChildren,
+    AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute:
+      AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdLessonsIndexRoute,
   }
 
 const AuthenticatedSubjectsSubjectIdCurriculumsCurriculumIdUnitsUnitIdRouteRouteWithChildren =

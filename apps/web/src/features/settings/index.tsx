@@ -13,6 +13,12 @@ import { Separator } from '@/components/ui/separator';
 
 export function Settings() {
   const { t } = useTranslation();
+  const breadcrumbItems = [
+    {
+      label: t('settings.title'),
+      href: '/settings',
+    },
+  ];
 
   const sidebarNavItems = [
     {
@@ -53,6 +59,7 @@ export function Settings() {
       fixed
       title={t('settings.title')}
       description={t('settings.description')}
+      breadcrumbItems={breadcrumbItems}
     >
       <div className="flex flex-1 flex-col space-y-2 overflow-auto md:space-y-2">
         <aside className="top-0">

@@ -25,6 +25,8 @@ function useProviderValue() {
   );
   const queryKey = trpc.assessment.findAll.queryKey(filters);
 
+  const assessments = assessmentsQuery.data?.assessments ?? [];
+
   function createAssessment(assessment: Assessment) {
     queryClient.setQueryData(queryKey, (data) => {
       if (!data) return undefined;
@@ -88,6 +90,7 @@ function useProviderValue() {
     createAssessment,
     updateAssessment,
     deleteAssessment,
+    assessments,
   };
 }
 

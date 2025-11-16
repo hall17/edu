@@ -30,6 +30,13 @@ export function Apps() {
   const [appType, setAppType] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
+  const breadcrumbItems = [
+    {
+      label: 'Apps',
+      href: '/apps',
+    },
+  ];
+
   const filteredApps = apps
     .sort((a, b) =>
       sort === 'ascending'
@@ -57,7 +64,7 @@ export function Apps() {
       </Header>
 
       {/* ===== Content ===== */}
-      <Main fixed>
+      <Main fixed breadcrumbItems={breadcrumbItems}>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             App Integrations

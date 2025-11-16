@@ -8,7 +8,7 @@ import {
 import { useDialogState } from '@/hooks';
 import { queryClient } from '@/lib/trpc';
 
-type LessonsDialogType = 'add' | 'edit' | 'delete';
+type LessonsDialogType = 'add' | 'edit' | 'delete' | 'add-material';
 
 function useProviderValue() {
   const [openedDialog, setOpenedDialog] =

@@ -639,4 +639,18 @@ export const HTTP_EXCEPTIONS = {
       tr: 'Değerlendirme bulunamadı',
     },
   },
+  LESSON_MATERIAL_NOT_FOUND: {
+    status: HttpStatus.NOT_FOUND,
+    message: {
+      en: 'Lesson material not found',
+      tr: 'Ders materyali bulunamadı',
+    },
+  },
+  LESSON_MATERIAL_ALREADY_EXISTS: {
+    status: HttpStatus.CONFLICT,
+    message: {
+      en: 'Lesson material with this name already exists in this lesson',
+      tr: 'Bu ders için bu isimle bir ders materyali zaten mevcut',
+    },
+  },
 } satisfies Record<string, CustomErrorType>;

@@ -1,5 +1,6 @@
 import { UserStatus } from '@edusama/common';
 import { Table } from '@tanstack/react-table';
+import { MailPlus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useUsersContext } from '../UsersContext';
@@ -10,6 +11,7 @@ import {
   DataTableResetFilters,
   DataTableViewOptions,
 } from '@/components/table';
+import { Button } from '@/components/ui/button';
 
 interface UsersDataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -20,7 +22,8 @@ export function UsersDataTableToolbar<TData>({
 }: UsersDataTableToolbarProps<TData>) {
   const { t } = useTranslation();
   const isFiltered = table.getState().columnFilters.length > 0;
-  const { filters, setFilters, users, roles } = useUsersContext();
+  const { filters, setFilters, users, roles, setOpenedDialog } =
+    useUsersContext();
 
   return (
     <div className="flex items-center justify-between">
@@ -62,7 +65,19 @@ export function UsersDataTableToolbar<TData>({
           <DataTableResetFilters onClick={() => table.resetColumnFilters()} />
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <DataTableViewOptions table={table} />
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setOpenedDialog('invite')}>
+            <MailPlus />
+            {t('users.buttons.inviteUser')}
+          </Button>
+          <Button onClick={() => setOpenedDialog('add')}>
+            <UserPlus />
+            {t('users.buttons.addUser')}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

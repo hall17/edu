@@ -838,7 +838,7 @@ model Lesson {
   classroomIntegrationSessions ClassroomIntegrationSessionLesson[]
   assessments                  AssessmentLesson[]
   questions                    Question[]
-  lessonMaterials              LessonMaterial[]
+  materials                    LessonMaterial[]
 
   @@unique([unitId, name])
 }
@@ -849,6 +849,7 @@ model LessonMaterial {
   name         String             @db.VarChar(100)
   description  String?            @db.VarChar(500)
   type         LessonMaterialType
+  extension    String?            @db.VarChar(20)
   url          String
   thumbnailUrl String?
   duration     Int?

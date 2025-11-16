@@ -74,6 +74,9 @@ CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'INVITED');
 CREATE TYPE "WidgetStatus" AS ENUM ('ACTIVE', 'SUSPENDED');
 
 -- CreateEnum
+CREATE TYPE "LessonMaterialType" AS ENUM ('DOCUMENT', 'AUDIO', 'VIDEO');
+
+-- CreateEnum
 CREATE TYPE "ScheduleType" AS ENUM ('FLEXIBLE', 'STRICT');
 
 -- CreateEnum
@@ -555,6 +558,27 @@ CREATE TABLE "Lesson" (
 );
 
 -- CreateTable
+CREATE TABLE "LessonMaterial" (
+    "id" TEXT NOT NULL,
+    "lessonId" TEXT NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "description" VARCHAR(500),
+    "type" "LessonMaterialType" NOT NULL,
+    "extension" VARCHAR(20),
+    "url" TEXT NOT NULL,
+    "thumbnailUrl" TEXT,
+    "duration" INTEGER,
+    "pageCount" INTEGER,
+    "isShareable" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
+
+    CONSTRAINT "LessonMaterial_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "ClassroomIntegration" (
     "id" TEXT NOT NULL,
     "status" "ClassroomIntegrationStatus" NOT NULL DEFAULT 'ACTIVE',
@@ -569,6 +593,31 @@ CREATE TABLE "ClassroomIntegration" (
     "deletedBy" TEXT,
 
     CONSTRAINT "ClassroomIntegration_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ClassroomIntegrationSharedMaterial" (
+    "id" TEXT NOT NULL,
+    "classroomIntegrationId" TEXT NOT NULL,
+    "lessonMaterialId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "sharedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "sharedBy" TEXT,
+
+    CONSTRAINT "ClassroomIntegrationSharedMaterial_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ClassroomIntegrationSharedMaterialViewLog" (
+    "id" TEXT NOT NULL,
+    "classroomIntegrationSharedMaterialId" TEXT NOT NULL,
+    "viewedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "viewedBy" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ClassroomIntegrationSharedMaterialViewLog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -1118,6 +1167,9 @@ CREATE UNIQUE INDEX "Unit_curriculumId_name_key" ON "Unit"("curriculumId", "name
 CREATE UNIQUE INDEX "Lesson_unitId_name_key" ON "Lesson"("unitId", "name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "LessonMaterial_lessonId_name_key" ON "LessonMaterial"("lessonId", "name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ClassroomIntegration_classroomId_subjectId_key" ON "ClassroomIntegration"("classroomId", "subjectId");
 
 -- CreateIndex
@@ -1433,6 +1485,12 @@ ALTER TABLE "Unit" ADD CONSTRAINT "Unit_curriculumId_fkey" FOREIGN KEY ("curricu
 ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_unitId_fkey" FOREIGN KEY ("unitId") REFERENCES "Unit"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "LessonMaterial" ADD CONSTRAINT "LessonMaterial_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "Lesson"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LessonMaterial" ADD CONSTRAINT "LessonMaterial_deletedBy_fkey" FOREIGN KEY ("deletedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_classroomId_fkey" FOREIGN KEY ("classroomId") REFERENCES "Classroom"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1443,6 +1501,21 @@ ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_curricul
 
 -- AddForeignKey
 ALTER TABLE "ClassroomIntegration" ADD CONSTRAINT "ClassroomIntegration_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationSharedMaterial" ADD CONSTRAINT "ClassroomIntegrationSharedMaterial_classroomIntegrationId_fkey" FOREIGN KEY ("classroomIntegrationId") REFERENCES "ClassroomIntegration"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationSharedMaterial" ADD CONSTRAINT "ClassroomIntegrationSharedMaterial_lessonMaterialId_fkey" FOREIGN KEY ("lessonMaterialId") REFERENCES "LessonMaterial"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationSharedMaterial" ADD CONSTRAINT "ClassroomIntegrationSharedMaterial_sharedBy_fkey" FOREIGN KEY ("sharedBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationSharedMaterialViewLog" ADD CONSTRAINT "ClassroomIntegrationSharedMaterialViewLog_classroomIntegra_fkey" FOREIGN KEY ("classroomIntegrationSharedMaterialId") REFERENCES "ClassroomIntegrationSharedMaterial"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ClassroomIntegrationSharedMaterialViewLog" ADD CONSTRAINT "ClassroomIntegrationSharedMaterialViewLog_viewedBy_fkey" FOREIGN KEY ("viewedBy") REFERENCES "Student"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Permission" ADD CONSTRAINT "Permission_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "Module"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -18,6 +18,12 @@ import { getQuestionDifficultyBadgeVariant } from '@/utils';
 function QuestionBankRootContent() {
   const { t } = useTranslation();
   const { questionsMetadataQuery } = useQuestionBankRootContext();
+  const breadcrumbItems = [
+    {
+      label: t('questionBank.title'),
+      href: '/question-bank',
+    },
+  ];
 
   const questions = questionsMetadataQuery.data || [];
 
@@ -66,6 +72,7 @@ function QuestionBankRootContent() {
     <Main
       title={t('questionBank.title')}
       description={t('questionBank.description')}
+      breadcrumbItems={breadcrumbItems}
     >
       <div className="-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12">
         {/* Metadata Section */}
