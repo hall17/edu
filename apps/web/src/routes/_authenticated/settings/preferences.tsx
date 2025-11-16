@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { SettingsPreferences } from '@/features/settings/preferences/Preferences';
+import { SettingsPreferences } from '@/features/admin/settings/preferences/Preferences';
 
 export const Route = createFileRoute('/_authenticated/settings/preferences')({
   component: SettingsPreferences,

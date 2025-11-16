@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Branches } from '@/features/companies-and-branches/branches/Branches';
+import { Branches } from '@/features/admin/companies-and-branches/branches/Branches';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(

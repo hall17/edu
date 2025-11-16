@@ -11,7 +11,7 @@ import { createCustomZodErrorMessage } from './hooks/createCustomZodErrorMessage
 import { queryClient } from './lib/trpc';
 // Generated Routes
 import { routeTree } from './routeTree.gen';
-import { useAuthStore } from './stores/authStore';
+import { useAuth, useAuthStore } from './stores/authStore';
 import { TRPCProvider } from './TRPCProvider';
 
 import 'dayjs/locale/tr';
@@ -77,7 +77,7 @@ import 'dayjs/locale/en';
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: { queryClient, auth: undefined! },
+  context: { queryClient, auth: useAuthStore.getState().auth },
   // prelo
   // defaultPreload: 'intent',
   // defaultPreloadStaleTime: 0,

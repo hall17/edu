@@ -1,11 +1,24 @@
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 
 import countries from '@/assets/countries.json';
-import { AuthenticatedLayout } from '@/components/layout/AuthenticatedLayout';
+import { AdminLayout, StudentLayout } from '@/features/shared/layouts';
 import { trpcClient } from '@/lib/trpc';
+import { useAuth } from '@/stores/authStore';
+
+function DynamicLayout() {
+  // Access the user from route context or auth store
+  const { user } = useAuth();
+
+  // Render appropriate layout based on user type
+  if (user?.userType === 'student') {
+    return <StudentLayout />;
+  }
+
+  return <AdminLayout />;
+}
 
 export const Route = createFileRoute('/_authenticated')({
-  component: AuthenticatedLayout,
+  component: DynamicLayout,
   beforeLoad: async ({ context }) => {
     try {
       if (context.auth?.user) {
@@ -19,9 +32,17 @@ export const Route = createFileRoute('/_authenticated')({
 
       if (response) {
         context.auth?.setUser({ ...response, country: country || null });
-        return;
+        // Return updated context so it's available in the component
+        return {
+          auth: context.auth,
+        };
       }
-    } catch {}
+    } catch (error) {
+      // If it's a redirect error, re-throw it
+      if (error && typeof error === 'object' && 'redirect' in error) {
+        throw error;
+      }
+    }
 
     const pathName = location.pathname;
 

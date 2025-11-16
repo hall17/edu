@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Modules } from '@/features/modules/Modules';
+import { Modules } from '@/features/admin/modules/Modules';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute('/_authenticated/modules/')({

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { QuestionBankTypeView } from '@/features/question-bank/type/QuestionBankTypeView';
+import { QuestionBankTypeView } from '@/features/admin/question-bank/type/QuestionBankTypeView';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(

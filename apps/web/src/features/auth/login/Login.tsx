@@ -64,7 +64,10 @@ export function Login() {
       );
 
       setUser({ ...response, country: country || null });
-      setTimeout(() => navigate({ to: search.redirect || '/' }), 0);
+
+      // All users redirect to root, layout adapts based on user type
+      const redirectPath = search.redirect || '/';
+      setTimeout(() => navigate({ to: redirectPath }), 0);
     } catch {}
   }
   return (

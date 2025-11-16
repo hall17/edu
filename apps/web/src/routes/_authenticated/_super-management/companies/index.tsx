@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Companies } from '@/features/companies-and-branches/companies/Companies';
+import { Companies } from '@/features/admin/companies-and-branches/companies/Companies';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(

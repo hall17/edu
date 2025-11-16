@@ -1,7 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 import Cookies from 'js-cookie';
 
-import { NotificationBell } from '../../features/notifications/NotificationBell';
+import { NotificationBell } from '../../features/shared/notifications/NotificationBell';
 import { ProfileDropdown } from '../ProfileDropdown';
 import { Search } from '../Searchx';
 import { ThemeSwitch } from '../ThemeSwitch';
@@ -13,7 +13,7 @@ import { SkipToMain } from '@/components/SkipToMain';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { MainProvider } from '@/context/MainContext';
 import { SearchProvider } from '@/context/SearchContext';
-import { NotificationsProvider } from '@/features/notifications/NotificationsContext';
+import { NotificationsProvider } from '@/features/shared/notifications/NotificationsContext';
 import { cn } from '@/lib/utils';
 
 interface Props {

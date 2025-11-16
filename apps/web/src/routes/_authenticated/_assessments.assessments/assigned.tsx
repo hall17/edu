@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { AssessmentAssignments } from '@/features/assessments/assignments/AssessmentAssignments';
+import { AssessmentAssignments } from '@/features/admin/assessments/assignments/AssessmentAssignments';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(

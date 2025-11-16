@@ -11,10 +11,10 @@ import {
 import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query';
 import { toast } from 'sonner';
+import superjson from 'superjson';
 
 import i18n from '@/lib/i18n';
 import { localizedCustomErrorMessageSchema } from '@/types';
-import superjson from 'superjson';
 
 export const queryClient = new QueryClient({
   defaultOptions: {},

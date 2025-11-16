@@ -1,8 +1,8 @@
 import { useSidebarData } from './data/useSidebarData';
 
+import { BranchSwitcher } from '@/components/layout/BranchSwitcher';
 import { NavGroup } from '@/components/layout/NavGroup';
 // import { NavUser } from '@/components/layout/NavUser';
-import { BranchSwitcher } from '@/components/layout/BranchSwitcher';
 import {
   Sidebar,
   SidebarContent,

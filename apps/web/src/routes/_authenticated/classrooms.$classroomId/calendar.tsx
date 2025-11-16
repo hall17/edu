@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { ClassroomCalendar } from '@/features/classrooms/classroom-details/calendar/ClassroomCalendar';
+import { ClassroomCalendar } from '@/features/admin/classrooms/classroom-details/calendar/ClassroomCalendar';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(

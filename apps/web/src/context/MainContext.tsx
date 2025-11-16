@@ -144,6 +144,5 @@ export function useUpdateMainContext(
       context.setBackButtonText(undefined);
       context.setOnClickBackButton(undefined);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

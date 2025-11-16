@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { Users } from '@/features/users/users/Users';
+import { Users } from '@/features/admin/users/users/Users';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute('/_authenticated/users/')({

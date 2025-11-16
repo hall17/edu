@@ -5,14 +5,16 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 import { NavigationProgress } from '@/components/NavigationProgress';
 import { Toaster } from '@/components/ui/sonner';
-import { GeneralError } from '@/features/errors/GeneralError';
-import { NotFoundError } from '@/features/errors/NotFoundError';
+import { GeneralError } from '@/features/shared/errors/GeneralError';
+import { NotFoundError } from '@/features/shared/errors/NotFoundError';
 import { AuthState } from '@/stores/authStore';
 
-export const Route = createRootRouteWithContext<{
+interface RouteContext {
   queryClient: QueryClient;
   auth?: AuthState['auth'];
-}>()({
+}
+
+export const Route = createRootRouteWithContext<RouteContext>()({
   component: () => {
     return (
       <>

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 
-import { ClassroomDetailsRoot } from '@/features/classrooms/classroom-details/root/ClassroomDetailsRoot';
+import { ClassroomDetailsRoot } from '@/features/admin/classrooms/classroom-details/root/ClassroomDetailsRoot';
 import { RouterInput } from '@/lib/trpc';
 
 export const Route = createFileRoute(
