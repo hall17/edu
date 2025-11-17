@@ -1,3 +1,4 @@
+import { useLocation } from '@tanstack/react-router';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface BreadcrumbItem {
@@ -5,7 +6,7 @@ interface BreadcrumbItem {
   href?: string;
 }
 
-interface TabItem {
+export interface TabItem {
   title: string;
   icon: React.ReactNode;
   href: string;
@@ -101,9 +102,9 @@ export function useUpdateMainContext(
   deps: React.DependencyList = []
 ) {
   const context = useMainContext();
+  const location = useLocation();
 
   useEffect(() => {
-    console.log('useUpdateMainContext', props);
     if (props.title !== undefined) {
       context.setTitle(props.title);
     }
@@ -144,5 +145,5 @@ export function useUpdateMainContext(
       context.setBackButtonText(undefined);
       context.setOnClickBackButton(undefined);
     };
-  }, deps);
+  }, [...deps, location.pathname]);
 }

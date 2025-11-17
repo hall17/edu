@@ -3,7 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { BookOpen, Edit, Eye, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { useSubjectDetailsContext } from '../../../SubjectDetailsContext';
+import { useSubjectDetailsContext } from '../../../../SubjectDetailsContext';
 
 import { UnitsDialogs } from './dialogs/UnitsDialogs';
 import { UnitsProvider, useUnitsContext } from './UnitsContext';

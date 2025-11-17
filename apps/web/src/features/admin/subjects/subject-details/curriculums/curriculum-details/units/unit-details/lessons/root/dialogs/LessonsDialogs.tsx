@@ -1,8 +1,8 @@
+import { useUnitLessonsContext } from '../UnitLessonsContext';
+
 import { LessonMaterialUploadDialog } from './LessonMaterialUploadDialog';
 import { LessonsActionDialog } from './LessonsActionDialog';
 import { LessonsDeleteDialog } from './LessonsDeleteDialog';
-
-import { useUnitLessonsContext } from '@/features/admin/subjects/subject-details/curriculums/curriculum-details/units/unit-details/lessons/UnitLessonsContext';
 
 export function LessonsDialogs() {
   const { openedDialog } = useUnitLessonsContext();

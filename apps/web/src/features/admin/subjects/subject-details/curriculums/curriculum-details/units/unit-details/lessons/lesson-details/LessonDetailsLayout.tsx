@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from '@tanstack/react-router';
+import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import { House, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +9,7 @@ export function LessonDetailsLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { subject, curriculum, unit, lesson } = useSubjectDetailsContext();
-  console.log('lesson details layout');
+  const location = useLocation();
   const sidebarNavItems = [
     {
       title: t('subjects.lessons.details.tabs.general') as string,
@@ -57,6 +57,17 @@ export function LessonDetailsLayout() {
     },
   ];
 
+  const isMaterialsTab = location.pathname.endsWith('materials');
+
+  if (isMaterialsTab) {
+    breadcrumbItems.push({
+      label: t('subjects.lessons.details.tabs.materials'),
+      href: `/subjects/${curriculum?.subjectId}/curriculums/${curriculum?.id}/units/${unit?.id}/lessons/${lesson?.id}/materials`,
+    });
+  }
+
+  console.log('isMaterialsTab', isMaterialsTab);
+
   // Update Main context with lesson details
   useUpdateMainContext(
     {
@@ -78,7 +89,7 @@ export function LessonDetailsLayout() {
         }
       },
     },
-    [lesson, unit, curriculum, t]
+    [lesson, unit, curriculum, t, location.pathname]
   );
 
   return <Outlet />;

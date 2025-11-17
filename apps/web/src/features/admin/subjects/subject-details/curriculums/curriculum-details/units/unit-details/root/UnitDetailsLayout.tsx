@@ -1,5 +1,6 @@
-import { Outlet, useNavigate } from '@tanstack/react-router';
+import { Outlet, useLocation, useNavigate } from '@tanstack/react-router';
 import { House, BookOpen } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useUpdateMainContext } from '@/context/MainContext';
@@ -9,6 +10,7 @@ export function UnitDetailsLayout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { subject, curriculum, unit } = useSubjectDetailsContext();
+  const location = useLocation();
 
   const sidebarNavItems = [
     {
@@ -22,6 +24,10 @@ export function UnitDetailsLayout() {
       href: '/subjects/$subjectId/curriculums/$curriculumId/units/$unitId/lessons',
     },
   ];
+
+  console.log('unit details layout');
+
+  const isLessonsTab = location.pathname.endsWith('lessons');
 
   const breadcrumbItems = [
     {
@@ -48,6 +54,13 @@ export function UnitDetailsLayout() {
       label: unit?.name || t('common.loading'),
     },
   ];
+
+  if (isLessonsTab) {
+    breadcrumbItems.push({
+      label: t('subjects.units.details.tabs.lessons'),
+      href: `/subjects/${curriculum?.subjectId}/curriculums/${curriculum?.id}/units/${unit?.id}/lessons`,
+    });
+  }
 
   // Update Main context with unit details
   useUpdateMainContext(

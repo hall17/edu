@@ -1,4 +1,9 @@
-import { Link, useLocation, useNavigate } from '@tanstack/react-router';
+import {
+  Link,
+  LinkProps,
+  useLocation,
+  useNavigate,
+} from '@tanstack/react-router';
 import { useState, useEffect, type JSX } from 'react';
 
 import { buttonVariants } from '@/components/ui/button';
@@ -55,8 +60,8 @@ export function TabNav({ className, items, ...props }: TabNavProps) {
   // Function to find which route pattern matches the current pathname
   const getActiveRoutePattern = (): string => {
     for (const item of items) {
-      if (isRouteActive(item.href, pathname)) {
-        return item.href;
+      if (isRouteActive(item.href as string, pathname)) {
+        return item.href as string;
       }
     }
     return pathname; // fallback
@@ -83,9 +88,12 @@ export function TabNav({ className, items, ...props }: TabNavProps) {
           </SelectTrigger>
           <SelectContent>
             {items.map((item) => {
-              const isActive = isRouteActive(item.href, pathname);
+              const isActive = isRouteActive(item.href as string, pathname);
               return (
-                <SelectItem key={item.href} value={item.href}>
+                <SelectItem
+                  key={item.href as string}
+                  value={item.href as string}
+                >
                   <div
                     className={cn(
                       'flex gap-x-4 px-2 py-1',
@@ -109,10 +117,10 @@ export function TabNav({ className, items, ...props }: TabNavProps) {
       >
         <nav className={cn('flex space-x-2 py-1', className)} {...props}>
           {items.map((item) => {
-            const isActive = isRouteActive(item.href, pathname);
+            const isActive = isRouteActive(item.href as string, pathname);
             return (
               <Link
-                key={item.href}
+                key={item.href as string}
                 to={item.href}
                 className={cn(
                   buttonVariants({ variant: 'ghost' }),

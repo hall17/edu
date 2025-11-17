@@ -1,4 +1,4 @@
-import { Outlet } from '@tanstack/react-router';
+import { LinkProps, Outlet } from '@tanstack/react-router';
 import { Link } from '@tanstack/react-router';
 import { ArrowLeft, Home } from 'lucide-react';
 import React from 'react';
@@ -72,7 +72,11 @@ export const Main = ({
   const title = context?.title ?? titleProp;
   const description = context?.description ?? descriptionProp;
   const breadcrumbItems = context?.breadcrumbItems ?? breadcrumbItemsProp;
-  const tabItems = context?.tabItems ?? tabItemsProp;
+  const tabItems = (context?.tabItems ?? tabItemsProp) as {
+    href: string;
+    title: string;
+    icon: React.ReactNode;
+  }[];
   const extra = context?.extra ?? extraProp;
   const backButton = context?.backButton ?? backButtonProp;
   const backButtonText = context?.backButtonText ?? backButtonTextProp;
