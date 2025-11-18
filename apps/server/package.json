@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "@anatine/zod-openapi": "^2.2.8",
+    "@aws-sdk/cloudfront-signer": "^3.930.0",
     "@faker-js/faker": "^9.8.0",
     "@prisma/client": "^6.19.0",
     "@trpc/server": "^11.4.3",

@@ -20,8 +20,16 @@ export const subjectRouter = t.router({
     }),
   findOne: protectedProcedure
     .input(idSchema)
-    .query(async ({ ctx: { req }, input }) => {
-      return subjectService.findOne(req.user, input.id);
+    .query(async ({ ctx: { req, res }, input }) => {
+      const result = await subjectService.findOne(req.user, input.id);
+      const cookies: string[] = [];
+      Object.entries(result.cookies).forEach(([key, value]) => {
+        cookies.push(
+          `${key}=${(value as { value: string }).value}; Domain=.edusama.com; Path=/; SameSite=None; Secure;`
+        );
+      });
+      res.setHeader('Set-Cookie', cookies);
+      return result.subject;
     }),
   create: protectedProcedure
     .input(subjectCreateSchema)

@@ -45,9 +45,7 @@ function ClassroomAttendanceContent() {
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {/* Integration Select */}
         <div className="space-y-2">
           <Label>Lesson Plan</Label>
           <Select
@@ -69,7 +67,6 @@ function ClassroomAttendanceContent() {
           </Select>
         </div>
 
-        {/* Month Select */}
         <div className="space-y-2">
           <Label>Month</Label>
           <Select
@@ -89,7 +86,6 @@ function ClassroomAttendanceContent() {
           </Select>
         </div>
 
-        {/* Year Select */}
         <div className="space-y-2">
           <Label>Year</Label>
           <Select
@@ -110,7 +106,6 @@ function ClassroomAttendanceContent() {
         </div>
       </div>
 
-      {/* Attendance Table */}
       <ClassroomAttendanceTable />
     </div>
   );

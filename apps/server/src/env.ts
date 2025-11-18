@@ -86,6 +86,9 @@ function parseEnv() {
     AWS_S3_SECRET_ACCESS_KEY: z.string().min(1),
     AWS_S3_REGION: z.string().min(1),
     AWS_S3_BUCKET_NAME: z.string().min(1),
+    AWS_CF_PRIVATE_KEY: z.string().min(1),
+    AWS_CF_KEY_PAIR_ID: z.string().min(1),
+    AWS_CF_DISTRIBUTION_DOMAIN: z.string().min(1),
   });
 
   const parsedEnv = envSchema.safeParse(process.env);

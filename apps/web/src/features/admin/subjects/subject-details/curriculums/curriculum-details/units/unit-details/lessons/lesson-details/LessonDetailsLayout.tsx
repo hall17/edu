@@ -66,8 +66,6 @@ export function LessonDetailsLayout() {
     });
   }
 
-  console.log('isMaterialsTab', isMaterialsTab);
-
   // Update Main context with lesson details
   useUpdateMainContext(
     {

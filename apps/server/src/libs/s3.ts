@@ -1,10 +1,18 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
 import { env } from '@api/env';
 import { CustomError } from '@api/types';
+import { getSignedCookies, getSignedUrl } from '@aws-sdk/cloudfront-signer';
 import AWS from 'aws-sdk';
 
 import { cacheManager } from './cacheManager';
 import { logger } from './logger';
+
+export interface CookiesData {
+  [key: string]: {
+    value: string;
+    options?: object;
+  };
+}
 
 const GET_OBJECT_EXPIRES_IN_MS = 28800; // 8 hours
 const PUT_OBJECT_EXPIRES_IN_MS = 60; // 1 minute
@@ -402,4 +410,68 @@ export async function invalidateCache(key: string) {
       `Cache invalidation failed for key ${key}: ${(error as Error).message}`
     );
   }
+}
+
+const cookiesOptions = {
+  domain: 'edusama.com',
+  secure: true,
+  path: '/',
+  sameSite: 'none',
+};
+
+export async function getSignedUrlCloudfront(s3FileKey: string) {
+  let url = `${env.AWS_CF_DISTRIBUTION_DOMAIN}/${encodeURI(s3FileKey)}`; // master .m3u8 file (HLS playlist)
+  url = `${env.AWS_CF_DISTRIBUTION_DOMAIN}/hls/output-folder/video2/master.m3u8`;
+  return getSignedUrl({
+    url,
+    dateLessThan: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    keyPairId: env.AWS_CF_KEY_PAIR_ID,
+    privateKey: env.AWS_CF_PRIVATE_KEY,
+  });
+}
+
+export async function getSignedCookiesForFile(s3FileKey: string) {
+  const url = `${env.AWS_CF_DISTRIBUTION_DOMAIN}/hls/output-folder/video2/master.m3u8`;
+
+  // const url = `${cloudfrontDistributionDomain}/${encodeURI(s3FileKey)}`; // master .m3u8 file (HLS playlist)
+
+  const intervalToAddInMs = 86400 * 1000; // 1 day
+  const policy = {
+    Statement: [
+      {
+        Resource: `${env.AWS_CF_DISTRIBUTION_DOMAIN}/*`,
+        Condition: {
+          DateLessThan: {
+            'AWS:EpochTime': Math.floor(
+              (Date.now() + intervalToAddInMs) / 1000
+            ),
+          },
+        },
+      },
+    ],
+  };
+
+  const policyString = JSON.stringify(policy);
+  const cookies = getSignedCookies({
+    keyPairId: env.AWS_CF_KEY_PAIR_ID,
+    privateKey: env.AWS_CF_PRIVATE_KEY,
+    policy: policyString,
+  });
+
+  const cookiesResult: CookiesData = {};
+  Object.keys(cookies).forEach((key) => {
+    // @ts-ignore
+    cookiesResult[key] = {
+      // @ts-ignore
+      value: cookies[key] as any,
+      options: cookiesOptions,
+    };
+  });
+
+  // url = `${cloudfrontDistributionDomain}/hls/output-folder/8255c0b1-17c1-43da-9c80-7790a3a9acf5/master.m3u8`;
+
+  return {
+    fileUrl: url, // master playlist url
+    cookies: cookiesResult, // cookies for frontend
+  };
 }

@@ -37,9 +37,6 @@ function initializeMiddlewares() {
     cors({
       origin: env.ALLOWED_ORIGINS,
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      exposedHeaders: ['Set-Cookie'],
     })
   );
   // app.use(cors({ origin: '*', credentials: true }));

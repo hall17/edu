@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/dialog';
 import { LessonMaterial } from '@/features/admin/subjects/subject-details/SubjectDetailsContext';
 
+import MuxPlayer from '@mux/mux-player-react/lazy';
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url
@@ -31,7 +33,6 @@ export function MaterialViewerDialog({
   onOpenChange,
   material,
 }: MaterialViewerDialogProps) {
-  console.log('material', material);
   const { t } = useTranslation();
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -146,12 +147,14 @@ export function MaterialViewerDialog({
     if (isVideo || isAudio) {
       return (
         <div className="flex h-full w-full items-center justify-center">
-          <ReactPlayer
-            src={material.url}
-            controls={true}
-            width="100%"
-            height={isAudio ? '50px' : '100%'}
-            playing={false}
+          {/* <MuxPlayer
+            src="https://cdn.edusama.com/hls/output-folder/video2/master.m3u8"
+            streamType="on-demand"
+            playsInline
+          /> */}
+          <MuxPlayer
+            src="https://cdn.edusama.com/hls/output-folder/video2/master.m3u8"
+            crossOrigin="use-credentials"
           />
         </div>
       );

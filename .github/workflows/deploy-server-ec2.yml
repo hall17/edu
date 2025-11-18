@@ -88,6 +88,10 @@ jobs:
           # create .env.production
           touch .env.production
           echo "${{ vars.ENV_FILE }}" | tr -d '\r' > .env.production
+
+          # Add AWS CloudFront private key from root
+          [ -f ~/aws-cf-private-key.pem ] && echo "AWS_CF_PRIVATE_KEY=\"$(cat ~/aws-cf-private-key.pem)\"" >> .env.production && echo "Added AWS CloudFront private key to .env.production" || echo "Warning: aws-cf-private-key.pem not found in home directory"
+
           export $(grep -v '^#' .env.production | xargs)
 
           # Start server
