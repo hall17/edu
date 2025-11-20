@@ -33,9 +33,15 @@ export const lessonMaterialRouter = t.router({
     .mutation(async ({ ctx: { req }, input }) => {
       return lessonMaterialService.update(req.user, input);
     }),
+
   delete: protectedProcedure
     .input(idSchema)
     .mutation(async ({ ctx: { req }, input }) => {
       return lessonMaterialService.delete(req.user, input.id);
+    }),
+  uploadVideo: protectedProcedure
+    .input(idSchema)
+    .mutation(async ({ ctx: { req }, input }) => {
+      return lessonMaterialService.uploadVideo(req.user, input.id);
     }),
 });

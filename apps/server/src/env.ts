@@ -89,6 +89,7 @@ function parseEnv() {
     AWS_CF_PRIVATE_KEY: z.string().min(1),
     AWS_CF_KEY_PAIR_ID: z.string().min(1),
     AWS_CF_DISTRIBUTION_DOMAIN: z.string().min(1),
+    AWS_LAMBDA_HLS_FUNCTION_URL: z.string().min(1),
   });
 
   const parsedEnv = envSchema.safeParse(process.env);

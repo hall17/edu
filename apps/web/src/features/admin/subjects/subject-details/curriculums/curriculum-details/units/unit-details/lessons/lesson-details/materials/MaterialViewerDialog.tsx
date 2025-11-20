@@ -1,8 +1,10 @@
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Document, Page, pdfjs } from 'react-pdf';
-import ReactPlayer from 'react-player';
+// import ReactPlayer from 'react-player';
+import ReactPlayer from 'react-player/lazy';
+
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -147,15 +149,69 @@ export function MaterialViewerDialog({
     if (isVideo || isAudio) {
       return (
         <div className="flex h-full w-full items-center justify-center">
-          {/* <MuxPlayer
-            src="https://cdn.edusama.com/hls/output-folder/video2/master.m3u8"
-            streamType="on-demand"
-            playsInline
+          {/* <ReactPlayer
+            src={material.url}
+            controls={true}
+            width="100%"
+            height="100%"
+            playing={false}
+            crossOrigin="use-credentials"
+            config={{
+              file: {
+                hlsOptions: {
+                  xhrSetup: function (xhr, url) {
+                    console.log('xhrSetup', url);
+                    xhr.withCredentials = true; // send cookies
+                  },
+                },
+              },
+              // hls: {
+              //   xhrSetup: function (xhr, url) {
+              //     console.log('xhrSetup', url);
+              //     xhr.withCredentials = true; // send cookies
+              //   },
+              //   debug: true,
+              // },
+            }}
           /> */}
           <MuxPlayer
+            debug
+            playsInline
+            streamType="on-demand"
             src="https://cdn.edusama.com/hls/output-folder/video2/master.m3u8"
             crossOrigin="use-credentials"
+            _hlsConfig={{
+              debug: true,
+              // xhrSetup: function (xhr, url) {
+              //   console.log('xhrSetup', url);
+              //   xhr.withCredentials = true; // send cookies
+              // },
+              // fetchSetup: function (url, options) {
+              //   console.log('fetchSetup', url, options);
+              //   options.credentials = 'include'; // send cookies
+              //   return fetch(url, options);
+              // },
+            }}
           />
+          {/* <ReactHlsPlayer
+            playerRef={playerRef}
+            src="https://cdn.edusama.com/hls/output-folder/video2/master.m3u8"
+            autoPlay={false}
+            controls={true}
+            width="100%"
+            height="auto"
+            getHLSRef={(config) => {
+              console.log('config', config);
+            }}
+            hlsConfig={
+              {
+                xhrSetup: function (xhr, url) {
+                  console.log('xhrSetup', url);
+                  xhr.withCredentials = true; // send cookies
+                },
+              } as HlsConfig
+            }
+          /> */}
         </div>
       );
     }

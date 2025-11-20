@@ -1,9 +1,11 @@
 import { HTTP_EXCEPTIONS } from '@api/constants';
+import { env } from '@api/env';
+import { logger } from '@api/libs/logger';
 import { prisma } from '@api/libs/prisma';
-import { generateSignedUrl } from '@api/libs/s3';
+import { generateSignedUrl, getObjectMetadata } from '@api/libs/s3';
 import { Prisma } from '@api/prisma/generated/prisma/client';
-import { CustomError, TokenUser } from '@api/types';
-import { MODULE_CODES, PERMISSIONS } from '@edusama/common';
+import { CustomError, TokenUser, VideoProcessingLambdaBody } from '@api/types';
+import { LessonMaterialType, MODULE_CODES, PERMISSIONS } from '@edusama/common';
 import {
   LessonMaterialCreateDto,
   LessonMaterialFindAllDto,
@@ -280,22 +282,32 @@ export class LessonMaterialService {
     const unitId = lesson.unit.id;
     const lessonId = lesson.id;
 
-    const path = `${companyId}/${branchId}/materials/${subjectId}/${curriculumId}/${unitId}/${lessonId}/${lessonMaterial.id}`;
+    let urlSignedAwsS3Url = undefined;
+    let thumbnailSignedAwsS3Url = undefined;
 
-    // generate upload urls for url and thumbnailUrl
-    const urlSignedAwsS3Url = await generateSignedUrl({
-      operation: 'putObject',
-      path,
-      folder: 'materials',
-      key: lessonMaterial.id,
-    });
+    const path = `companies/${companyId}/branches/${branchId}/subjects/${subjectId}/curriculums/${curriculumId}/units/${unitId}/lessons/${lessonId}/materials`;
 
-    const thumbnailSignedAwsS3Url = await generateSignedUrl({
-      operation: 'putObject',
-      path: `${path}-thumbnail`,
-      folder: 'materials',
-      key: lessonMaterial.id,
-    });
+    if (lessonMaterial.type === LessonMaterialType.VIDEO) {
+      const lessonMaterialPath = path + `/${lessonMaterial.id}`;
+      // generate upload urls for url and thumbnailUrl
+      urlSignedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        path: `${lessonMaterialPath}/video`,
+        key: lessonMaterial.id,
+      });
+
+      thumbnailSignedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        path: `${lessonMaterialPath}/shared/thumbnail`,
+        key: lessonMaterial.id,
+      });
+    } else {
+      urlSignedAwsS3Url = await generateSignedUrl({
+        operation: 'putObject',
+        path: `${path}/${lessonMaterial.id}`,
+        key: lessonMaterial.id,
+      });
+    }
 
     return {
       ...lessonMaterial,
@@ -449,6 +461,49 @@ export class LessonMaterialService {
     }
 
     return lessonMaterial;
+  }
+
+  async uploadVideo(requestedBy: TokenUser, id: string) {
+    // user has write permission to materials
+    if (!requestedBy.isSuperAdmin) {
+      const userHasWritePermission = hasPermission(
+        requestedBy,
+        MODULE_CODES.materials,
+        PERMISSIONS.write
+      );
+
+      if (!userHasWritePermission) {
+        throw new CustomError(HTTP_EXCEPTIONS.UNAUTHORIZED);
+      }
+    }
+
+    const lessonMaterial = await prisma.lessonMaterial.findUnique({
+      where: { id, type: LessonMaterialType.VIDEO },
+    });
+
+    if (!lessonMaterial) {
+      throw new CustomError(HTTP_EXCEPTIONS.LESSON_MATERIAL_NOT_FOUND);
+    }
+
+    // check s3 if video exists
+    const path = lessonMaterial.url + '/video';
+    const videoMetadata = await getObjectMetadata(path);
+
+    if (!videoMetadata) {
+      throw new CustomError(HTTP_EXCEPTIONS.LESSON_MATERIAL_VIDEO_NOT_FOUND);
+    }
+
+    const body: VideoProcessingLambdaBody = {
+      key: path,
+    };
+
+    // trigger video processing lambda function
+    fetch(`${env.AWS_LAMBDA_HLS_FUNCTION_URL}`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }).catch((err) => {
+      logger.error(`Error processing video: ${err}`);
+    });
   }
 
   async delete(requestedBy: TokenUser, id: string) {

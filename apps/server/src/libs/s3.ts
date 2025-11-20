@@ -343,22 +343,18 @@ export async function deleteS3ObjectByPath(path: string) {
 }
 
 export async function getObjectMetadata(
-  companyId: number,
-  branchId: number,
-  folder: FolderOption | undefined,
   key: string
-): Promise<S3ObjectMetadata> {
-  validateInputs(companyId, branchId, key);
-
-  const path = buildS3Path(companyId, branchId, folder, key);
-  logger.info(`Getting metadata for S3 object: ${path}`);
+): Promise<S3ObjectMetadata | null> {
+  if (!key) {
+    throw new CustomError(HTTP_EXCEPTIONS.BAD_REQUEST);
+  }
 
   try {
     const metadata = await retryS3Operation(async () => {
       return s3
         .headObject({
           Bucket: env.AWS_S3_BUCKET_NAME,
-          Key: path,
+          Key: key,
         })
         .promise();
     }, 'S3 headObject');
@@ -370,34 +366,17 @@ export async function getObjectMetadata(
       etag: metadata.ETag,
     };
 
-    logger.info(`Successfully retrieved metadata for: ${path}`);
+    logger.info(`Successfully retrieved metadata for: ${key}`);
     return result;
   } catch (error) {
     if ((error as any).code === 'NotFound') {
-      logger.warn(`Object not found: ${path}`);
-      throw new CustomError(HTTP_EXCEPTIONS.NOT_FOUND);
+      logger.warn(`Object not found: ${key}`);
     }
     logger.error(
-      `Failed to get metadata for ${path}: ${(error as Error).message}`
+      `Failed to get metadata for ${key}: ${(error as Error).message}`
     );
-    throw new CustomError(HTTP_EXCEPTIONS.INTERNAL_SERVER_ERROR);
-  }
-}
 
-export async function checkObjectExists(
-  companyId: number,
-  branchId: number,
-  folder: FolderOption | undefined,
-  key: string
-): Promise<boolean> {
-  try {
-    await getObjectMetadata(companyId, branchId, folder, key);
-    return true;
-  } catch (error) {
-    if ((error as CustomError).status === HTTP_EXCEPTIONS.NOT_FOUND.status) {
-      return false;
-    }
-    throw error;
+    return null;
   }
 }
 

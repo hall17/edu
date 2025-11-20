@@ -71,3 +71,9 @@ export type CustomErrorType = {
   status: HttpStatus;
   message: LocalizedCustomErrorMessage;
 };
+
+export type VideoQuality = '1080p' | '720p' | '480p' | '360p';
+export type VideoProcessingLambdaBody = {
+  key: string;
+  qualities?: VideoQuality[];
+};

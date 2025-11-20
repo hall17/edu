@@ -653,4 +653,11 @@ export const HTTP_EXCEPTIONS = {
       tr: 'Bu ders için bu isimle bir ders materyali zaten mevcut',
     },
   },
+  LESSON_MATERIAL_VIDEO_NOT_FOUND: {
+    status: HttpStatus.NOT_FOUND,
+    message: {
+      en: 'Lesson material video not found',
+      tr: 'Ders materyali video bulunamadı',
+    },
+  },
 } satisfies Record<string, CustomErrorType>;
