@@ -1,0 +1,25 @@
+{
+  "name": "hls-lambda",
+  "version": "1.0.0",
+  "description": "AWS Lambda Function to Generate HLS Streams for Video Uploads to S3",
+  "main": "lambda.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip": "rm -rf lambda-package && mkdir lambda-package && cp index.js package.json lambda-package/ && cp -r ffmpeg lambda-package/ && cd lambda-package && yarn install --production && cd .. && powershell Compress-Archive -Path lambda-package/* -DestinationPath lambda-deployment.zip -Force && rm -rf lambda-package",
+    "test-local": "node test-local.js"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "hls",
+    "video",
+    "ffmpeg",
+    "s3"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@aws-sdk/client-s3": "^3.936.0"
+  }
+}

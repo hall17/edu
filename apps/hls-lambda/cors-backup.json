@@ -1,0 +1,14 @@
+[
+  {
+    "AllowedHeaders": ["*"],
+    "AllowedMethods": ["DELETE", "GET", "HEAD", "POST", "PUT"],
+    "AllowedOrigins": ["https://test.edusama.com", "http://localhost:5173"],
+    "ExposeHeaders": [
+      "ETag",
+      "CloudFront-Policy",
+      "CloudFront-Signature",
+      "CloudFront-Key-Pair-Id"
+    ],
+    "MaxAgeSeconds": 30
+  }
+]

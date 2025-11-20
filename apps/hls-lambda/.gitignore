@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Environment variables
+.env
+
+# Output and temp files
+output/
+tmp-ffmpeg/
+*.mp4
+*.mov
+*.avi
+
+# FFmpeg binaries
+bin/
+
+# Lambda deployment packages
+lambda-deployment*.zip
+*.tar.xz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+response.json
+test-output/
+
+# videos
+output_folder
+*.mp4
